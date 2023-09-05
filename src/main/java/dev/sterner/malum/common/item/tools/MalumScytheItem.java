@@ -31,7 +31,7 @@ public class MalumScytheItem extends SwordItem {
     public static void spawnSweepParticles(PlayerEntity player, DefaultParticleType type) {
         double d0 = (-MathHelper.sin(player.getYaw() * ((float) Math.PI / 180F)));
         double d1 = MathHelper.cos(player.getYaw() * ((float) Math.PI / 180F));
-        if (player.world instanceof ServerWorld serverWorld) {
+        if (player.getWorld() instanceof ServerWorld serverWorld) {
             serverWorld.spawnParticles(type, player.getX() + d0, player.getBodyY(0.5D), player.getZ() + d1, 0, d0, 0.0D, d1, 0.0D);
         }
     }

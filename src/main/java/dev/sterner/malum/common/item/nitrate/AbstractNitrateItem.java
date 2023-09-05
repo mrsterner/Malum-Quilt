@@ -36,7 +36,7 @@ public class AbstractNitrateItem extends Item implements ParticleEmitterHandler.
             int angle = hand == Hand.MAIN_HAND ? 225 : 90;
             Vec3d pos = user.getPos().add(user.getRotationVector().multiply(0.5)).add(0.5 * Math.sin(Math.toRadians(angle - user.headYaw)), user.getHeight() * 2 / 3, 0.5 * Math.cos(Math.toRadians(angle - user.headYaw)));
             float pitch = -10.0F;
-            bombEntity.setProperties(user, user.getPitch(), user.getYaw(), pitch, 1.25F, 0.9F);
+            bombEntity.setVelocity(user, user.getPitch(), user.getYaw(), pitch, 1.25F, 0.9F);
             bombEntity.setPosition(pos);
             world.spawnEntity(bombEntity);
         }
@@ -50,7 +50,7 @@ public class AbstractNitrateItem extends Item implements ParticleEmitterHandler.
 
 
 	@Override
-	public void spawnParticles(HashMap<LodestoneScreenParticleTextureSheet, ArrayList<ScreenParticle>> target, World world, float partialTick, ItemStack stack, float x, float y) {
+	public void spawnParticles(HashMap<LodestoneScreenParticleTextureSheet, ArrayList<ScreenParticle>> target, World world, float partialTick, ItemStack stack) {
 
 	}
 }

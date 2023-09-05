@@ -45,7 +45,7 @@ public class MalumSpiritItem extends Item implements FloatingGlowItem, ParticleE
 
     @Environment(EnvType.CLIENT)
 	@Override
-	public void spawnParticles(HashMap<LodestoneScreenParticleTextureSheet, ArrayList<ScreenParticle>> target, World world, float partialTick, ItemStack stack, float x, float y) {
-		CommonParticleEffects.spawnSpiritScreenParticles(target, type.getColor(), type.getEndColor(), stack, x, y);
+	public void spawnParticles(HashMap<LodestoneScreenParticleTextureSheet, ArrayList<ScreenParticle>> target, World world, float partialTick, ItemStack stack) {
+		CommonParticleEffects.spawnSpiritScreenParticles(target, type.getColor(), type.getEndColor(), stack);
 	}
 }

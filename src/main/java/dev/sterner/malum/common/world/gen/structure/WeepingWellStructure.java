@@ -3,22 +3,22 @@ package dev.sterner.malum.common.world.gen.structure;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.sterner.malum.common.registry.MalumStructures;
-import net.minecraft.registry.Holder;
-import net.minecraft.structure.StructureType;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.structure.pool.StructurePool;
 import net.minecraft.structure.pool.StructurePoolBasedGenerator;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.gen.chunk.VerticalBlockSample;
-import net.minecraft.world.gen.feature.StructureFeature;
+import net.minecraft.world.gen.structure.Structure;
+import net.minecraft.world.gen.structure.StructureType;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class WeepingWellStructure extends StructureFeature {
+public class WeepingWellStructure extends Structure {
 	public static final Codec<WeepingWellStructure> CODEC = RecordCodecBuilder.<WeepingWellStructure>mapCodec(instance ->
-			instance.group(WeepingWellStructure.settingsCodec(instance),
+			instance.group(WeepingWellStructure.configCodecBuilder(instance),
 					StructurePool.REGISTRY_CODEC.fieldOf("start_pool").forGetter(structure -> structure.startPool),
 					Identifier.CODEC.optionalFieldOf("start_jigsaw_name").forGetter(structure -> structure.startJigsawName),
 					Codec.INT.fieldOf("size").forGetter(provider -> provider.size),
@@ -28,7 +28,7 @@ public class WeepingWellStructure extends StructureFeature {
 					Codec.intRange(1, 128).fieldOf("max_distance_from_center").forGetter(structure -> structure.maxDistanceFromCenter)
 			).apply(instance, WeepingWellStructure::new)).codec();
 
-	private final Holder<StructurePool> startPool;
+	private final RegistryEntry<StructurePool> startPool;
 	private final Optional<Identifier> startJigsawName;
 	private final int size;
 	private final int min;
@@ -36,7 +36,7 @@ public class WeepingWellStructure extends StructureFeature {
 	private final int offsetInGround;
 	private final int maxDistanceFromCenter;
 
-	public WeepingWellStructure(StructureFeature.StructureSettings config, Holder<StructurePool> startPool, Optional<Identifier> startJigsawName, int size, int min, int max, int offsetInGround, int maxDistanceFromCenter) {
+	public WeepingWellStructure(Structure.Config config, RegistryEntry<StructurePool> startPool, Optional<Identifier> startJigsawName, int size, int min, int max, int offsetInGround, int maxDistanceFromCenter) {
 		super(config);
 		this.startPool = startPool;
 		this.startJigsawName = startJigsawName;
@@ -48,16 +48,16 @@ public class WeepingWellStructure extends StructureFeature {
 	}
 
 	@Override
-	protected Optional<GenerationStub> findGenerationPos(GenerationContext context) {
+	protected Optional<StructurePosition> getStructurePosition(Context context) {
 		BlockPos blockPos = new BlockPos(context.chunkPos().getStartX(), 0, context.chunkPos().getStartZ());
-		BlockPos validPos = new BlockPos(blockPos.getX(), getValidY(context.chunkGenerator().getColumnSample(blockPos.getX(), blockPos.getZ(), context.world(), context.randomState())), blockPos.getZ());
+		BlockPos validPos = new BlockPos(blockPos.getX(), getValidY(context.chunkGenerator().getColumnSample(blockPos.getX(), blockPos.getZ(), context.world(), context.noiseConfig())), blockPos.getZ());
 		if (validPos.getY() != min - 1 && isSufficientlyFlat(context, validPos, 3)) {
-			return StructurePoolBasedGenerator.m_drsiegyr(context, this.startPool, this.startJigsawName, this.size, validPos.down(-offsetInGround), false, Optional.empty(), this.maxDistanceFromCenter);
+			return StructurePoolBasedGenerator.generate(context, this.startPool, this.startJigsawName, this.size, validPos.down(-offsetInGround), false, Optional.empty(), this.maxDistanceFromCenter);
 		}
 		return Optional.empty();
 	}
 
-	public boolean isSufficientlyFlat(GenerationContext context, BlockPos origin, int check) {
+	public boolean isSufficientlyFlat(Context context, BlockPos origin, int check) {
 		List<BlockPos> blockPosList = new ArrayList<>();
 		for(int x = -check; x < check; x++){
 			for(int z = -check; z < check; z++){
@@ -66,7 +66,7 @@ public class WeepingWellStructure extends StructureFeature {
 		}
 		int count = 0;
 		for(BlockPos pos : blockPosList){
-			VerticalBlockSample blockView = context.chunkGenerator().getColumnSample(pos.getX(), pos.getZ(), context.world(), context.randomState());
+			VerticalBlockSample blockView = context.chunkGenerator().getColumnSample(pos.getX(), pos.getZ(), context.world(), context.noiseConfig());
 			if(blockView.getState(pos.getY()).isAir() && !blockView.getState(pos.down().getY()).isAir()){
 				count++;
 			}
@@ -100,7 +100,6 @@ public class WeepingWellStructure extends StructureFeature {
 		}
 		return maxIndex;
 	}
-
 
 	@Override
 	public StructureType<?> getType() {

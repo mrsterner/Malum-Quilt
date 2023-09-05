@@ -64,10 +64,7 @@ import net.minecraft.registry.Registry;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
-import net.minecraft.util.SignType;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
-import org.quiltmc.qsl.item.content.registry.api.ItemContentRegistries;
-import org.quiltmc.qsl.registry.attachment.api.RegistryEntryAttachment;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -86,7 +83,7 @@ public interface MalumObjects {
 	Map<Item, Identifier> ITEMS = new LinkedHashMap<>();
 	Map<Supplier<MalumSpiritItem>, String> SPIRITS = new LinkedHashMap<>();
 	Set<MalumScytheItem> SCYTHES = new ReferenceOpenHashSet<>();
-	ArrayList<SignType> SIGN_TYPES = new ArrayList<>();
+	ArrayList<WoodType> SIGN_TYPES = new ArrayList<>();
 
 	Item ENCYCLOPEDIA_ARCANA = register("encyclopedia_arcana", new EncyclopediaArcanaItem(settings().rarity(Rarity.UNCOMMON)));
 
@@ -331,8 +328,8 @@ public interface MalumObjects {
 	Block CRACKED_TAINTED_ROCK_TILES_STAIRS = register("cracked_tainted_rock_tiles_stairs", new StairsBlock(TAINTED_ROCK.getDefaultState(), TAINTED_ROCK_PROPERTIES()),true);
 	Block CRACKED_SMALL_TAINTED_ROCK_BRICKS_STAIRS = register("cracked_small_tainted_rock_bricks_stairs", new StairsBlock(TAINTED_ROCK.getDefaultState(), TAINTED_ROCK_PROPERTIES()),true);
 
-	Block TAINTED_ROCK_PRESSURE_PLATE = register("tainted_rock_pressure_plate", new PressurePlateBlock(PressurePlateBlock.ActivationRule.MOBS, TAINTED_ROCK_PROPERTIES(), SoundEvents.BLOCK_BAMBOO_WOOD_PRESSURE_PLATE_CLICK_OFF, SoundEvents.BLOCK_BAMBOO_WOOD_PRESSURE_PLATE_CLICK_ON),true);
-	Block TAINTED_ROCK_BUTTON = register("tainted_rock_button", new AbstractButtonBlock(TAINTED_ROCK_PROPERTIES(), 1,false, SoundEvents.BLOCK_STONE_BUTTON_CLICK_OFF,SoundEvents.BLOCK_STONE_BUTTON_CLICK_ON),true);
+	Block TAINTED_ROCK_PRESSURE_PLATE = register("tainted_rock_pressure_plate", new PressurePlateBlock(PressurePlateBlock.ActivationRule.MOBS, TAINTED_ROCK_PROPERTIES(), BlockSetType.OAK),true);
+	Block TAINTED_ROCK_BUTTON = register("tainted_rock_button", new ButtonBlock(TAINTED_ROCK_PROPERTIES(), BlockSetType.OAK, 1, true),true);
 
 	Block TAINTED_ROCK_WALL = register("tainted_rock_wall", new WallBlock(TAINTED_ROCK_PROPERTIES()),true);
 	Block TAINTED_ROCK_BRICKS_WALL = register("tainted_rock_bricks_wall", new WallBlock(TAINTED_ROCK_PROPERTIES()),true);
@@ -654,7 +651,7 @@ public interface MalumObjects {
 	}
 
 	static void init(){
-		SIGN_TYPES.forEach(SignType::register);
+		SIGN_TYPES.forEach(WoodType::register);
 		BLOCKS.keySet().forEach(block -> Registry.register(Registries.BLOCK, BLOCKS.get(block), block));
 		ITEMS.keySet().forEach(item -> Registry.register(Registries.ITEM, ITEMS.get(item), item));
 

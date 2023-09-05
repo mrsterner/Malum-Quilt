@@ -64,8 +64,9 @@ public class SpiritPouchScreenHandler extends ScreenHandler {
 		return true;
 	}
 
+
 	@Override
-	public ItemStack quickTransfer(PlayerEntity player, int index) {
+	public ItemStack quickMove(PlayerEntity player, int index) {
 		ItemStack itemStack = ItemStack.EMPTY;
 		Slot slot = this.slots.get(index);
 		if (slot.hasStack()) {
@@ -89,15 +90,14 @@ public class SpiritPouchScreenHandler extends ScreenHandler {
 		return itemStack;
 	}
 
-
 	@Override
-	public void close(PlayerEntity player) {
+	public void onClosed(PlayerEntity player) {
 		if (!(lockedStack.getItem() instanceof SpiritPouchItem)) {
 			for (int i = 0, stacksSize = inventory.size(); i < stacksSize; i++) {
 				ItemStack stack = inventory.getStack(i);
 				player.dropItem(stack, true);
 			}
-			super.close(player);
+			super.onClosed(player);
 			return;
 		}
 		NbtCompound nbt = lockedStack.getNbt();
@@ -106,6 +106,6 @@ public class SpiritPouchScreenHandler extends ScreenHandler {
 		}
 		Inventories.writeNbt(nbt, ((SimpleInventory) this.inventory).stacks);
 		lockedStack.setNbt(nbt);
-		super.close(player);
+		super.onClosed(player);
 	}
 }

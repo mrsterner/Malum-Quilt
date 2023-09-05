@@ -43,6 +43,6 @@ public interface MalumAttributeRegistry {
 		return attribute;
 	}
 	static void init() {
-		ATTRIBUTES.forEach((id, attribute) -> Registry.register(Registries.ENTITY_ATTRIBUTE, id, attribute));
+		ATTRIBUTES.forEach((id, attribute) -> Registry.register(Registries.ATTRIBUTE, id, attribute));
 	}
 }

@@ -24,6 +24,6 @@ public interface MalumScreenHandlerRegistry {
 	}
 
 	static void init() {
-		SCREEN_HANDLERS.forEach((id, handler) -> Registry.register(Registries.SCREEN_HANDLER_TYPE, id, handler));
+		SCREEN_HANDLERS.forEach((id, handler) -> Registry.register(Registries.SCREEN_HANDLER, id, handler));
 	}
 }

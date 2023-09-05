@@ -14,7 +14,7 @@ import com.sammy.lodestone.systems.particle.screen.base.ScreenParticle;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.random.RandomGenerator;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 
 import java.awt.*;
@@ -50,7 +50,7 @@ public class CommonParticleEffects {
 	}
 
 	public static void spawnSpiritParticles(World level, double x, double y, double z, float alphaMultiplier, Vec3d extraVelocity, Color color, Color endColor) {
-		RandomGenerator rand = level.getRandom();
+		Random rand = level.getRandom();
 		WorldParticleBuilder.create(LodestoneParticleRegistry.WISP_PARTICLE)
 				.setTransparencyData(GenericParticleData.create(0.275f * alphaMultiplier, 0f).build())
 				.setLifetime(15 + rand.nextInt(4))

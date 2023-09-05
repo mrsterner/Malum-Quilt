@@ -55,7 +55,7 @@ public class SpiritPouchItem extends Item {
     }
 
     @Override
-    public boolean onClickedOnOther(ItemStack thisStack, Slot otherSlot, ClickType clickType, PlayerEntity player) {
+    public boolean onStackClicked(ItemStack thisStack, Slot otherSlot, ClickType clickType, PlayerEntity player) {
         ItemStack stack = otherSlot.getStack();
 
         if (clickType != ClickType.RIGHT || !(stack.getItem() instanceof MalumSpiritItem)) {

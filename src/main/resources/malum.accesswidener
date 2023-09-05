@@ -1,2 +1,5 @@
 accessWidener v2 named
-
+accessible field net/minecraft/item/SwordItem attackDamage F
+accessible field net/minecraft/item/SwordItem attributeModifiers Lcom/google/common/collect/Multimap;
+accessible method net/minecraft/item/ItemStack <init> (Lnet/minecraft/item/ItemConvertible;ILjava/util/Optional;)V
+accessible method net/minecraft/block/WoodType register (Lnet/minecraft/block/WoodType;)Lnet/minecraft/block/WoodType;

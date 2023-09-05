@@ -9,6 +9,7 @@ import dev.sterner.malum.common.network.packet.s2c.block.blight.BlightTransformI
 import dev.sterner.malum.common.registry.MalumRecipeSerializerRegistry;
 import dev.sterner.malum.common.registry.MalumRecipeTypeRegistry;
 import dev.sterner.malum.common.registry.MalumSoundRegistry;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -26,7 +27,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
-import org.quiltmc.qsl.networking.api.PlayerLookup;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -92,7 +92,7 @@ public class AugmentingRecipe extends ILodestoneRecipe {
 
 	public static ActionResult performAugmentation(IAltarProvider altarProvider, PlayerEntity player, Hand hand) {
 		LodestoneBlockEntityInventory inventory = altarProvider.getInventoryForAltar();
-		World level = player.world;
+		World level = player.getWorld();
 		ItemStack target = inventory.getStack(0);
 		if (!target.isEmpty()) {
 			ItemStack applied = player.getStackInHand(hand);

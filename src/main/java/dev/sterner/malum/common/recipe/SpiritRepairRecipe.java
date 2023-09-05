@@ -142,7 +142,7 @@ public class SpiritRepairRecipe extends ILodestoneRecipe {
 		@Override
 		public SpiritRepairRecipe read(Identifier recipeId, JsonObject json) {
 			if (REPAIRABLE == null) {
-				REPAIRABLE = Registries.ITEM.getEntries().stream().map(Map.Entry::getValue).filter(Item::isDamageable).collect(Collectors.toList());
+				REPAIRABLE = Registries.ITEM.getEntrySet().stream().map(Map.Entry::getValue).filter(Item::isDamageable).collect(Collectors.toList());
 			}
 			float durabilityPercentage = json.getAsJsonPrimitive("durabilityPercentage").getAsFloat();
 			String itemIdRegex = json.get("itemIdRegex").getAsString();

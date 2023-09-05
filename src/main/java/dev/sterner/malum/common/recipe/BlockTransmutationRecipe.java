@@ -8,13 +8,13 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
+import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
-import org.quiltmc.qsl.recipe.api.serializer.QuiltRecipeSerializer;
 
 
 public record BlockTransmutationRecipe(Identifier id, String group, Ingredient input, ItemStack output) implements Recipe<Inventory> {
@@ -50,10 +50,10 @@ public record BlockTransmutationRecipe(Identifier id, String group, Ingredient i
         return this.input.test(inventory.getStack(0));
     }
 
-    @Override
-    public ItemStack craft(@Nullable Inventory inventory) {
-        return output;
-    }
+	@Override
+	public ItemStack craft(Inventory inventory, DynamicRegistryManager registryManager) {
+		return output;
+	}
 
     @Override
     public String getGroup() {
@@ -70,10 +70,11 @@ public record BlockTransmutationRecipe(Identifier id, String group, Ingredient i
         return true;
     }
 
-    @Override
-    public ItemStack getOutput() {
-        return output;
-    }
+	@Override
+	public ItemStack getOutput(DynamicRegistryManager registryManager) {
+		return output;
+	}
+
 
     @Override
     public Identifier getId() {
@@ -113,23 +114,6 @@ public record BlockTransmutationRecipe(Identifier id, String group, Ingredient i
             buf.writeString(recipe.group());
             recipe.input().write(buf);
             buf.writeItemStack(recipe.output());
-        }
-
-        @Override
-        public JsonObject toJson(T recipe) {
-            JsonObject json = new JsonObject();
-
-            json.addProperty("type", "malum:block_transmutation");
-
-            if (!recipe.group().equals("")) {
-                json.addProperty("group", recipe.group());
-            }
-
-            json.addProperty("input", Registries.ITEM.getId(recipe.input().getMatchingStacks()[0].getItem()).toString());
-
-            json.addProperty("output", Registries.ITEM.getId(recipe.output().getItem()).toString());
-
-            return json;
         }
 
         public interface RecipeFactory<T> {

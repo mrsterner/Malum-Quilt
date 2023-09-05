@@ -331,7 +331,7 @@ public interface MalumSoundRegistry {
 
 	static SoundEvent register(String name) {
 		Identifier id = new Identifier(Malum.MODID, name);
-		SoundEvent soundEvent = SoundEvent.createVariableRangeEvent(id);
+		SoundEvent soundEvent = SoundEvent.of(id);
 		SOUND_EVENTS.put(id, soundEvent);
 		return soundEvent;
 	}
