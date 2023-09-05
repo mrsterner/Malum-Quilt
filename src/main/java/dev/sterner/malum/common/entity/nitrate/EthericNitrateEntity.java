@@ -11,12 +11,12 @@ import dev.sterner.malum.client.CommonParticleEffects;
 import dev.sterner.malum.common.network.packet.s2c.entity.EthericNitrateParticlePacket;
 import dev.sterner.malum.common.registry.MalumEntityRegistry;
 import dev.sterner.malum.common.registry.MalumSpiritTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import org.quiltmc.qsl.networking.api.PlayerLookup;
 
 import java.awt.*;
 
@@ -40,7 +40,7 @@ public class EthericNitrateEntity extends AbstractNitrateEntity{
 
     @Override
     public void onExplode() {
-        if (world instanceof ServerWorld serverWorld) {
+        if (getWorld() instanceof ServerWorld serverWorld) {
             PlayerLookup.tracking(serverWorld, serverWorld.getWorldChunk(getBlockPos()).getPos()).forEach(track -> EthericNitrateParticlePacket.send(track, getX(), getY(), getZ()));
         }
     }
@@ -54,14 +54,14 @@ public class EthericNitrateEntity extends AbstractNitrateEntity{
         float extraAlpha = (float) motion.length();
         float cycles = 3;
         Color firstColor = FIRST_COLOR.brighter();
-        var rand = world.getRandom();
+        var rand = getWorld().getRandom();
         for (int i = 0; i < cycles; i++) {
             float pDelta = i / cycles;
             double lerpX = MathHelper.lerp(pDelta, ox, x)-motion.x/4f;
             double lerpY = MathHelper.lerp(pDelta, oy, y)-motion.y/4f;
             double lerpZ = MathHelper.lerp(pDelta, oz, z)-motion.z/4f;
             float alphaMultiplier = (0.35f + extraAlpha) * Math.min(1, windUp * 2);
-			CommonParticleEffects.spawnSpiritParticles(world, lerpX, lerpY, lerpZ, alphaMultiplier, norm, firstColor, SECOND_COLOR);
+			CommonParticleEffects.spawnSpiritParticles(getWorld(), lerpX, lerpY, lerpZ, alphaMultiplier, norm, firstColor, SECOND_COLOR);
 
 			final ColorParticleData.ColorParticleDataBuilder colorDataBuilder = ColorParticleData.create(SECOND_COLOR, SECOND_SMOKE_COLOR)
 					.setEasing(Easing.QUINTIC_OUT)
@@ -77,9 +77,9 @@ public class EthericNitrateEntity extends AbstractNitrateEntity{
 					.addMotion(norm.x, norm.y, norm.z)
 					.setRandomMotion(0.01f, 0.01f)
 					.setRenderType(LodestoneWorldParticleTextureSheet.TRANSPARENT)
-					.spawn(world, lerpX, lerpY, lerpZ)
+					.spawn(getWorld(), lerpX, lerpY, lerpZ)
 					.setColorData(colorDataBuilder.setCoefficient(2f).build())
-					.spawn(world, lerpX, lerpY, lerpZ);
+					.spawn(getWorld(), lerpX, lerpY, lerpZ);
         }
     }
 

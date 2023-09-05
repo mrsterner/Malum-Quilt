@@ -1,18 +1,19 @@
 package dev.sterner.malum.common.component;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.Tessellator;
 import com.sammy.lodestone.systems.easing.Easing;
-import com.sammy.lodestone.systems.rendering.ExtendedShader;
 import com.sammy.lodestone.systems.rendering.VFXBuilders;
+import com.sammy.lodestone.systems.rendering.shader.ExtendedShader;
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
 import dev.onyxstudios.cca.api.v3.component.tick.ServerTickingComponent;
 import dev.sterner.malum.common.block.weeping_well.PrimordialSoupBlock;
 import dev.sterner.malum.common.network.packet.s2c.VoidRejectionPacket;
 import dev.sterner.malum.common.network.packet.s2c.block.VoidConduitParticlePacket;
 import dev.sterner.malum.common.registry.*;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -22,7 +23,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.MathHelper;
-import org.quiltmc.qsl.networking.api.PlayerLookup;
 
 import java.util.function.Consumer;
 
@@ -42,7 +42,7 @@ public class TouchOfDarknessComponent implements AutoSyncedComponent, ServerTick
 
 	@Override
 	public void serverTick() {
-		boolean isInTheGoop = livingEntity.world.getBlockState(livingEntity.getBlockPos()).getBlock() instanceof PrimordialSoupBlock;
+		boolean isInTheGoop = livingEntity.getWorld().getBlockState(livingEntity.getBlockPos()).getBlock() instanceof PrimordialSoupBlock;
 		if (afflictionDuration > 0) { // tick down the duration of touch of darkness.
 			afflictionDuration--;
 			if (afflictionDuration == 0) { //if it reaches zero, set expectedAffliction to 0, eventually ending the effect
@@ -60,7 +60,7 @@ public class TouchOfDarknessComponent implements AutoSyncedComponent, ServerTick
 			//if the entity's affliction reached the max, and the entity isn't close to actively being rejected, and is in the goop, they are rejected
 			//rejection is set to 15, and the entity starts rapidly ascending as a result
 			//we do this only on the server, and then communicate the rejection to the client using a packet
-			if (!livingEntity.world.isClient()) {
+			if (!livingEntity.getWorld().isClient()) {
 				if (currentAffliction >= MAX_AFFLICTION && (rejection < 5 || rejection > 25) && timeSpentInGoop > 60) {
 					reject(livingEntity);
 				}
@@ -76,8 +76,8 @@ public class TouchOfDarknessComponent implements AutoSyncedComponent, ServerTick
 			timeSpentInGoop++;
 			MalumComponents.TOUCH_OF_DARKNESS_COMPONENT.sync(livingEntity);
 			boolean isPlayer = livingEntity instanceof PlayerEntity;
-			if (isPlayer && livingEntity.world.getTime() % 6L == 0) {
-				livingEntity.world.playSound(null, livingEntity.getBlockPos(), MalumSoundRegistry.SONG_OF_THE_VOID, SoundCategory.HOSTILE, 0.5f+timeSpentInGoop*0.02f, 0.5f+timeSpentInGoop*0.04f);
+			if (isPlayer && livingEntity.getWorld().getTime() % 6L == 0) {
+				livingEntity.getWorld().playSound(null, livingEntity.getBlockPos(), MalumSoundRegistry.SONG_OF_THE_VOID, SoundCategory.HOSTILE, 0.5f+timeSpentInGoop*0.02f, 0.5f+timeSpentInGoop*0.04f);
 			}
 			if (!isPlayer) {
 				if (livingEntity.getVelocity().y > 0) {
@@ -150,11 +150,11 @@ public class TouchOfDarknessComponent implements AutoSyncedComponent, ServerTick
 		currentAffliction += 40f;
 		afflictionDuration = 0;
 		rejection = 10;
-		if (!livingEntity.world.isClient) {
+		if (!livingEntity.getWorld().isClient) {
 			PlayerLookup.tracking(livingEntity).forEach(track -> VoidConduitParticlePacket.send(track, livingEntity.getX(), livingEntity.getY()+livingEntity.getHeight()/2f, livingEntity.getZ()));
 			PlayerLookup.tracking(livingEntity).forEach(track -> VoidRejectionPacket.send(track, livingEntity.getId()));
 			livingEntity.damage(new DamageSource(MalumDamageSourceRegistry.GUARANTEED_SOUL_SHATTER), 4);
-			livingEntity.world.playSound(null, livingEntity.getBlockPos(), MalumSoundRegistry.VOID_REJECTION, SoundCategory.HOSTILE, 2f, MathHelper.nextFloat(livingEntity.getRandom(), 0.85f, 1.35f));
+			livingEntity.getWorld().playSound(null, livingEntity.getBlockPos(), MalumSoundRegistry.VOID_REJECTION, SoundCategory.HOSTILE, 2f, MathHelper.nextFloat(livingEntity.getRandom(), 0.85f, 1.35f));
 		}
 		livingEntity.addStatusEffect(new StatusEffectInstance(MalumStatusEffectRegistry.REJECTED, 400, 0));
 	}
@@ -198,13 +198,13 @@ public class TouchOfDarknessComponent implements AutoSyncedComponent, ServerTick
 				float intensity = 1f + (effectStrength > 0.5f ? (effectStrength - 0.5f) * 2.5f : 0);
 
 				ExtendedShader shaderInstance = (ExtendedShader) MalumShaderRegistry.TOUCH_OF_DARKNESS.getInstance().get();
-				shaderInstance.getUniformOrDefault("Speed").setFloat(1000f);
-				Consumer<Float> setZoom = f -> shaderInstance.getUniformOrDefault("Zoom").setFloat(f);
-				Consumer<Float> setIntensity = f -> shaderInstance.getUniformOrDefault("Intensity").setFloat(f);
+				shaderInstance.getUniformOrDefault("Speed").set(1000f);
+				Consumer<Float> setZoom = f -> shaderInstance.getUniformOrDefault("Zoom").set(f);
+				Consumer<Float> setIntensity = f -> shaderInstance.getUniformOrDefault("Intensity").set(f);
 				VFXBuilders.ScreenVFXBuilder builder = VFXBuilders.createScreen()
 						.setPosColorTexDefaultFormat()
 						.setPositionWithWidth(0, 0, screenWidth, screenHeight)
-						.overrideBufferBuilder(INSTANCE.getBufferBuilder())
+						.overrideBufferBuilder(INSTANCE.getBuffer())
 						.setColor(0, 0, 0)
 						.setAlpha(alpha)
 						.setShader(MalumShaderRegistry.TOUCH_OF_DARKNESS.getInstance());

@@ -51,7 +51,7 @@ public class AlterationPlinthBlock <T extends AlterationPlinthBlockEntity> exten
 	}
 
 	public BlockState getPlacementState(ItemPlacementContext pContext) {
-        Direction direction = pContext.getPlayerFacing().getOpposite();
+        Direction direction = pContext.getHorizontalPlayerFacing().getOpposite();
         return super.getPlacementState(pContext).with(HORIZONTAL_FACING, direction);
     }
 

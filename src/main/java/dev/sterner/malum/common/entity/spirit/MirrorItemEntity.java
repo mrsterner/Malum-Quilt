@@ -48,7 +48,7 @@ public class MirrorItemEntity extends FloatingItemEntity {
 
     @Override
     public void spawnParticles(double x, double y, double z) {
-		CommonParticleEffects.spawnSpiritParticles(world, x, y, z, 1.5f, Vec3d.ZERO, color, endColor);
+		CommonParticleEffects.spawnSpiritParticles(getWorld(), x, y, z, 1.5f, Vec3d.ZERO, color, endColor);
     }
 
     @Override
@@ -59,11 +59,11 @@ public class MirrorItemEntity extends FloatingItemEntity {
         if (moveTime > desiredMoveTime) {
             moveTime -= 0.1f;
         }
-        if (cachedBlockPos != getBlockPos() || world.getTime() % 10L == 0) {
+        if (cachedBlockPos != getBlockPos() || getWorld().getTime() % 10L == 0) {
             cachedBlockPos = getBlockPos();
             BlockPos ahead = cachedBlockPos.offset(direction, 1);
-            BlockState state = world.getBlockState(ahead);
-            if (state.isSideSolidFullSquare(world, ahead, direction)) {
+            BlockState state = getWorld().getBlockState(ahead);
+            if (state.isSideSolidFullSquare(getWorld(), ahead, direction)) {
                 desiredMoveTime = 0f;
             } else {
                 desiredMoveTime = 1f;

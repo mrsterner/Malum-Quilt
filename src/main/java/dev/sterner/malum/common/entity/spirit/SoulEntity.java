@@ -48,8 +48,8 @@ public class SoulEntity extends FloatingEntity {
     }
 
     public void updateThief() {
-        if (!world.isClient()) {
-            thief = (LivingEntity) ((ServerWorld) world).getEntity(thiefUUID);
+        if (!getWorld().isClient()) {
+            thief = (LivingEntity) ((ServerWorld) getWorld()).getEntity(thiefUUID);
         }
     }
 
@@ -62,14 +62,14 @@ public class SoulEntity extends FloatingEntity {
             double lerpX = MathHelper.lerp(i / cycles, x - motion.x, x);
             double lerpY = MathHelper.lerp(i / cycles, y - motion.y, y);
             double lerpZ = MathHelper.lerp(i / cycles, z - motion.z, z);
-			CommonParticleEffects.spawnSoulParticles(world, lerpX, lerpY, lerpZ, 0.25f, 1, norm, color, endColor);
+			CommonParticleEffects.spawnSoulParticles(getWorld(), lerpX, lerpY, lerpZ, 0.25f, 1, norm, color, endColor);
         }
     }
 
     @Override
     public void remove(RemovalReason pReason) {
         if (pReason.equals(RemovalReason.KILLED)) {
-            SpiritHelper.createSpiritsFromSoul(spiritData, world, getPos(), thief);
+            SpiritHelper.createSpiritsFromSoul(spiritData, getWorld(), getPos(), thief);
         }
         super.remove(pReason);
     }
@@ -78,15 +78,15 @@ public class SoulEntity extends FloatingEntity {
     public void move() {
         setVelocity(getVelocity().multiply(0.95f, 0.97f, 0.95f));
         if (thief == null || !thief.isAlive()) {
-            if (world.getTime() % 40L == 0) {
-                PlayerEntity playerEntity = world.getClosestPlayer(this, 10);
+            if (getWorld().getTime() % 40L == 0) {
+                PlayerEntity playerEntity = getWorld().getClosestPlayer(this, 10);
                 if (playerEntity != null) {
                     setThief(playerEntity.getUuid());
                 }
             }
             return;
         }
-        float sine = MathHelper.sin(world.getTime()*0.05f)*0.2f;
+        float sine = MathHelper.sin(getWorld().getTime()*0.05f)*0.2f;
         Vec3d desiredLocation = thief.getPos().add(0, thief.getStandingEyeHeight() / 4, 0).add(-sine, sine, -sine);
         float distance = (float) squaredDistanceTo(desiredLocation);
         float velocity = MathHelper.lerp(Math.min(moveTime, 20) / 20f, 0.05f, 0.1f);
@@ -102,8 +102,8 @@ public class SoulEntity extends FloatingEntity {
             return;
         }
 
-        boolean above = !world.isSpaceEmpty(getBoundingBox().offset(0, 1.5f, 0));
-        boolean below = !world.isSpaceEmpty(getBoundingBox().offset(0, -2f, 0));
+        boolean above = !getWorld().isSpaceEmpty(getBoundingBox().offset(0, 1.5f, 0));
+        boolean below = !getWorld().isSpaceEmpty(getBoundingBox().offset(0, -2f, 0));
         if (above && below) {
             setVelocity(getVelocity().add(0, 0.002f, 0));
             return;

@@ -3,10 +3,10 @@ package dev.sterner.malum.common.blockentity.spirit_altar;
 import com.sammy.lodestone.systems.sound.LodestoneBlockEntitySoundInstance;
 import dev.sterner.malum.common.registry.MalumSoundRegistry;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.util.random.RandomGenerator;
+import net.minecraft.util.math.random.Random;
 
 public class AltarSoundInstance extends LodestoneBlockEntitySoundInstance<SpiritAltarBlockEntity> {
-    public AltarSoundInstance(SpiritAltarBlockEntity blockEntity, float volume, float pitch, RandomGenerator randomSource) {
+    public AltarSoundInstance(SpiritAltarBlockEntity blockEntity, float volume, float pitch, Random randomSource) {
         super(blockEntity, MalumSoundRegistry.ALTAR_LOOP, volume, pitch, randomSource);
         this.x = blockEntity.getPos().getX() + 0.5f;
         this.y = blockEntity.getPos().getY() + 0.5f;

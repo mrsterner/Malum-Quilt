@@ -1,7 +1,6 @@
 package dev.sterner.malum.common.blockentity.storage;
 
 import com.sammy.lodestone.forge.ItemHandler;
-import com.sammy.lodestone.forge.LazyOptional;
 import com.sammy.lodestone.helpers.BlockHelper;
 import com.sammy.lodestone.setup.LodestoneParticleRegistry;
 import com.sammy.lodestone.systems.blockentity.LodestoneBlockEntity;
@@ -132,14 +131,14 @@ public class SpiritJarBlockEntity extends LodestoneBlockEntity {
 		lastClickUUID = player.getUuid();
 
 		if (count != 0) {
-			if (player.world.isClient) {
+			if (player.getWorld().isClient) {
 				spawnUseParticles(world, pos, type);
 			} else {
 				BlockHelper.updateAndNotifyState(world, pos);
 			}
 		}
 
-		return ActionResult.success(player.world.isClient);
+		return ActionResult.success(player.getWorld().isClient);
 	}
 
 	public int insertHeldItem(PlayerEntity player) {

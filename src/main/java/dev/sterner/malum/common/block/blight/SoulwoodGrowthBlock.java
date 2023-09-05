@@ -15,7 +15,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.random.RandomGenerator;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
@@ -25,7 +25,7 @@ public class SoulwoodGrowthBlock extends MalumSaplingBlock {
 	}
 
 	@Override
-    public void grow(ServerWorld world, RandomGenerator random, BlockPos pos, BlockState state) {
+    public void grow(ServerWorld world, Random random, BlockPos pos, BlockState state) {
         super.grow(world, random, pos, state);
         world.syncWorldEvent(1505, pos, 0);
         world.playSound(null, pos, MalumSoundRegistry.MINOR_BLIGHT_MOTIF, SoundCategory.BLOCKS, 1, 0.9f + world.random.nextFloat() * 0.25f);

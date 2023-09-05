@@ -6,6 +6,7 @@ import dev.sterner.malum.common.blockentity.storage.ItemPedestalBlockEntity;
 import dev.sterner.malum.common.network.packet.s2c.block.blight.BlightTransformItemParticlePacket;
 import dev.sterner.malum.common.recipe.AugmentingRecipe;
 import dev.sterner.malum.common.registry.MalumSoundRegistry;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -18,7 +19,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import org.quiltmc.qsl.networking.api.PlayerLookup;
 
 import java.util.List;
 
@@ -64,7 +64,7 @@ public class AlterationPlinthBlockEntity extends ItemPedestalBlockEntity {
                     if(world instanceof ServerWorld serverWorld){
                         PlayerLookup.tracking(serverWorld, serverWorld.getWorldChunk(getPos()).getPos()).forEach(track -> BlightTransformItemParticlePacket.send(track, List.of(ARCANE_SPIRIT.identifier), pos.x, pos.y, pos.z));
                     }
-					world.playSound(null, new BlockPos(pos), MalumSoundRegistry.ALTERATION_PLINTH_ALTERS, SoundCategory.BLOCKS, 1, 0.9f + world.random.nextFloat() * 0.25f);
+					world.playSound(null, new BlockPos((int)pos.x ,(int)pos.y ,(int)pos.z), MalumSoundRegistry.ALTERATION_PLINTH_ALTERS, SoundCategory.BLOCKS, 1, 0.9f + world.random.nextFloat() * 0.25f);
 
                     world.spawnEntity(pEntity);
                     inventory.setStackInSlot(0, ItemStack.EMPTY);

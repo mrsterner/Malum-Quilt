@@ -20,9 +20,13 @@ import dev.sterner.malum.common.network.packet.s2c.block.functional.AltarConsume
 import dev.sterner.malum.common.network.packet.s2c.block.functional.AltarCraftParticlePacket;
 import dev.sterner.malum.common.network.packet.s2c.entity.*;
 import dev.sterner.malum.common.registry.*;
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.*;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.gui.screen.ingame.HandledScreens;
 import net.minecraft.client.render.RenderLayer;
@@ -33,11 +37,6 @@ import net.minecraft.registry.Registries;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
-import org.quiltmc.loader.api.ModContainer;
-import org.quiltmc.qsl.base.api.entrypoint.client.ClientModInitializer;
-import org.quiltmc.qsl.block.extensions.api.client.BlockRenderLayerMap;
-import org.quiltmc.qsl.networking.api.client.ClientPlayNetworking;
-import org.quiltmc.qsl.resource.loader.api.ResourceLoader;
 
 import java.awt.*;
 
@@ -45,7 +44,7 @@ import static dev.sterner.malum.common.registry.MalumObjects.*;
 
 public class MalumClient implements ClientModInitializer {
 	@Override
-	public void onInitializeClient(ModContainer mod) {
+	public void onInitializeClient() {
 		EntityModelLayerRegistry.registerModelLayer(SoulHunterArmorModel.LAYER, SoulHunterArmorModel::getTexturedModelData);
 		EntityModelLayerRegistry.registerModelLayer(SoulStainedSteelArmorModel.LAYER, SoulStainedSteelArmorModel::getTexturedModelData);
 
@@ -87,7 +86,7 @@ public class MalumClient implements ClientModInitializer {
 		for (Item item : MalumObjects.SCYTHES) {
 			Identifier scytheId = Registries.ITEM.getId(item);
 			ScytheItemRenderer scytheItemRenderer = new ScytheItemRenderer(scytheId);
-			ResourceLoader.get(ResourceType.CLIENT_RESOURCES).registerReloader(scytheItemRenderer);
+			ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(scytheItemRenderer);
 			BuiltinItemRendererRegistry.INSTANCE.register(item, scytheItemRenderer);
 			ModelLoadingRegistry.INSTANCE.registerModelProvider((manager, out) -> {
 				out.accept(new ModelIdentifier(scytheId.withPath(scytheId.getPath() + "_gui"), "inventory"));
@@ -128,7 +127,7 @@ public class MalumClient implements ClientModInitializer {
 
 		HandledScreens.register(MalumScreenHandlerRegistry.SPIRIT_POUCH_SCREEN_HANDLER, SpiritPouchScreen::new);
 
-		BlockRenderLayerMap.put(RenderLayer.getCutout(),
+		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(),
 				RUNEWOOD_SAPLING,
 				RUNEWOOD_DOOR,
 				SOULWOOD_DOOR,

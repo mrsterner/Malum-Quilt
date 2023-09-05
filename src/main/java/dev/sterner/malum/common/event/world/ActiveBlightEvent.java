@@ -7,11 +7,11 @@ import dev.sterner.malum.common.network.packet.s2c.block.blight.BlightMistPartic
 import dev.sterner.malum.common.registry.MalumSoundRegistry;
 import dev.sterner.malum.common.registry.WorldEventTypes;
 import dev.sterner.malum.common.world.gen.feature.SoulwoodTreeFeature;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.quiltmc.qsl.networking.api.PlayerLookup;
 
 import java.util.Map;
 

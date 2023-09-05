@@ -1,13 +1,13 @@
 package dev.sterner.malum.common.block.sapling;
 
-import dev.sterner.malum.common.registry.MalumConfiguredFeatureRegistry;
+import dev.sterner.malum.common.registry.MalumPlacedFeatureRegistry;
 import net.minecraft.block.sapling.SaplingGenerator;
 import net.minecraft.registry.RegistryKey;
-import net.minecraft.util.random.RandomGenerator;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 
 public class RunewoodSaplingGenerator extends SaplingGenerator {
-    protected RegistryKey<ConfiguredFeature<?, ?>> getTreeFeature(RandomGenerator random, boolean bees) {
-        return MalumConfiguredFeatureRegistry.CONFIGURED_FEATURE_KEYS.get(MalumConfiguredFeatureRegistry.CONFIGURED_RUNEWOOD_TREE_FEATURE);
+    protected RegistryKey<ConfiguredFeature<?, ?>> getTreeFeature(Random random, boolean bees) {
+        return MalumPlacedFeatureRegistry.CONFIGURED_RUNEWOOD_TREE_FEATURE_KEY;
     }
 }

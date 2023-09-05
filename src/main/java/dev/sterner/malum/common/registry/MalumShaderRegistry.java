@@ -1,11 +1,11 @@
 package dev.sterner.malum.common.registry;
 
-import com.mojang.blaze3d.vertex.VertexFormats;
 import com.mojang.datafixers.util.Pair;
-import com.sammy.lodestone.systems.rendering.ExtendedShader;
-import com.sammy.lodestone.systems.rendering.ShaderHolder;
+import com.sammy.lodestone.systems.rendering.shader.ExtendedShader;
+import com.sammy.lodestone.systems.rendering.shader.ShaderHolder;
 import dev.sterner.malum.Malum;
-import net.minecraft.client.render.ShaderProgram;
+import net.minecraft.client.gl.ShaderProgram;
+import net.minecraft.client.render.VertexFormats;
 import net.minecraft.resource.ResourceFactory;
 
 import java.io.IOException;

@@ -1,0 +1,52 @@
+{
+	"schemaVersion": 1,
+	"id": "malum",
+	"version": "${version}",
+	"name": "Malum",
+	"description": "A short description of your mod.",
+	"authors": [
+		"Sammy;",
+		"Arathain",
+		"MrSterner"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/malum/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"dev.sterner.malum.Malum"
+		],
+		"client": [
+			"dev.sterner.malum.MalumClient"
+		],
+		"cardinal-components-world": [
+			"dev.sterner.malum.common.component.MalumComponents"
+		],
+		"cardinal-components-entity": [
+			"dev.sterner.malum.common.component.MalumComponents"
+		]
+	},
+	"mixins": [
+		"malum.mixins.json"
+	],
+	"access_widener": "malum.accesswidener",
+	"depends": {
+		"fabricloader": ">=0.14.21",
+		"minecraft": "~1.20.1",
+		"java": ">=17",
+		"fabric-api": "*"
+	},
+	"custom": {
+		"cardinal-components": [
+			"malum:spirit",
+			"malum:player",
+			"malum:touch_of_darkness"
+		]
+	}
+}
+
+

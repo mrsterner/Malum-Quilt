@@ -1,6 +1,5 @@
 package dev.sterner.malum.common.blockentity;
 
-import com.sammy.lodestone.forge.BlockEntityExtensions;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -12,19 +11,16 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-public class MalumBlockEntity extends BlockEntity implements BlockEntityExtensions {
+public class MalumBlockEntity extends BlockEntity {
 	public boolean needsSync;
 	public MalumBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
 	}
 
-	public void onBreak(@Nullable PlayerEntity player) {
-		invalidateCaps();
-	}
 
 	@Override
-	public NbtCompound toSyncedNbt() {
-		NbtCompound tag = super.toSyncedNbt();
+	public NbtCompound toInitialChunkDataNbt() {
+		NbtCompound tag = super.toInitialChunkDataNbt();
 		this.writeNbt(tag);
 		return tag;
 	}
@@ -52,7 +48,7 @@ public class MalumBlockEntity extends BlockEntity implements BlockEntityExtensio
 
 	@Override
 	public BlockEntityUpdateS2CPacket toUpdatePacket() {
-		return BlockEntityUpdateS2CPacket.of(this);
+		return BlockEntityUpdateS2CPacket.create(this);
 	}
 
 	/**

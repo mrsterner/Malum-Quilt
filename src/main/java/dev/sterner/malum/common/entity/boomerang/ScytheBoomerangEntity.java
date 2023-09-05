@@ -19,8 +19,8 @@ import net.minecraft.entity.projectile.thrown.ThrownItemEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.Packet;
 import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
@@ -51,7 +51,7 @@ public class ScytheBoomerangEntity extends ThrownItemEntity {
     public boolean returning;
 
     @Override
-    public boolean hasNetherPortalCooldown() {
+    public boolean hasPortalCooldown() {
         return true;
     }
 
@@ -69,18 +69,18 @@ public class ScytheBoomerangEntity extends ThrownItemEntity {
     @Override
     protected void onEntityHit(EntityHitResult entityHitResult) {
         getActualOwner();
-        if (!world.isClient && (owner == null || owner.isDead())) {
-            ItemEntity entityitem = new ItemEntity(world, getX(), getY() + 0.5, getZ(), scythe);
+        if (!getWorld().isClient && (owner == null || owner.isDead())) {
+            ItemEntity entityitem = new ItemEntity(getWorld(), getX(), getY() + 0.5, getZ(), scythe);
             entityitem.setPickupDelay(40);
             entityitem.setVelocity(entityitem.getVelocity().multiply(0, 1, 0));
-            world.spawnEntity(entityitem);
+			getWorld().spawnEntity(entityitem);
             remove(RemovalReason.DISCARDED);
             return;
         }
 
         DamageSource source = DamageSource.mobProjectile(this, owner);
         Entity entity = entityHitResult.getEntity();
-        if (world.isClient) {
+        if (getWorld().isClient) {
             return;
         }
         if (entity.equals(owner)) {
@@ -88,7 +88,7 @@ public class ScytheBoomerangEntity extends ThrownItemEntity {
         }
         boolean success = !entity.isInvulnerable();
         if (success) {
-            if (!world.isClient) {
+            if (!getWorld().isClient) {
                 if (entity instanceof LivingEntity livingentity) {
                     scythe.damage(1, owner, (e) -> remove(RemovalReason.KILLED));
                     ItemHelper.applyEnchantments(owner, livingentity, scythe);
@@ -100,7 +100,7 @@ public class ScytheBoomerangEntity extends ThrownItemEntity {
                 entity.damage(source, damage);
             }
             returnAge += 4;
-            entity.world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), MalumSoundRegistry.SCYTHE_CUT, entity.getSoundCategory(), 1.0F, 0.9f + entity.world.random.nextFloat() * 0.2f);
+            entity.getWorld().playSound(null, entity.getX(), entity.getY(), entity.getZ(), MalumSoundRegistry.SCYTHE_CUT, entity.getSoundCategory(), 1.0F, 0.9f + entity.getWorld().random.nextFloat() * 0.2f);
         }
         super.onEntityHit(entityHitResult);
     }
@@ -110,15 +110,15 @@ public class ScytheBoomerangEntity extends ThrownItemEntity {
         super.tick();
         age++;
         getActualOwner();
-        if (!world.isClient && (owner == null || owner.isDead())) {
-            ItemEntity entityitem = new ItemEntity(world, getX(), getY() + 0.5, getZ(), scythe);
+        if (!getWorld().isClient && (owner == null || owner.isDead())) {
+            ItemEntity entityitem = new ItemEntity(getWorld(), getX(), getY() + 0.5, getZ(), scythe);
             entityitem.setPickupDelay(40);
             entityitem.setVelocity(entityitem.getVelocity().multiply(0, 1, 0));
-            world.spawnEntity(entityitem);
+			getWorld().spawnEntity(entityitem);
             remove(RemovalReason.DISCARDED);
             return;
         }
-        if (world.isClient && this.scythe != null) {
+        if (getWorld().isClient && this.scythe != null) {
             if (!isInsideWaterOrBubbleColumn()) {
                 if (EnchantmentHelper.getLevel(Enchantments.FIRE_ASPECT, getStack()) > 0) {
                     Vec3d vector = new Vec3d(getParticleX(0.7), getRandomBodyY(), getParticleZ(0.7));
@@ -127,10 +127,10 @@ public class ScytheBoomerangEntity extends ThrownItemEntity {
                         float f1 = random.nextFloat();
 //                        float f2 = random.nextFloat();
                         vector = new Vec3d(Math.cos(this.age) * 0.8f + this.getX(), getBodyY(0.1), Math.sin(this.age) * 0.8f + this.getZ());
-                        world.addParticle(ParticleTypes.FLAME, Math.cos(this.age + f1 * 2 - 1) * 0.8f + this.getX(), vector.y, Math.sin(this.age + f1 * 2 - 1) * 0.8f + this.getZ(), 0, 0, 0);
-                        world.addParticle(ParticleTypes.FLAME, Math.cos(this.age + f1 * 2 - 1) * 0.8f + this.getX(), vector.y, Math.sin(this.age + f1 * 2 - 1) * 0.8f + this.getZ(), 0, 0, 0);
+						getWorld().addParticle(ParticleTypes.FLAME, Math.cos(this.age + f1 * 2 - 1) * 0.8f + this.getX(), vector.y, Math.sin(this.age + f1 * 2 - 1) * 0.8f + this.getZ(), 0, 0, 0);
+						getWorld().addParticle(ParticleTypes.FLAME, Math.cos(this.age + f1 * 2 - 1) * 0.8f + this.getX(), vector.y, Math.sin(this.age + f1 * 2 - 1) * 0.8f + this.getZ(), 0, 0, 0);
                     }
-                    world.addParticle(ParticleTypes.FLAME, vector.x, vector.y, vector.z, 0, 0, 0);
+					getWorld().addParticle(ParticleTypes.FLAME, vector.x, vector.y, vector.z, 0, 0, 0);
                 }
             } else {
                 Vec3d vector = new Vec3d(getParticleX(0.7), getRandomBodyY(), getParticleZ(0.7));
@@ -139,16 +139,16 @@ public class ScytheBoomerangEntity extends ThrownItemEntity {
                     float f1 = random.nextFloat();
 //                    float f2 = random.nextFloat();
                     vector = new Vec3d(Math.cos(this.age) * 0.8f + this.getX(), getBodyY(0.1), Math.sin(this.age) * 0.8f + this.getZ());
-                    world.addParticle(ParticleTypes.BUBBLE, Math.cos(this.age + f1 * 2 - 1) * 0.8f + this.getX(), vector.y, Math.sin(this.age + f1 * 2 - 1) * 0.8f + this.getZ(), 0, 0, 0);
-                    world.addParticle(ParticleTypes.BUBBLE, Math.cos(this.age + f1 * 2 - 1) * 0.8f + this.getX(), vector.y, Math.sin(this.age + f1 * 2 - 1) * 0.8f + this.getZ(), 0, 0, 0);
+					getWorld().addParticle(ParticleTypes.BUBBLE, Math.cos(this.age + f1 * 2 - 1) * 0.8f + this.getX(), vector.y, Math.sin(this.age + f1 * 2 - 1) * 0.8f + this.getZ(), 0, 0, 0);
+					getWorld().addParticle(ParticleTypes.BUBBLE, Math.cos(this.age + f1 * 2 - 1) * 0.8f + this.getX(), vector.y, Math.sin(this.age + f1 * 2 - 1) * 0.8f + this.getZ(), 0, 0, 0);
                 }
-                world.addParticle(ParticleTypes.BUBBLE, vector.x, vector.y, vector.z, 0, 0, 0);
+				getWorld().addParticle(ParticleTypes.BUBBLE, vector.x, vector.y, vector.z, 0, 0, 0);
             }
         }
 
-        if (!world.isClient) {
+        if (!getWorld().isClient) {
             if (age % 3 == 0) {
-                world.playSound(null, getBlockPos(), SoundEvents.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 1, 1.25f);
+				getWorld().playSound(null, getBlockPos(), SoundEvents.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 1, 1.25f);
             }
             if (this.prevPitch == 0.0F && this.prevYaw == 0.0F) {
                 Vec3d vector3d = getVelocity();
@@ -185,7 +185,7 @@ public class ScytheBoomerangEntity extends ThrownItemEntity {
 
     public PlayerEntity getActualOwner() {
         if (owner == null) {
-            if (world instanceof ServerWorld serverWorld) {
+            if (getWorld() instanceof ServerWorld serverWorld) {
                 owner = serverWorld.getEntity(ownerUUID) instanceof PlayerEntity playerEntity ? playerEntity : null;
             }
         }

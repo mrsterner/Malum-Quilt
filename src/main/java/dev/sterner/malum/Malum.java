@@ -7,18 +7,17 @@ import dev.sterner.malum.common.event.MalumTrinketEvents;
 import dev.sterner.malum.common.reaping.ReapingDataReloadListener;
 import dev.sterner.malum.common.registry.*;
 import dev.sterner.malum.common.spirit.SpiritDataReloadListener;
+import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
+import net.fabricmc.fabric.api.event.registry.DynamicRegistrySetupCallback;
+import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.random.RandomGenerator;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
-import org.quiltmc.loader.api.ModContainer;
-import org.quiltmc.qsl.base.api.entrypoint.ModInitializer;
-import org.quiltmc.qsl.registry.api.event.RegistryEvents;
-import org.quiltmc.qsl.resource.loader.api.ResourceLoader;
-import org.quiltmc.qsl.resource.loader.api.reloader.IdentifiableResourceReloader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,12 +30,12 @@ import java.util.Set;
  * Add boat and sign
  */
 public class Malum implements ModInitializer {
-	public static final RandomGenerator RANDOM = RandomGenerator.createLegacy();
+	public static final Random RANDOM = Random.create();
 	public static final Logger LOGGER = LoggerFactory.getLogger("Malum");
 	public static final String MODID = "malum";
 
 	@Override
-	public void onInitialize(ModContainer mod) {
+	public void onInitialize() {
 		MalumObjects.init();
 		MalumSpiritTypeRegistry.init();
 
@@ -66,29 +65,27 @@ public class Malum implements ModInitializer {
 		MalumPlacedFeatureRegistry.init();
 
 		UseItemCallback.EVENT.register(ReboundEnchantment::onRightClickItem);
-		ResourceLoader.get(ResourceType.SERVER_DATA).registerReloader(new SpiritDataReloadListenerFabricImpl());
-		ResourceLoader.get(ResourceType.SERVER_DATA).registerReloader(new ReapingDataReloadListenerFabricImpl());
+		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new SpiritDataReloadListenerFabricImpl());
+		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new ReapingDataReloadListenerFabricImpl());
 
-		RegistryEvents.DYNAMIC_REGISTRY_SETUP.register((ctx) -> {
-			ctx.withRegistries(registries -> {
-				Registry<ConfiguredFeature<?, ?>> configured = registries.get(RegistryKeys.CONFIGURED_FEATURE);
-				MalumConfiguredFeatureRegistry.init(configured);
-				MalumPlacedFeatureRegistry.init(configured, registries);
+		DynamicRegistrySetupCallback.EVENT.register((registryView) -> {
+			registryView.getOptional(RegistryKeys.CONFIGURED_FEATURE).ifPresent(configuredFeatures -> {
+				MalumPlacedFeatureRegistry.init(registryView, configuredFeatures);
 			}, Set.of(RegistryKeys.PLACED_FEATURE, RegistryKeys.CONFIGURED_FEATURE));
 		});
 	}
 
 
-	public static class SpiritDataReloadListenerFabricImpl extends SpiritDataReloadListener implements IdentifiableResourceReloader {
+	public static class SpiritDataReloadListenerFabricImpl extends SpiritDataReloadListener implements IdentifiableResourceReloadListener {
 		@Override
-		public Identifier getQuiltId() {
+		public Identifier getFabricId() {
 			return new Identifier(MODID, "spirit_data");
 		}
 	}
 
-	public static class ReapingDataReloadListenerFabricImpl extends ReapingDataReloadListener implements IdentifiableResourceReloader {
+	public static class ReapingDataReloadListenerFabricImpl extends ReapingDataReloadListener implements IdentifiableResourceReloadListener {
 		@Override
-		public Identifier getQuiltId() {
+		public Identifier getFabricId() {
 			return new Identifier(MODID, "reaping_data");
 		}
 	}

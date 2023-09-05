@@ -12,8 +12,8 @@ import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.Packet;
 import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -102,7 +102,7 @@ public class FloatingEntity extends Entity {
         if (age > maxAge) {
             remove(RemovalReason.KILLED);
         }
-        if (world.isClient) {
+        if (getWorld().isClient) {
             double x = getX(), y = getY() + getYOffset(0) + 0.25f, z = getZ();
             spawnParticles(x, y, z);
         } else {
@@ -129,16 +129,16 @@ public class FloatingEntity extends Entity {
 
 
     public void baseTick() {
-        BlockHitResult result = world.raycast(new RaycastContext(getPos(), getPos().add(getVelocity()), RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, this));
+        BlockHitResult result = getWorld().raycast(new RaycastContext(getPos(), getPos().add(getVelocity()), RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, this));
         if (result.getType() == HitResult.Type.BLOCK) {
             BlockPos blockpos = result.getBlockPos();
-            BlockState blockstate = this.world.getBlockState(blockpos);
+            BlockState blockstate = this.getWorld().getBlockState(blockpos);
             if (blockstate.isOf(Blocks.NETHER_PORTAL)) {
                 this.setInNetherPortal(blockpos);
             } else if (blockstate.isOf(Blocks.END_GATEWAY)) {
-                BlockEntity blockentity = this.world.getBlockEntity(blockpos);
+                BlockEntity blockentity = this.getWorld().getBlockEntity(blockpos);
                 if (blockentity instanceof EndGatewayBlockEntity && EndGatewayBlockEntity.canTeleport(this)) {
-                    EndGatewayBlockEntity.tryTeleportingEntity(this.world, blockpos, blockstate, this, (EndGatewayBlockEntity) blockentity);
+                    EndGatewayBlockEntity.tryTeleportingEntity(this.getWorld(), blockpos, blockstate, this, (EndGatewayBlockEntity) blockentity);
                 }
             }
         }

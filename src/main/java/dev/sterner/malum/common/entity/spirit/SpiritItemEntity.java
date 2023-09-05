@@ -47,8 +47,8 @@ public class SpiritItemEntity extends FloatingItemEntity {
     }
 
     public void updateOwner() {
-        if (!world.isClient) {
-            owner = (LivingEntity) ((ServerWorld) world).getEntity(ownerUuid);
+        if (!getWorld().isClient) {
+            owner = (LivingEntity) ((ServerWorld) getWorld()).getEntity(ownerUuid);
             if (owner != null)
             {
                 range = (int) owner.getAttributeValue(MalumAttributeRegistry.SPIRIT_REACH);
@@ -66,7 +66,7 @@ public class SpiritItemEntity extends FloatingItemEntity {
 			double lerpX = MathHelper.lerp(i / cycles, x - motion.x, x);
 			double lerpY = MathHelper.lerp(i / cycles, y - motion.y, y);
 			double lerpZ = MathHelper.lerp(i / cycles, z - motion.z, z);
-			CommonParticleEffects.spawnSpiritParticles(world, lerpX, lerpY, lerpZ, 0.55f + extraAlpha, norm, color, endColor);
+			CommonParticleEffects.spawnSpiritParticles(getWorld(), lerpX, lerpY, lerpZ, 0.55f + extraAlpha, norm, color, endColor);
 		}
     }
 
@@ -75,8 +75,8 @@ public class SpiritItemEntity extends FloatingItemEntity {
         float friction = 0.94f;
         setVelocity(getVelocity().multiply(friction, friction, friction));
         if (owner == null || !owner.isAlive()) {
-            if (world.getTime() % 40L == 0) {
-                PlayerEntity playerEntity = world.getClosestPlayer(this, 10);
+            if (getWorld().getTime() % 40L == 0) {
+                PlayerEntity playerEntity = getWorld().getClosestPlayer(this, 10);
                 if (playerEntity != null) {
                     setOwner(playerEntity.getUuid());
                 }

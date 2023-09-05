@@ -17,7 +17,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.MathHelper;
-import org.quiltmc.qsl.entity.event.api.LivingEntityDeathCallback;
 
 public class MalumEvents {
 	public static void init(){
@@ -31,7 +30,6 @@ public class MalumEvents {
 			boolean canSweep = !TrinketsHelper.hasTrinket(attacker, MalumObjects.NECKLACE_OF_THE_NARROW_EDGE) && !TrinketsHelper.hasTrinket(attacker, MalumObjects.NECKLACE_OF_THE_HIDDEN_BLADE);
 			if (attacker instanceof PlayerEntity player) {
 				SoundEvent sound;
-				System.out.println(canSweep);
 				if (canSweep) {
 					MalumScytheItem.spawnSweepParticles(player, MalumParticleRegistry.SCYTHE_SWEEP_ATTACK_PARTICLE);
 					sound = SoundEvents.ENTITY_PLAYER_ATTACK_SWEEP;
@@ -39,7 +37,7 @@ public class MalumEvents {
 					MalumScytheItem.spawnSweepParticles(player, MalumParticleRegistry.SCYTHE_CUT_ATTACK_PARTICLE);
 					sound = MalumSoundRegistry.SCYTHE_CUT;
 				}
-				attacker.world.playSound(null, target.getX(), target.getY(), target.getZ(), sound, attacker.getSoundCategory(), 1, 1);
+				attacker.getWorld().playSound(null, target.getX(), target.getY(), target.getZ(), sound, attacker.getSoundCategory(), 1, 1);
 			}
 
 			if (!canSweep || damageSource.isMagic() || damageSource.getName().equals(MalumDamageSourceRegistry.SCYTHE_SWEEP_IDENTIFIER)) {
@@ -47,7 +45,7 @@ public class MalumEvents {
 			}
 			int world = EnchantmentHelper.getEquipmentLevel(Enchantments.SWEEPING, attacker);
 			float damage = v * (0.5f + EnchantmentHelper.getSweepingMultiplier(attacker));
-			target.world.getOtherEntities(attacker, target.getBoundingBox().expand(1 + world * 0.25f)).forEach(e -> {
+			target.getWorld().getOtherEntities(attacker, target.getBoundingBox().expand(1 + world * 0.25f)).forEach(e -> {
 				if (e instanceof LivingEntity livingEntity) {
 					if (livingEntity.isAlive()) {
 						livingEntity.damage(MalumDamageSourceRegistry.scytheSweepDamage(attacker), damage);

@@ -48,7 +48,7 @@ public class EtherBrazierBlock<T extends EtherBlockEntity> extends EtherBlock<T>
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         FluidState fluidState = ctx.getWorld().getFluidState(ctx.getBlockPos());
-        Direction.Axis axis = ctx.getPlayerFacing().getAxis();
+        Direction.Axis axis = ctx.getHorizontalPlayerFacing().getAxis();
 
         for(Direction direction : ctx.getPlacementDirections()) {
             if (direction.getAxis() == Direction.Axis.Y) {

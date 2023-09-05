@@ -60,7 +60,7 @@ public abstract class AbstractNitrateEntity extends ThrownEntity {
     @Override
     protected void onCollision(HitResult hitResult) {
         super.onCollision(hitResult);
-        EthericExplosion.explode(world, this, getX(), getBodyY(0.0625D), getZ(), getExplosionRadius(), Explosion.DestructionType.DESTROY);
+        EthericExplosion.explode(getWorld(), this, getX(), getBodyY(0.0625D), getZ(), getExplosionRadius(), Explosion.DestructionType.DESTROY);
         onExplode();
         if (pierce <= 0) {
             discard();
@@ -85,7 +85,7 @@ public abstract class AbstractNitrateEntity extends ThrownEntity {
         if (windUp < 1f) {
             windUp += 0.1f;
         }
-        if (world.isClient) {
+        if (getWorld().isClient) {
             spawnParticles();
         }
     }

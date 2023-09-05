@@ -13,13 +13,13 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.random.RandomGenerator;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 
 import java.awt.*;
 
 public class MalumLeavesBlock extends LeavesBlock {
-    public static final RandomGenerator RANDOM = RandomGenerator.createLegacy();
+    public static final Random RANDOM = Random.create();
     public static final IntProperty COLOR = IntProperty.of("color", 0, 4);
     public final Color maxColor;
     public final Color minColor;

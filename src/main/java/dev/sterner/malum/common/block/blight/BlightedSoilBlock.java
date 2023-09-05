@@ -5,6 +5,7 @@ import dev.sterner.malum.common.item.spirit.MalumSpiritItem;
 import dev.sterner.malum.common.network.packet.s2c.block.blight.BlightMistParticlePacket;
 import dev.sterner.malum.common.registry.MalumSoundRegistry;
 import dev.sterner.malum.common.world.gen.feature.SoulwoodTreeFeature;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Fertilizable;
@@ -19,13 +20,12 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.random.RandomGenerator;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
-import org.quiltmc.qsl.networking.api.PlayerLookup;
 
 public class BlightedSoilBlock extends Block implements Fertilizable {
     protected static final VoxelShape SHAPE = Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 14.0D, 16.0D);
@@ -71,19 +71,20 @@ public class BlightedSoilBlock extends Block implements Fertilizable {
         return true;
     }
 
-    @Override
-    public boolean canGrow(World world, RandomGenerator random, BlockPos pos, BlockState state) {
-        return true;
-    }
+	@Override
+	public boolean canGrow(World world, Random random, BlockPos pos, BlockState state) {
+		return true;
+	}
 
-    @Override
-    public void grow(ServerWorld world, RandomGenerator random, BlockPos pos, BlockState state) {
-        world.playSound(null, pos, MalumSoundRegistry.MAJOR_BLIGHT_MOTIF, SoundCategory.BLOCKS, 0.8f, 0.8f);
-        world.playSound(null, pos, SoundEvents.ITEM_BONE_MEAL_USE, SoundCategory.BLOCKS, 1.2f, 0.8f);
-        LodestoneBlockFiller filler = new LodestoneBlockFiller(false);
-        SoulwoodTreeFeature.generateBlight(world, filler, pos, 4);
+	@Override
+	public void grow(ServerWorld world, Random random, BlockPos pos, BlockState state) {
+		world.playSound(null, pos, MalumSoundRegistry.MAJOR_BLIGHT_MOTIF, SoundCategory.BLOCKS, 0.8f, 0.8f);
+		world.playSound(null, pos, SoundEvents.ITEM_BONE_MEAL_USE, SoundCategory.BLOCKS, 1.2f, 0.8f);
+		LodestoneBlockFiller filler = new LodestoneBlockFiller(false);
+		SoulwoodTreeFeature.generateBlight(world, filler, pos, 4);
 
-        filler.getEntries().entrySet().stream().filter(e -> e.getValue().getState().getBlock() instanceof BlightedSoilBlock)
-            .forEach(p -> PlayerLookup.tracking(world, world.getWorldChunk(pos).getPos()).forEach(track -> BlightMistParticlePacket.send(track, pos)));
-    }
+		filler.getEntries().entrySet().stream().filter(e -> e.getValue().getState().getBlock() instanceof BlightedSoilBlock)
+			.forEach(p -> PlayerLookup.tracking(world, world.getWorldChunk(pos).getPos()).forEach(track -> BlightMistParticlePacket.send(track, pos)));
+	}
+
 }
