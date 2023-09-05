@@ -22,6 +22,7 @@ import java.awt.*;
 
 import static net.minecraft.util.math.MathHelper.nextFloat;
 
+//TODO update
 public class EthericNitrateEntity extends AbstractNitrateEntity{
     public static final Color FIRST_COLOR = MalumSpiritTypeRegistry.INFERNAL_SPIRIT.getColor();
     public static final Color SECOND_COLOR = new Color(178, 28, 73);

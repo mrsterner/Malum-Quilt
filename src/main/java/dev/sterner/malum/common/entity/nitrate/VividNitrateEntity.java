@@ -27,6 +27,7 @@ import java.util.function.Function;
 
 import static net.minecraft.util.math.MathHelper.nextFloat;
 
+//TODO update
 public class VividNitrateEntity extends AbstractNitrateEntity {
 
     public static final List<Color> COLORS = new ArrayList<>(List.of(

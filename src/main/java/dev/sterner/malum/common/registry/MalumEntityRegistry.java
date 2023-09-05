@@ -1,6 +1,7 @@
 package dev.sterner.malum.common.registry;
 
 import dev.sterner.malum.Malum;
+import dev.sterner.malum.common.entity.night_terror.NightTerrorSeekerEntity;
 import dev.sterner.malum.common.entity.spirit.SpiritItemEntity;
 import dev.sterner.malum.common.entity.boomerang.ScytheBoomerangEntity;
 import dev.sterner.malum.common.entity.nitrate.EthericNitrateEntity;
@@ -42,6 +43,11 @@ public interface MalumEntityRegistry {
 
 	EntityType<SoulEntity> NATURAL_SOUL = register("natural_soul", EntityType.Builder.<SoulEntity>create((e, w)->new SoulEntity(w), SpawnGroup.MISC)
 		.setDimensions(1.5F, 1.5F)
+		.maxTrackingRange(10)
+		.build(Malum.id("natural_soul").toString()));
+
+	EntityType<NightTerrorSeekerEntity> NIGHT_TERROR = register("night_terror", EntityType.Builder.<NightTerrorSeekerEntity>create((e, w)->new NightTerrorSeekerEntity(w), SpawnGroup.MISC)
+		.setDimensions(2F, 2F)
 		.maxTrackingRange(10)
 		.build(Malum.id("natural_soul").toString()));
 

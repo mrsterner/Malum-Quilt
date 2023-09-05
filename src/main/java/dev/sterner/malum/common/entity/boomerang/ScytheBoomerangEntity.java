@@ -37,6 +37,7 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.random.RandomGenerator;
 
+//TODO update
 public class ScytheBoomerangEntity extends ThrownItemEntity {
     public static final TrackedData<ItemStack> SCYTHE = DataTracker.registerData(ScytheBoomerangEntity.class, TrackedDataHandlerRegistry.ITEM_STACK);
 

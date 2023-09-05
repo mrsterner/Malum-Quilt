@@ -214,6 +214,7 @@ public interface MalumObjects {
 	Item VIVID_NITRATE = register("vivid_nitrate", new VividNitrateItem(settings()));
 
 	Item TYRVING = register("tyrving", new TyrvingItem(ItemTiers.ItemTierEnum.TYRVING, 0, -0.3f, settings()));
+	Item NIGHT_TERROR = ITEMS.register("night_terror", () -> new NightTerrorScytheItem(VOID, -8f, -0.1f, 8, GEAR_PROPERTIES()));
 
 	Item GILDED_RING = register("gilded_ring", new CurioGildedRing(settings()));
 	Item GILDED_BELT = register("gilded_belt", new CurioGildedBelt(settings()));
