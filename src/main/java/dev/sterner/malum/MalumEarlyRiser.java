@@ -4,10 +4,10 @@ import com.chocohead.mm.api.ClassTinkerers;
 import com.llamalad7.mixinextras.MixinExtrasBootstrap;
 import com.mojang.logging.LogUtils;
 import dev.sterner.malum.common.util.ModdedErrStream;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.MappingResolver;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.sound.SoundEvents;
-import org.quiltmc.loader.api.MappingResolver;
-import org.quiltmc.loader.api.QuiltLoader;
 
 import java.util.function.Supplier;
 
@@ -19,7 +19,7 @@ public final class MalumEarlyRiser implements Runnable {
 	public void run() {
 		MixinExtrasBootstrap.init();
 
-		final MappingResolver mappings = QuiltLoader.getMappingResolver();
+		final MappingResolver mappings = FabricLoader.getInstance().getMappingResolver();
 		final String enchantmentTarget = mappings.mapClassName("intermediary", "net.minecraft.class_1886");
 		final String toolMaterialsTarget = mappings.mapClassName("intermediary", "net.minecraft.class_1834");
 		final String armorMaterialsTarget = mappings.mapClassName("intermediary", "net.minecraft.class_1740");

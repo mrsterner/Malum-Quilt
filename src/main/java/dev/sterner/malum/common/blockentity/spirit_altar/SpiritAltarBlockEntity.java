@@ -12,7 +12,7 @@ import com.sammy.lodestone.systems.particle.data.ColorParticleData;
 import com.sammy.lodestone.systems.particle.data.GenericParticleData;
 import com.sammy.lodestone.systems.particle.data.SpinParticleData;
 import com.sammy.lodestone.systems.recipe.IngredientWithCount;
-import dev.sterner.malum.client.CommonParticleEffects;
+import dev.sterner.malum.client.ParticleEffects;
 import dev.sterner.malum.common.item.spirit.MalumSpiritItem;
 import dev.sterner.malum.common.network.packet.s2c.block.functional.AltarConsumeParticlePacket;
 import dev.sterner.malum.common.network.packet.s2c.block.functional.AltarCraftParticlePacket;
@@ -399,7 +399,7 @@ public class SpiritAltarBlockEntity extends LodestoneBlockEntity {
                 double x = getPos().getX() + offset.getX();
                 double y = getPos().getY() + offset.getY();
                 double z = getPos().getZ() + offset.getZ();
-				CommonParticleEffects.spawnSpiritGlimmerParticles(world, x, y, z, color, endColor);
+				ParticleEffects.spawnSpiritGlimmerParticles(world, x, y, z, color, endColor);
                 if (recipe != null) {
                     Vec3d velocity = new Vec3d(x, y, z).subtract(itemPos).normalize().multiply(particleVelocityMultiplier);
                     float alpha = 0.07f / spiritInventory.nonEmptyItemAmount;

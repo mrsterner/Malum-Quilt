@@ -90,6 +90,7 @@ dependencies {
 	modImplementation("com.jamieswhiteshirt:reach-entity-attributes:${project.reach}")
 
 	include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-fabric:0.2.0-rc.2")))
+	modImplementation include("io.github.fabricators_of_create.Porting-Lib:core:2.1.1127+1.20")
 }
 
 processResources {

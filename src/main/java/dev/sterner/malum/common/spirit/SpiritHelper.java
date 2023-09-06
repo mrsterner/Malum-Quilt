@@ -19,7 +19,7 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.random.RandomGenerator;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -69,7 +69,7 @@ public final class SpiritHelper {
 				}
 			});
 		} else {
-			createSpiritEntities(spirits, spirits.stream().mapToInt(ItemStack::getCount).sum(), target.world, target.getPos().add(0, target.getStandingEyeHeight() / 2f, 0), attacker);
+			createSpiritEntities(spirits, spirits.stream().mapToInt(ItemStack::getCount).sum(), target.getWorld(), target.getPos().add(0, target.getStandingEyeHeight() / 2f, 0), attacker);
 		}
 	}
 
@@ -81,7 +81,7 @@ public final class SpiritHelper {
 		if (spirits.isEmpty()) {
 			return;
 		}
-		createSpiritEntities(spirits, spirits.stream().mapToInt(ItemStack::getCount).sum(), target.world, target.getPos().add(0, target.getStandingEyeHeight() / 2f, 0), speedMultiplier, attacker);
+		createSpiritEntities(spirits, spirits.stream().mapToInt(ItemStack::getCount).sum(), target.getWorld(), target.getPos().add(0, target.getStandingEyeHeight() / 2f, 0), speedMultiplier, attacker);
 	}
 
 	public static void createSpiritEntities(MalumEntitySpiritData data, World World, Vec3d position, LivingEntity attacker) {
@@ -97,7 +97,7 @@ public final class SpiritHelper {
 			attacker = World.getClosestPlayer(position.x, position.y, position.z, 8, e -> true);
 		}
 		float speed = (0.15f + 0.25f / (totalCount + 1)) * speedMultiplier;
-		RandomGenerator random = World.random;
+		Random random = World.random;
 		for (ItemStack stack : spirits) {
 			int count = stack.getCount();
 			if (count == 0) {
@@ -191,7 +191,7 @@ public final class SpiritHelper {
 
 		}
 		for (int i = 0; i < spiritBonus * spoilsMultiplier; i++) {
-			int random = attacker.world.random.nextInt(spirits.size());
+			int random = attacker.getWorld().random.nextInt(spirits.size());
 			spirits.get(random).increment(1);
 		}
 		return spirits;

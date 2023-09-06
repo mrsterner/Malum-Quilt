@@ -1,11 +1,11 @@
 package dev.sterner.malum.common.network.packet.s2c.block.functional;
 
 import io.netty.buffer.Unpooled;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
-import org.quiltmc.qsl.networking.api.PacketSender;
 
 import java.util.List;
 

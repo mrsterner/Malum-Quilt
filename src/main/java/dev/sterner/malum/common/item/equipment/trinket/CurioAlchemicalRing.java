@@ -10,7 +10,7 @@ import dev.sterner.malum.common.registry.MalumStatusEffectRegistry;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffectType;
+import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 
@@ -33,7 +33,7 @@ public class CurioAlchemicalRing extends TrinketItem implements SpiritCollectAct
                     if (type.isBeneficial()) {
                         EntityHelper.extendEffect(statusEffectInstance, livingEntity, (int) (statusEffectInstance.getDuration()*0.25f*multiplier));
                     }
-                    else if (type.getType() == StatusEffectType.HARMFUL) {
+                    else if (type.getType() == StatusEffectCategory.HARMFUL) {
                         EntityHelper.shortenEffect(statusEffectInstance, livingEntity, (int) (statusEffectInstance.getDuration()*0.33f*multiplier));
                     }
                 });
@@ -50,7 +50,7 @@ public class CurioAlchemicalRing extends TrinketItem implements SpiritCollectAct
                 int base = 40 +(int)(arcaneResonance*20);
                 EntityHelper.extendEffect(statusEffectInstance, livingEntity, (int) (base*multiplier), 1200);
             }
-            else if (statusEffect.getType().equals(StatusEffectType.HARMFUL)) {
+            else if (statusEffect.getType().equals(StatusEffectCategory.HARMFUL)) {
                 int base = 60 +(int)(arcaneResonance*30);
                 EntityHelper.shortenEffect(statusEffectInstance, livingEntity, (int) (base*multiplier));
             }

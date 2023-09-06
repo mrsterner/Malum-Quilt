@@ -3,7 +3,7 @@ package dev.sterner.malum.common.blockentity.storage;
 import com.sammy.lodestone.helpers.BlockHelper;
 import com.sammy.lodestone.systems.blockentity.ItemHolderBlockEntity;
 import com.sammy.lodestone.systems.blockentity.LodestoneBlockEntityInventory;
-import dev.sterner.malum.client.CommonParticleEffects;
+import dev.sterner.malum.client.ParticleEffects;
 import dev.sterner.malum.common.blockentity.spirit_altar.IAltarProvider;
 import dev.sterner.malum.common.item.spirit.MalumSpiritItem;
 import dev.sterner.malum.common.recipe.AugmentingRecipe;
@@ -70,7 +70,7 @@ public class ItemPedestalBlockEntity extends ItemHolderBlockEntity implements IA
                 double x = pos.x;
                 double y = pos.y + Math.sin((world.getTime() ) / 20f) * 0.1f;
                 double z = pos.z;
-                CommonParticleEffects.spawnSpiritGlimmerParticles(world, x, y, z, item.type.getColor(), item.type.getEndColor());
+                ParticleEffects.spawnSpiritGlimmerParticles(world, x, y, z, item.type.getColor(), item.type.getEndColor());
             }
         }
     }

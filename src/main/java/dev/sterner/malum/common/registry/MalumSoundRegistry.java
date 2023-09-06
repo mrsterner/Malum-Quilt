@@ -14,6 +14,19 @@ import java.util.Map;
 public interface MalumSoundRegistry {
 	Map<Identifier, SoundEvent> SOUND_EVENTS = new LinkedHashMap<>();
 
+	SoundEvent ARCANA_CODEX_OPEN = register(("arcana_codex_opened"));
+	SoundEvent ARCANA_CODEX_CLOSE = register(("arcana_codex_closed"));
+	SoundEvent ARCANA_ENTRY_OPEN = register(("arcana_entry_opened"));
+	SoundEvent ARCANA_ENTRY_CLOSE = register(("arcana_entry_closed"));
+	SoundEvent ARCANA_PAGE_FLIP = register(("arcana_page_flipped"));
+	SoundEvent ARCANA_SWEETENER_NORMAL = register(("arcana_sweetener_normal"));
+	SoundEvent ARCANA_SWEETENER_EVIL = register(("arcana_sweetener_evil"));
+	SoundEvent ARCANA_TRANSITION_NORMAL = register(("arcana_transition_normal"));
+	SoundEvent ARCANA_TRANSITION_EVIL = register(("arcana_transition_evil"));
+
+	SoundEvent ARCANE_WHISPERS = register(("arcane_whispers"));
+	SoundEvent SPIRIT_PICKUP = register(("spirit_picked_up"));
+
 	SoundEvent SOULSTONE_BREAK = register("soulstone_break");
 	SoundEvent SOULSTONE_PLACE = register("soulstone_place");
 	SoundEvent SOULSTONE_STEP = register("soulstone_step");

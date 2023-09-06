@@ -2,9 +2,9 @@ package dev.sterner.malum.client.screen.codex;
 
 import dev.sterner.malum.client.screen.codex.objects.EntryObject;
 import dev.sterner.malum.client.screen.codex.page.BookPage;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import org.quiltmc.loader.api.QuiltLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,11 +60,12 @@ public class BookEntry {
 	}
 
 	public BookEntry addModCompatPage(BookPage page, String modId) {
-		if (QuiltLoader.isModLoaded(modId)) {
+		if (FabricLoader.getInstance().isModLoaded(modId)) {
 			pages.add(page);
 		}
 		return this;
 	}
+
 	public BookEntry setObjectSupplier(EntryObjectSupplier objectSupplier)
 	{
 		this.objectSupplier = objectSupplier;

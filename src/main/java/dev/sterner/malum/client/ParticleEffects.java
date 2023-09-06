@@ -23,7 +23,7 @@ import java.util.HashMap;
 
 import static net.minecraft.util.math.MathHelper.nextFloat;
 
-public class CommonParticleEffects {
+public class ParticleEffects {
 	public static void spawnSpiritGlimmerParticles(World level, double x, double y, double z, Color color, Color endColor) {
 		spawnSpiritGlimmerParticles(level, x, y, z, 1, Vec3d.ZERO, color, endColor);
 	}

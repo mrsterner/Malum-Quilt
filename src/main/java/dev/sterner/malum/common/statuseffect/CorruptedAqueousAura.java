@@ -4,11 +4,11 @@ import com.sammy.lodestone.helpers.ColorHelper;
 import dev.sterner.malum.common.registry.MalumSpiritTypeRegistry;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.entity.effect.StatusEffectType;
+import net.minecraft.entity.effect.StatusEffectCategory;
 
 public class CorruptedAqueousAura extends StatusEffect {
     public CorruptedAqueousAura() {
-        super(StatusEffectType.BENEFICIAL, ColorHelper.getColor(MalumSpiritTypeRegistry.AQUEOUS_SPIRIT.getColor()));
+        super(StatusEffectCategory.BENEFICIAL, ColorHelper.getColor(MalumSpiritTypeRegistry.AQUEOUS_SPIRIT.getColor()));
     }
 
     @Override

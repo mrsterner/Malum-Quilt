@@ -9,7 +9,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffectType;
+import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -22,7 +22,7 @@ import static dev.sterner.malum.common.registry.MalumTagRegistry.GROSS_FOODS;
 
 public class GluttonyEffect extends StatusEffect {
     public GluttonyEffect() {
-        super(StatusEffectType.BENEFICIAL, ColorHelper.getColor(88, 86, 60));
+        super(StatusEffectCategory.BENEFICIAL, ColorHelper.getColor(88, 86, 60));
         addAttributeModifier(LodestoneAttributeRegistry.MAGIC_PROFICIENCY, "4d82fd0a-24b6-45f5-8d7a-983f99fd6783", 2f, EntityAttributeModifier.Operation.ADDITION);
     }
 

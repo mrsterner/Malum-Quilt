@@ -9,16 +9,15 @@ import dev.sterner.malum.common.registry.MalumStatusEffectRegistry;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.damage.EntityDamageSource;
 import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.entity.effect.StatusEffectType;
+import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.world.World;
 
 public class WickedIntentEffect extends StatusEffect {
     public WickedIntentEffect() {
-        super(StatusEffectType.BENEFICIAL, ColorHelper.getColor(88, 86, 60));
+        super(StatusEffectCategory.BENEFICIAL, ColorHelper.getColor(88, 86, 60));
         addAttributeModifier(MalumAttributeRegistry.SCYTHE_PROFICIENCY, "0cd21cec-758c-456b-9955-06713e732303", 8f, EntityAttributeModifier.Operation.ADDITION);
     }
 

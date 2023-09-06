@@ -1,13 +1,37 @@
 package dev.sterner.malum.common.entity.night_terror;
 
 import com.sammy.lodestone.helpers.EntityHelper;
+import com.sammy.lodestone.setup.LodestoneParticleRegistry;
+import com.sammy.lodestone.systems.easing.Easing;
+import com.sammy.lodestone.systems.particle.WorldParticleBuilder;
+import com.sammy.lodestone.systems.particle.data.ColorParticleData;
+import com.sammy.lodestone.systems.particle.data.GenericParticleData;
+import com.sammy.lodestone.systems.particle.data.SpinParticleData;
+import com.sammy.lodestone.systems.particle.world.LodestoneWorldParticleTextureSheet;
+import dev.sterner.malum.client.ParticleEffects;
 import dev.sterner.malum.common.registry.MalumEntityRegistry;
+import dev.sterner.malum.common.registry.MalumSoundRegistry;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.projectile.thrown.SnowballEntity;
 import net.minecraft.entity.projectile.thrown.ThrownEntity;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.EntityHitResult;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.List;
+
+import static net.minecraft.util.math.MathHelper.nextFloat;
 
 public class NightTerrorSeekerEntity extends ThrownEntity {
 	public static final Color NIGHT_TERROR_DARK = new Color(37, 25, 56);
@@ -21,16 +45,16 @@ public class NightTerrorSeekerEntity extends ThrownEntity {
 
 	public NightTerrorSeekerEntity(World level) {
 		super(MalumEntityRegistry.NIGHT_TERROR, level);
-		noPhysics = false;
-		fadeoutStart = Mth.nextInt(level.random, 4, 8);
-		fadeoutDuration = Mth.nextInt(level.random, 18, 24);
+		noClip = false;
+		fadeoutStart = MathHelper.nextInt(level.random, 4, 8);
+		fadeoutDuration = MathHelper.nextInt(level.random, 18, 24);
 	}
 
 	public NightTerrorSeekerEntity(World level, double pX, double pY, double pZ) {
 		super(MalumEntityRegistry.NIGHT_TERROR, pX, pY, pZ, level);
-		noPhysics = false;
-		fadeoutStart = Mth.nextInt(level.random, 6, 10);
-		fadeoutDuration = Mth.nextInt(level.random, 18, 24);
+		noClip = false;
+		fadeoutStart = MathHelper.nextInt(level.random, 6, 10);
+		fadeoutDuration = MathHelper.nextInt(level.random, 18, 24);
 	}
 
 	public void setData(Entity owner, float magicDamage) {
@@ -39,8 +63,8 @@ public class NightTerrorSeekerEntity extends ThrownEntity {
 	}
 
 	@Override
-	public void addAdditionalSaveData(CompoundTag compound) {
-		super.addAdditionalSaveData(compound);
+	public void writeCustomDataToNbt(NbtCompound compound) {
+		super.writeCustomDataToNbt(compound);
 		if (magicDamage != 0) {
 			compound.putFloat("magicDamage", magicDamage);
 		}
@@ -56,62 +80,62 @@ public class NightTerrorSeekerEntity extends ThrownEntity {
 	}
 
 	@Override
-	public void readAdditionalSaveData(CompoundTag compound) {
-		super.readAdditionalSaveData(compound);
+	public void readCustomDataFromNbt(NbtCompound compound) {
+		super.readCustomDataFromNbt(compound);
 		magicDamage = compound.getFloat("magicDamage");
 		age = compound.getInt("age");
 //        fadeoutStart = compound.getInt("fadeoutStart");
 //        fadeoutDuration = compound.getInt("fadeoutDuration");
-		setDeltaMovement(0, 0.4f, 0);
+		setVelocity(0, 0.4f, 0);
 	}
 
 	@Override
-	protected void onHitBlock(BlockHitResult result) {
-		super.onHitBlock(result);
+	protected void onBlockHit(BlockHitResult result) {
+		super.onBlockHit(result);
 		if (age < fadeoutStart) {
 			age = fadeoutStart;
 		}
 	}
 
 	@Override
-	protected boolean canHitEntity(Entity pTarget) {
+	protected boolean canHit(Entity pTarget) {
 		return !pTarget.equals(getOwner());
 	}
 
 	@Override
-	protected void onHitEntity(EntityHitResult result) {
+	protected void onEntityHit(EntityHitResult result) {
 		if (getOwner() instanceof LivingEntity scytheOwner) {
 			Entity target = result.getEntity();
-			if (level.isClientSide) {
+			if (getWorld().isClient()) {
 				return;
 			}
 			DamageSource source = DamageSourceRegistry.causeVoodooDamage(scytheOwner);
-			target.hurt(source, magicDamage);
+			target.damage(source, magicDamage);
 			if (age < fadeoutStart) {
 				fadeoutStart += 4;
 			}
-			target.level.playSound(null, target.getX(), target.getY(), target.getZ(), SoundRegistry.SCYTHE_CUT.get(), target.getSoundSource(), 1.0F, 0.9f + target.level.random.nextFloat() * 0.2f);
+			target.getWorld().playSound(null, target.getX(), target.getY(), target.getZ(), MalumSoundRegistry.SCYTHE_CUT, target.getSoundCategory(), 1.0F, 0.9f + target.level.random.nextFloat() * 0.2f);
 		}
-		super.onHitEntity(result);
+		super.onEntityHit(result);
 	}
 	@Override
 	public void tick() {
 		super.tick();
 		trackPastPositions();
 		age++;
-		if (level.isClientSide) {
+		if (getWorld().isClient()) {
 			ClientOnly.spawnParticles(this);
 		}
-		if (this.xRotO == 0.0F && this.yRotO == 0.0F) {
-			Vec3 motion = getDeltaMovement();
-			setYRot((float) (Mth.atan2(motion.x, motion.z) * (double) (180F / (float) Math.PI)));
-			yRotO = getYRot();
-			xRotO = getXRot();
+		if (this.prevPitch == 0.0F && this.prevYaw == 0.0F) {
+			Vec3d motion = getVelocity();
+			setYaw((float) (MathHelper.atan2(motion.x, motion.z) * (double) (180F / (float) Math.PI)));
+			prevYaw = getYaw();
+			prevPitch = getPitch();
 		}
-		if (!level.isClientSide) {
+		if (!getWorld().isClient()) {
 			if (age > fadeoutStart) {
-				Vec3 motion = getDeltaMovement().scale(0.92f);
-				setDeltaMovement(motion);
+				Vec3d motion = getVelocity().multiply(0.92f);
+				setVelocity(motion);
 				if (age - fadeoutStart > fadeoutDuration) {
 					discard();
 				}
@@ -120,7 +144,7 @@ public class NightTerrorSeekerEntity extends ThrownEntity {
 	}
 
 	public void trackPastPositions() {
-		EntityHelper.trackPastPositions(pastPositions, position(), 0.01f);
+		EntityHelper.trackPastPositions(pastPositions, getPos(), 0.01f);
 		removeOldPositions(pastPositions);
 	}
 
@@ -137,61 +161,61 @@ public class NightTerrorSeekerEntity extends ThrownEntity {
 	}
 
 	public void shootFromRotation(Entity shooter, float rotationPitch, float rotationYaw, float pitchOffset, float velocity, float innacuracy) {
-		float f = -Mth.sin(rotationYaw * ((float) Math.PI / 180F)) * Mth.cos(rotationPitch * ((float) Math.PI / 180F));
-		float f1 = -Mth.sin((rotationPitch + pitchOffset) * ((float) Math.PI / 180F));
-		float f2 = Mth.cos(rotationYaw * ((float) Math.PI / 180F)) * Mth.cos(rotationPitch * ((float) Math.PI / 180F));
-		this.shoot(f, f1, f2, velocity, innacuracy);
-		Vec3 vec3 = shooter.getDeltaMovement();
-		this.setDeltaMovement(this.getDeltaMovement().add(vec3.x, 0, vec3.z));
+		float f = -MathHelper.sin(rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(rotationPitch * ((float) Math.PI / 180F));
+		float f1 = -MathHelper.sin((rotationPitch + pitchOffset) * ((float) Math.PI / 180F));
+		float f2 = MathHelper.cos(rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(rotationPitch * ((float) Math.PI / 180F));
+		this.setVelocity(f, f1, f2, velocity, innacuracy);
+		Vec3d vec3 = shooter.getVelocity();
+		this.setVelocity(this.getVelocity().add(vec3.x, 0, vec3.z));
 	}
 
 	@Override
-	public Packet<?> getAddEntityPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
+	public Packet<ClientPlayPacketListener> createSpawnPacket() {
+		return new EntitySpawnS2CPacket(this);
 	}
 
 	@Override
-	protected void defineSynchedData() {
+	protected void initDataTracker() {
 
 	}
 
 	@Override
-	public boolean isNoGravity() {
+	public boolean hasNoGravity() {
 		return true;
 	}
 
 	@Override
-	public float getPickRadius() {
+	public float getTargetingMargin() {
 		return 4f;
 	}
 
 	@Override
-	public boolean fireImmune() {
+	public boolean isFireImmune() {
 		return true;
 	}
 
 	@Override
-	public boolean ignoreExplosion() {
+	public boolean isImmuneToExplosion() {
 		return true;
 	}
 
 	public static class ClientOnly {
 		public static void spawnParticles(NightTerrorSeekerEntity nightTerrorSeekerEntity) {
-			double ox = nightTerrorSeekerEntity.xOld, oy = nightTerrorSeekerEntity.yOld + 0.25f, oz = nightTerrorSeekerEntity.zOld;
+			double ox = nightTerrorSeekerEntity.prevX, oy = nightTerrorSeekerEntity.prevY + 0.25f, oz = nightTerrorSeekerEntity.prevZ;
 			double x = nightTerrorSeekerEntity.getX(), y = nightTerrorSeekerEntity.getY() + 0.25f, z = nightTerrorSeekerEntity.getZ();
-			Vec3 motion = nightTerrorSeekerEntity.getDeltaMovement();
-			Vec3 norm = motion.normalize().scale(0.1f);
+			Vec3d motion = nightTerrorSeekerEntity.getVelocity();
+			Vec3d norm = motion.normalize().multiply(0.1f);
 			float extraAlpha = (float) motion.length();
 			float cycles = 3;
 			Color firstColor = NIGHT_TERROR_PURPLE.brighter();
-			Random rand = nightTerrorSeekerEntity.level.getRandom();
+			Random rand = nightTerrorSeekerEntity.getWorld().getRandom();
 			for (int i = 0; i < cycles; i++) {
 				float pDelta = i / cycles;
-				double lerpX = Mth.lerp(pDelta, ox, x) + motion.x / 4f;
-				double lerpY = Mth.lerp(pDelta, oy, y) + motion.y / 4f;
-				double lerpZ = Mth.lerp(pDelta, oz, z) + motion.z / 4f;
+				double lerpX = MathHelper.lerp(pDelta, ox, x) + motion.x / 4f;
+				double lerpY = MathHelper.lerp(pDelta, oy, y) + motion.y / 4f;
+				double lerpZ = MathHelper.lerp(pDelta, oz, z) + motion.z / 4f;
 				float alphaMultiplier = (0.35f + extraAlpha) * Math.min(1, nightTerrorSeekerEntity.age * 0.2f);
-				CommonParticleEffects.spawnSpiritParticles(nightTerrorSeekerEntity.level, lerpX, lerpY, lerpZ, alphaMultiplier*0.8f, norm, firstColor, firstColor.darker());
+				ParticleEffects.spawnSpiritParticles(nightTerrorSeekerEntity.getWorld(), lerpX, lerpY, lerpZ, alphaMultiplier*0.8f, norm, firstColor, firstColor.darker());
 
 				final ColorParticleData.ColorParticleDataBuilder colorDataBuilder = ColorParticleData.create(NIGHT_TERROR_DARK, NIGHT_TERROR_DARK)
 					.setEasing(Easing.QUINTIC_OUT)
@@ -206,10 +230,10 @@ public class NightTerrorSeekerEntity extends ThrownEntity {
 					.enableNoClip()
 					.addMotion(norm.x, norm.y, norm.z)
 					.setRandomMotion(0.01f, 0.01f)
-					.setRenderType(LodestoneWorldParticleRenderType.TRANSPARENT)
-					.spawn(nightTerrorSeekerEntity.level, lerpX, lerpY, lerpZ)
+					.setRenderType(LodestoneWorldParticleTextureSheet.TRANSPARENT)
+					.spawn(nightTerrorSeekerEntity.getWorld(), lerpX, lerpY, lerpZ)
 					.setColorData(colorDataBuilder.setCoefficient(2f).build())
-					.spawn(nightTerrorSeekerEntity.level, lerpX, lerpY, lerpZ);
+					.spawn(nightTerrorSeekerEntity.getWorld(), lerpX, lerpY, lerpZ);
 			}
 		}
 	}

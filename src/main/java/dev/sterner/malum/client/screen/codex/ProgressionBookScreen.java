@@ -5,17 +5,19 @@ import com.sammy.lodestone.handlers.screenparticle.ScreenParticleHandler;
 import com.sammy.lodestone.setup.LodestoneShaderRegistry;
 import com.sammy.lodestone.systems.easing.Easing;
 import com.sammy.lodestone.systems.recipe.IRecipeComponent;
-import com.sammy.lodestone.systems.rendering.ExtendedShader;
 import com.sammy.lodestone.systems.rendering.VFXBuilders;
+import com.sammy.lodestone.systems.rendering.shader.ExtendedShader;
 import dev.sterner.malum.api.event.ProgressionBookEntriesSetEvent;
 import dev.sterner.malum.client.screen.codex.objects.*;
 import dev.sterner.malum.client.screen.codex.page.*;
 import dev.sterner.malum.common.registry.MalumRiteRegistry;
+import dev.sterner.malum.common.registry.MalumSoundRegistry;
 import dev.sterner.malum.common.spiritrite.MalumRiteType;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.ShaderProgram;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.render.ShaderProgram;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -23,6 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -33,51 +36,92 @@ import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static dev.sterner.malum.Malum.id;
+import static dev.sterner.malum.client.screen.codex.ArcanaCodexHelper.renderTexture;
+import static dev.sterner.malum.client.screen.codex.ArcanaCodexHelper.renderTransparentTexture;
 import static dev.sterner.malum.common.registry.MalumObjects.*;
-import static net.minecraft.client.util.ColorUtil.ARGB32.getArgb;
 import static net.minecraft.item.Items.*;
 import static org.lwjgl.opengl.GL11C.GL_SCISSOR_TEST;
 
-public class ProgressionBookScreen extends Screen {
-	public enum BookTheme {
-		DEFAULT, EASY_READING
-	}
+public class ProgressionBookScreen extends AbstractProgressionCodexScreen {
 
-	public static final VFXBuilders.ScreenVFXBuilder BUILDER = VFXBuilders.createScreen().setPosTexDefaultFormat();
+	public static ProgressionBookScreen screen;
 
 	public static final Identifier FRAME_TEXTURE = id("textures/gui/book/frame.png");
 	public static final Identifier FADE_TEXTURE = id("textures/gui/book/fade.png");
-
 	public static final Identifier BACKGROUND_TEXTURE = id("textures/gui/book/background.png");
 
-	public int bookWidth = 378;
-	public int bookHeight = 250;
-	public int bookInsideWidth = 344;
-	public int bookInsideHeight = 218;
-
-	public final int parallax_width = 1024;
-	public final int parallax_height = 2560;
-	public static ProgressionBookScreen screen;
-	public float xOffset;
-	public float yOffset;
-	public float cachedXOffset;
-	public float cachedYOffset;
-	public boolean ignoreNextMouseInput;
-
 	public static List<BookEntry> ENTRIES = new ArrayList<>();
-	public static List<BookObject> OBJECTS = new ArrayList<>();
 
 	protected ProgressionBookScreen() {
-		super(Text.translatable("malum.gui.book.title"));
+		super(1024, 2560);
 		client = MinecraftClient.getInstance();
 		setupEntries();
 		ProgressionBookEntriesSetEvent.EVENT.invoker().addExtraEntry(ENTRIES);
 		setupObjects();
+	}
+
+	@Override
+	public void render(DrawContext guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		MatrixStack poseStack = guiGraphics.getMatrices();
+		renderBackground(guiGraphics);
+		super.render(guiGraphics, mouseX, mouseY, partialTicks);
+		int guiLeft = (width - bookWidth) / 2;
+		int guiTop = (height - bookHeight) / 2;
+
+		renderBackground(BACKGROUND_TEXTURE, poseStack, 0.1f, 0.4f);
+		GL11.glEnable(GL_SCISSOR_TEST);
+		cut();
+
+		renderEntries(poseStack, mouseX, mouseY, partialTicks);
+		ScreenParticleHandler.renderEarlyParticles();
+		GL11.glDisable(GL_SCISSOR_TEST);
+
+		renderTransparentTexture(FADE_TEXTURE, poseStack, guiLeft, guiTop, 1, 1, bookWidth, bookHeight, 512, 512);
+		renderTexture(FRAME_TEXTURE, poseStack, guiLeft, guiTop, 1, 1, bookWidth, bookHeight, 512, 512);
+		lateEntryRender(poseStack, mouseX, mouseY, partialTicks);
+	}
+
+	@Override
+	public Collection<BookEntry> getEntries() {
+		return ENTRIES;
+	}
+
+	@Override
+	public SoundEvent getSweetenerSound() {
+		return MalumSoundRegistry.ARCANA_SWEETENER_NORMAL;
+	}
+
+	@Override
+	public void close() {
+		super.close();
+		playSweetenedSound(MalumSoundRegistry.ARCANA_CODEX_CLOSE, 0.75f);
+	}
+
+	public static ProgressionBookScreen getInstance() {
+		if (screen == null) {
+			screen = new ProgressionBookScreen();
+		}
+		return screen;
+	}
+
+	public static void openScreen(boolean ignoreNextMouseClick) {
+		if (screen == null) {
+			screen = new ProgressionBookScreen();
+		}
+		MinecraftClient.getInstance().setScreen(screen);
+		ScreenParticleHandler.clearParticles();
+		screen.ignoreNextMouseInput = ignoreNextMouseClick;
+	}
+
+	public static void openCodexViaItem() {
+		openScreen(true);
+		screen.playSweetenedSound(MalumSoundRegistry.ARCANA_CODEX_OPEN, 1.25f);
 	}
 
 	public static void setupEntries() {
@@ -700,522 +744,6 @@ public class ProgressionBookScreen extends Screen {
 		);
 	}
 
-	public void setupObjects() {
-		OBJECTS.clear();
-		this.width = client.getWindow().getScaledWidth();
-		this.height = client.getWindow().getScaledHeight();
-		int guiLeft = (width - bookWidth) / 2;
-		int guiTop = (height - bookHeight) / 2;
-		int coreX = guiLeft + bookInsideWidth;
-		int coreY = guiTop + bookInsideHeight;
-		int width = 40;
-		int height = 48;
-		for (BookEntry entry : ENTRIES) {
-			OBJECTS.add(entry.objectSupplier.getBookObject(entry, coreX + entry.xOffset * width, coreY - entry.yOffset * height));
-		}
-		faceObject(OBJECTS.get(0));
-	}
-
-	public void faceObject(BookObject object) {
-		this.width = client.getWindow().getScaledWidth();
-		this.height = client.getWindow().getScaledHeight();
-		int guiLeft = (width - bookWidth) / 2;
-		int guiTop = (height - bookHeight) / 2;
-		xOffset = -object.posX + guiLeft + bookInsideWidth;
-		yOffset = -object.posY + guiTop + bookInsideHeight;
-	}
-
-	@Override
-	public void render(MatrixStack poseStack, int mouseX, int mouseY, float partialTicks) {
-		renderBackground(poseStack);
-		super.render(poseStack, mouseX, mouseY, partialTicks);
-		int guiLeft = (width - bookWidth) / 2;
-		int guiTop = (height - bookHeight) / 2;
-
-		renderBackground(BACKGROUND_TEXTURE, poseStack, 0.1f, 0.4f);
-		GL11.glEnable(GL_SCISSOR_TEST);
-		cut();
-
-		renderEntries(poseStack, mouseX, mouseY, partialTicks);
-		ScreenParticleHandler.renderEarlyParticles();
-		GL11.glDisable(GL_SCISSOR_TEST);
-
-		renderTransparentTexture(FADE_TEXTURE, poseStack, guiLeft, guiTop, 1, 1, bookWidth, bookHeight, 512, 512);
-		renderTexture(FRAME_TEXTURE, poseStack, guiLeft, guiTop, 1, 1, bookWidth, bookHeight, 512, 512);
-		lateEntryRender(poseStack, mouseX, mouseY, partialTicks);
-	}
 
 
-	@Override
-	public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
-		xOffset += dragX;
-		yOffset += dragY;
-		return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
-	}
-
-	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		cachedXOffset = xOffset;
-		cachedYOffset = yOffset;
-		return super.mouseClicked(mouseX, mouseY, button);
-	}
-
-	@Override
-	public boolean mouseReleased(double mouseX, double mouseY, int button) {
-		if (ignoreNextMouseInput) {
-			ignoreNextMouseInput = false;
-			return super.mouseReleased(mouseX, mouseY, button);
-		}
-		if (xOffset != cachedXOffset || yOffset != cachedYOffset) {
-			return super.mouseReleased(mouseX, mouseY, button);
-		}
-		for (BookObject object : OBJECTS) {
-			if (object.isHovering(xOffset, yOffset, mouseX, mouseY)) {
-				object.click(xOffset, yOffset, mouseX, mouseY);
-				break;
-			}
-		}
-		return super.mouseReleased(mouseX, mouseY, button);
-	}
-
-	@Override
-	public boolean isPauseScreen() {
-		return false;
-	}
-
-	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		if (MinecraftClient.getInstance().options.inventoryKey.matchesKey(keyCode, scanCode)) {
-			closeScreen();
-			return true;
-		}
-		return super.keyPressed(keyCode, scanCode, modifiers);
-	}
-
-	public void renderEntries(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
-		for (int i = OBJECTS.size() - 1; i >= 0; i--) {
-			BookObject object = OBJECTS.get(i);
-			boolean isHovering = object.isHovering(xOffset, yOffset, mouseX, mouseY);
-			object.isHovering = isHovering;
-			object.hover = isHovering ? Math.min(object.hover++, object.hoverCap()) : Math.max(object.hover--, 0);
-			object.render(client, stack, xOffset, yOffset, mouseX, mouseY, partialTicks);
-		}
-	}
-
-	public void lateEntryRender(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
-		for (int i = OBJECTS.size() - 1; i >= 0; i--) {
-			BookObject object = OBJECTS.get(i);
-			object.lateRender(client, stack, xOffset, yOffset, mouseX, mouseY, partialTicks);
-		}
-	}
-
-	public static boolean isHovering(double mouseX, double mouseY, int posX, int posY, int width, int height) {
-		if (!isInView(mouseX, mouseY)) {
-			return false;
-		}
-		return mouseX > posX && mouseX < posX + width && mouseY > posY && mouseY < posY + height;
-	}
-
-	public static boolean isInView(double mouseX, double mouseY) {
-		int guiLeft = (screen.width - screen.bookWidth) / 2;
-		int guiTop = (screen.height - screen.bookHeight) / 2;
-		return !(mouseX < guiLeft + 17) && !(mouseY < guiTop + 14) && !(mouseX > guiLeft + (screen.bookWidth - 17)) && !(mouseY > (guiTop + screen.bookHeight - 14));
-	}
-
-	public void renderBackground(Identifier texture, MatrixStack poseStack, float xModifier, float yModifier) {
-		int guiLeft = (width - bookWidth) / 2;
-		int guiTop = (height - bookHeight) / 2;
-		int insideLeft = guiLeft + 17;
-		int insideTop = guiTop + 14;
-		float uOffset = (parallax_width - xOffset) * xModifier;
-		float vOffset = Math.min(parallax_height - bookInsideHeight, (parallax_height - bookInsideHeight - yOffset * yModifier));
-		if (vOffset <= parallax_height / 2f) {
-			vOffset = parallax_height / 2f;
-		}
-		if (uOffset <= 0) {
-			uOffset = 0;
-		}
-		if (uOffset > (bookInsideWidth - 8) / 2f) {
-			uOffset = (bookInsideWidth - 8) / 2f;
-		}
-		renderTexture(texture, poseStack, insideLeft, insideTop, uOffset, vOffset, bookInsideWidth, bookInsideHeight, parallax_width / 2, parallax_height / 2);
-	}
-
-	public void cut() {
-		int scale = (int) getClient().getWindow().getScaleFactor();
-		int guiLeft = (width - bookWidth) / 2;
-		int guiTop = (height - bookHeight) / 2;
-		int insideLeft = guiLeft + 17;
-		int insideTop = guiTop + 18;
-		GL11.glScissor(insideLeft * scale, insideTop * scale, bookInsideWidth * scale, (bookInsideHeight + 1) * scale); // do not ask why the 1 is needed please
-	}
-
-	public static void renderRiteIcon(MalumRiteType rite, MatrixStack stack, boolean corrupted, int x, int y) {
-		renderRiteIcon(rite, stack, corrupted, x, y, 0);
-	}
-	public static void renderRiteIcon(MalumRiteType rite, MatrixStack stack, boolean corrupted, int x, int y, int z) {
-		ExtendedShader shaderInstance = (ExtendedShader) LodestoneShaderRegistry.DISTORTED_TEXTURE.getInstance().get();
-		shaderInstance.getUniformOrDefault("YFrequency").setFloat(corrupted ? 5f : 11f);
-		shaderInstance.getUniformOrDefault("XFrequency").setFloat(corrupted ? 12f : 17f);
-		shaderInstance.getUniformOrDefault("Speed").setFloat(2000f * (corrupted ? -0.75f : 1));
-		shaderInstance.getUniformOrDefault("Intensity").setFloat(corrupted ? 14f : 50f);
-		Supplier<ShaderProgram> shaderInstanceSupplier = () -> shaderInstance;
-		Color color = rite.getEffectSpirit().getColor();
-
-		VFXBuilders.ScreenVFXBuilder builder = VFXBuilders.createScreen()
-				.setPosColorTexLightmapDefaultFormat()
-				.setShader(shaderInstanceSupplier)
-				.setColor(color)
-				.setAlpha(0.9f)
-				.setZLevel(z)
-				.setShader(() -> shaderInstance);
-
-		RenderSystem.enableBlend();
-		RenderSystem.disableDepthTest();
-		RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-		renderTexture(rite.getIcon(), stack, builder, x, y, 0, 0, 16, 16, 16, 16);
-		builder.setAlpha(0.4f);
-		renderTexture(rite.getIcon(), stack, builder, x - 1, y, 0, 0, 16, 16, 16, 16);
-		renderTexture(rite.getIcon(), stack, builder, x + 1, y, 0, 0, 16, 16, 16, 16);
-		renderTexture(rite.getIcon(), stack, builder, x, y - 1, 0, 0, 16, 16, 16, 16);
-		if (corrupted) {
-			builder.setColor(rite.getEffectSpirit().getEndColor());
-		}
-		renderTexture(rite.getIcon(), stack, builder, x, y + 1, 0, 0, 16, 16, 16, 16);
-		shaderInstance.setUniformDefaults();
-		RenderSystem.enableDepthTest();
-		RenderSystem.defaultBlendFunc();
-		RenderSystem.disableBlend();
-	}
-
-	public static void renderWavyIcon(Identifier location, MatrixStack stack, int x, int y) {
-		renderWavyIcon(location, stack, x, y, 0);
-	}
-
-	public static void renderWavyIcon(Identifier location, MatrixStack stack, int x, int y, int z) {
-		ExtendedShader shaderInstance = (ExtendedShader) LodestoneShaderRegistry.DISTORTED_TEXTURE.getInstance().get();
-		shaderInstance.getUniformOrDefault("YFrequency").setFloat(10f);
-		shaderInstance.getUniformOrDefault("XFrequency").setFloat(12f);
-		shaderInstance.getUniformOrDefault("Speed").setFloat(1000f);
-		shaderInstance.getUniformOrDefault("Intensity").setFloat(50f);
-		shaderInstance.getUniformOrDefault("UVCoordinates").setVec4(new Vector4f(0f, 1f, 0f, 1f));
-		Supplier<ShaderProgram> shaderInstanceSupplier = () -> shaderInstance;
-
-		VFXBuilders.ScreenVFXBuilder builder = VFXBuilders.createScreen()
-				.setPosColorTexLightmapDefaultFormat()
-				.setShader(shaderInstanceSupplier)
-				.setAlpha(0.7f)
-				.setZLevel(z)
-				.setShader(() -> shaderInstance);
-
-		RenderSystem.enableBlend();
-		RenderSystem.disableDepthTest();
-		RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-		renderTexture(location, stack, builder, x, y, 0, 0, 16, 16, 16, 16);
-		builder.setAlpha(0.1f);
-		renderTexture(location, stack, builder, x - 1, y, 0, 0, 16, 16, 16, 16);
-		renderTexture(location, stack, builder, x + 1, y, 0, 0, 16, 16, 16, 16);
-		renderTexture(location, stack, builder, x, y - 1, 0, 0, 16, 16, 16, 16);
-		renderTexture(location, stack, builder, x, y + 1, 0, 0, 16, 16, 16, 16);
-		shaderInstance.setUniformDefaults();
-		RenderSystem.enableDepthTest();
-		RenderSystem.defaultBlendFunc();
-		RenderSystem.disableBlend();
-	}
-	public static void renderTexture(Identifier texture, MatrixStack poseStack, int x, int y, float u, float v, int width, int height, int textureWidth, int textureHeight) {
-		renderTexture(texture, poseStack, BUILDER, x, y, u, v, width, height, textureWidth, textureHeight);
-	}
-	public static void renderTexture(Identifier texture, MatrixStack poseStack, VFXBuilders.ScreenVFXBuilder builder, int x, int y, float u, float v, int width, int height, int textureWidth, int textureHeight) {
-		builder.setPositionWithWidth(x, y, width, height)
-				.setShaderTexture(texture)
-				.setUVWithWidth(u, v, width, height, textureWidth, textureHeight)
-				.draw(poseStack);
-	}
-
-	public static void renderTransparentTexture(Identifier texture, MatrixStack poseStack, int x, int y, float u, float v, int width, int height, int textureWidth, int textureHeight) {
-		renderTransparentTexture(texture, poseStack, BUILDER, x, y, u, v, width, height, textureWidth, textureHeight);
-	}
-	public static void renderTransparentTexture(Identifier texture, MatrixStack poseStack, VFXBuilders.ScreenVFXBuilder builder, int x, int y, float u, float v, int width, int height, int textureWidth, int textureHeight) {
-		RenderSystem.enableBlend();
-		RenderSystem.enableDepthTest();
-		renderTexture(texture, poseStack, builder, x, y, u, v, width, height, textureWidth, textureHeight);
-		RenderSystem.disableDepthTest();
-		RenderSystem.disableBlend();
-	}
-
-	public static void renderComponents(MatrixStack poseStack, List<? extends IRecipeComponent> components, int left, int top, int mouseX, int mouseY, boolean vertical) {
-		List<ItemStack> items = components.stream().map(IRecipeComponent::getStack).collect(Collectors.toList());
-		ProgressionBookScreen.renderItemList(poseStack, items, left, top, mouseX, mouseY, vertical).run();
-	}
-
-	public static Runnable renderBufferedComponents(MatrixStack poseStack, List<? extends IRecipeComponent> components, int left, int top, int mouseX, int mouseY, boolean vertical) {
-		List<ItemStack> items = components.stream().map(IRecipeComponent::getStack).collect(Collectors.toList());
-		return ProgressionBookScreen.renderItemList(poseStack, items, left, top, mouseX, mouseY, vertical);
-	}
-
-	public static void renderComponent(MatrixStack poseStack, IRecipeComponent component, int posX, int posY, int mouseX, int mouseY) {
-		if (component.getStacks().size() == 1) {
-			renderItem(poseStack, component.getStack(), posX, posY, mouseX, mouseY);
-			return;
-		}
-		int index = (int) (MinecraftClient.getInstance().world.getTime() % (20L * component.getStacks().size()) / 20);
-		ItemStack stack = component.getStacks().get(index);
-		MinecraftClient.getInstance().getItemRenderer().renderInGuiWithOverrides(stack, posX, posY);
-		MinecraftClient.getInstance().getItemRenderer().renderGuiItemOverlay(MinecraftClient.getInstance().textRenderer, stack, posX, posY, null);
-		if (isHovering(mouseX, mouseY, posX, posY, 16, 16)) {
-			screen.renderTooltip(poseStack, screen.getTooltipFromItem(stack), mouseX, mouseY);
-		}
-	}
-
-	public static void renderItem(MatrixStack poseStack, Ingredient ingredient, int posX, int posY, int mouseX, int mouseY) {
-		renderItem(poseStack, List.of(ingredient.getMatchingStacks()), posX, posY, mouseX, mouseY);
-	}
-
-	public static void renderItem(MatrixStack poseStack, List<ItemStack> stacks, int posX, int posY, int mouseX, int mouseY) {
-		if (stacks.size() == 1) {
-			renderItem(poseStack, stacks.get(0), posX, posY, mouseX, mouseY);
-			return;
-		}
-		int index = (int) (MinecraftClient.getInstance().world.getTime() % (20L * stacks.size()) / 20);
-		ItemStack stack = stacks.get(index);
-		MinecraftClient.getInstance().getItemRenderer().renderInGuiWithOverrides(stack, posX, posY);
-		MinecraftClient.getInstance().getItemRenderer().renderGuiItemOverlay(MinecraftClient.getInstance().textRenderer, stack, posX, posY, null);
-		if (isHovering(mouseX, mouseY, posX, posY, 16, 16)) {
-			screen.renderTooltip(poseStack, screen.getTooltipFromItem(stack), mouseX, mouseY);
-		}
-	}
-
-	public static void renderItem(MatrixStack poseStack, ItemStack stack, int posX, int posY, int mouseX, int mouseY) {
-		MinecraftClient.getInstance().getItemRenderer().renderInGuiWithOverrides(stack, posX, posY);
-		MinecraftClient.getInstance().getItemRenderer().renderGuiItemOverlay(MinecraftClient.getInstance().textRenderer, stack, posX, posY, null);
-		if (isHovering(mouseX, mouseY, posX, posY, 16, 16)) {
-			screen.renderTooltip(poseStack, screen.getTooltipFromItem(stack), mouseX, mouseY);
-		}
-	}
-
-	public static Runnable renderItemList(MatrixStack poseStack, List<ItemStack> items, int left, int top, int mouseX, int mouseY, boolean vertical) {
-		int slots = items.size();
-		renderItemFrames(poseStack, slots, left, top, vertical);
-		return () -> {
-			int finalLeft = left;
-			int finalTop = top;
-			if (vertical) {
-				finalTop -= 10 * (slots - 1);
-			} else {
-				finalLeft -= 10 * (slots - 1);
-			}
-			for (int i = 0; i < slots; i++) {
-				ItemStack stack = items.get(i);
-				int offset = i * 20;
-				int oLeft = finalLeft + 2 + (vertical ? 0 : offset);
-				int oTop = finalTop + 2 + (vertical ? offset : 0);
-				ProgressionBookScreen.renderItem(poseStack, stack, oLeft, oTop, mouseX, mouseY);
-			}
-		};
-	}
-
-	public static void renderItemFrames(MatrixStack poseStack, int slots, int left, int top, boolean vertical) {
-		if (vertical) {
-			top -= 10 * (slots - 1);
-		} else {
-			left -= 10 * (slots - 1);
-		}
-		//item slot
-		for (int i = 0; i < slots; i++) {
-			int offset = i * 20;
-			int oLeft = left + (vertical ? 0 : offset);
-			int oTop = top + (vertical ? offset : 0);
-			renderTexture(EntryScreen.BOOK_TEXTURE, poseStack, oLeft, oTop, 75, 192, 20, 20, 512, 512);
-
-			if (vertical) {
-				//bottom fade
-				if (slots > 1 && i != slots - 1) {
-					renderTexture(EntryScreen.BOOK_TEXTURE, poseStack, left + 1, oTop + 19, 75, 213, 18, 2, 512, 512);
-				}
-				//bottommost fade
-				if (i == slots - 1) {
-					renderTexture(EntryScreen.BOOK_TEXTURE, poseStack, oLeft + 1, oTop + 19, 75, 216, 18, 2, 512, 512);
-				}
-			} else {
-				//bottom fade
-				renderTexture(EntryScreen.BOOK_TEXTURE, poseStack, oLeft + 1, top + 19, 75, 216, 18, 2, 512, 512);
-				if (slots > 1 && i != slots - 1) {
-					//side fade
-					renderTexture(EntryScreen.BOOK_TEXTURE, poseStack, oLeft + 19, top, 96, 192, 2, 20, 512, 512);
-				}
-			}
-		}
-
-		//crown
-		int crownLeft = left + 5 + (vertical ? 0 : 10 * (slots - 1));
-		renderTexture(EntryScreen.BOOK_TEXTURE, poseStack, crownLeft, top - 5, 128, 192, 10, 6, 512, 512);
-
-		//side-bars
-		if (vertical) {
-			renderTexture(EntryScreen.BOOK_TEXTURE, poseStack, left - 4, top - 4, 99, 200, 28, 7, 512, 512);
-			renderTexture(EntryScreen.BOOK_TEXTURE, poseStack, left - 4, top + 17 + 20 * (slots - 1), 99, 192, 28, 7, 512, 512);
-		}
-		// top bars
-		else {
-			renderTexture(EntryScreen.BOOK_TEXTURE, poseStack, left - 4, top - 4, 59, 192, 7, 28, 512, 512);
-			renderTexture(EntryScreen.BOOK_TEXTURE, poseStack, left + 17 + 20 * (slots - 1), top - 4, 67, 192, 7, 28, 512, 512);
-		}
-	}
-
-	public static void renderWrappingText(MatrixStack mStack, String text, int x, int y, int w) {
-		TextRenderer font = MinecraftClient.getInstance().textRenderer;
-		text = Text.translatable(text).getString() + "\n";
-		List<String> lines = new ArrayList<>();
-
-		boolean italic = false;
-		boolean bold = false;
-		boolean strikethrough = false;
-		boolean underline = false;
-		boolean obfuscated = false;
-
-		StringBuilder line = new StringBuilder();
-		StringBuilder word = new StringBuilder();
-		for (int i = 0; i < text.length(); i++) {
-			char chr = text.charAt(i);
-			if (chr == ' ' || chr == '\n') {
-				if (word.length() > 0) {
-					if (font.getWidth(line.toString()) + font.getWidth(word.toString()) > w) {
-						line = newLine(lines, italic, bold, strikethrough, underline, obfuscated, line);
-					}
-					line.append(word).append(' ');
-					word = new StringBuilder();
-				}
-
-				String noFormatting = Formatting.strip(line.toString());
-
-				if (chr == '\n' && !(noFormatting == null || noFormatting.isEmpty())) {
-					line = newLine(lines, italic, bold, strikethrough, underline, obfuscated, line);
-				}
-			} else if (chr == '$') {
-				if (i != text.length() - 1) {
-					char peek = text.charAt(i + 1);
-					switch (peek) {
-						case 'i' -> {
-							word.append(Formatting.ITALIC);
-							italic = true;
-							i++;
-						}
-						case 'b' -> {
-							word.append(Formatting.BOLD);
-							bold = true;
-							i++;
-						}
-						case 's' -> {
-							word.append(Formatting.STRIKETHROUGH);
-							strikethrough = true;
-							i++;
-						}
-						case 'u' -> {
-							word.append(Formatting.UNDERLINE);
-							underline = true;
-							i++;
-						}
-						case 'k' -> {
-							word.append(Formatting.OBFUSCATED);
-							obfuscated = true;
-							i++;
-						}
-						default -> word.append(chr);
-					}
-				} else {
-					word.append(chr);
-				}
-			} else if (chr == '/') {
-				if (i != text.length() - 1) {
-					char peek = text.charAt(i + 1);
-					if (peek == '$') {
-						italic = bold = strikethrough = underline = obfuscated = false;
-						word.append(Formatting.RESET);
-						i++;
-					} else
-						word.append(chr);
-				} else
-					word.append(chr);
-			} else {
-				word.append(chr);
-			}
-		}
-
-		for (int i = 0; i < lines.size(); i++) {
-			String currentLine = lines.get(i);
-			renderRawText(mStack, currentLine, x, y + i * (font.fontHeight + 1), getTextGlow(i / 4f));
-		}
-	}
-
-	private static StringBuilder newLine(List<String> lines, boolean italic, boolean bold, boolean strikethrough, boolean underline, boolean obfuscated, StringBuilder line) {
-		lines.add(line.toString());
-		line = new StringBuilder();
-		if (italic) line.append(Formatting.ITALIC);
-		if (bold) line.append(Formatting.BOLD);
-		if (strikethrough) line.append(Formatting.STRIKETHROUGH);
-		if (underline) line.append(Formatting.UNDERLINE);
-		if (obfuscated) line.append(Formatting.OBFUSCATED);
-		return line;
-	}
-
-	public static void renderText(MatrixStack stack, String text, int x, int y) {
-		renderText(stack, Text.translatable(text), x, y, getTextGlow(0));
-	}
-
-	public static void renderText(MatrixStack stack, Text component, int x, int y) {
-		String text = component.getString();
-		renderRawText(stack, text, x, y, getTextGlow(0));
-	}
-
-	public static void renderText(MatrixStack stack, String text, int x, int y, float glow) {
-		renderText(stack, Text.translatable(text), x, y, glow);
-	}
-
-	public static void renderText(MatrixStack stack, Text component, int x, int y, float glow) {
-		String text = component.getString();
-		renderRawText(stack, text, x, y, glow);
-	}
-
-	private static void renderRawText(MatrixStack stack, String text, int x, int y, float glow) {
-		var font = MinecraftClient.getInstance().textRenderer;
-		if (false){//TODO ClientConfig.BOOK_THEME.getConfigValue().equals(BookTheme.EASY_READING)) {
-			font.draw(stack, text, x, y, 0);
-			return;
-		}
-
-		glow = Easing.CUBIC_IN.ease(glow, 0, 1, 1);
-		//int r = (int) MathHelper.lerp(glow, 163, 227);
-		//int g = (int) MathHelper.lerp(glow, 44, 39);
-		//int b = (int) MathHelper.lerp(glow, 191, 228);
-
-		font.draw(stack, text, x - 1, y, getArgb(96, 236, 227, 214));
-		font.draw(stack, text, x + 1, y, getArgb(128, 165, 149, 142));
-		font.draw(stack, text, x, y - 1, getArgb(128, 208, 197, 183));
-		font.draw(stack, text, x, y + 1, getArgb(96, 236, 110, 226));
-
-		font.draw(stack, text, x, y, getArgb(255, 111, 97, 105));
-	}
-
-	public static float getTextGlow(float offset) {
-		return MathHelper.sin(offset + MinecraftClient.getInstance().player.world.getTime() / 40f) / 2f + 0.5f;
-	}
-
-	public void playSound() {
-		PlayerEntity playerEntity = MinecraftClient.getInstance().player;
-		playerEntity.playSound(SoundEvents.ITEM_BOOK_PAGE_TURN, SoundCategory.PLAYERS, 1.0f, 1.0f);
-	}
-
-	public static void openScreen(boolean ignoreNextMouseClick) {
-		MinecraftClient.getInstance().setScreen(getInstance());
-		ScreenParticleHandler.renderEarlyParticles();
-		screen.playSound();
-		screen.ignoreNextMouseInput = ignoreNextMouseClick;
-	}
-
-	public static ProgressionBookScreen getInstance() {
-		if (screen == null) {
-			screen = new ProgressionBookScreen();
-		}
-		return screen;
-	}
 }

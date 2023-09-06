@@ -9,7 +9,7 @@ import com.sammy.lodestone.systems.particle.data.ColorParticleData;
 import com.sammy.lodestone.systems.particle.data.GenericParticleData;
 import com.sammy.lodestone.systems.particle.data.SpinParticleData;
 import com.sammy.lodestone.systems.particle.world.LodestoneWorldParticleTextureSheet;
-import dev.sterner.malum.client.CommonParticleEffects;
+import dev.sterner.malum.client.ParticleEffects;
 import dev.sterner.malum.common.network.packet.s2c.entity.VividNitrateBounceParticlePacket;
 import dev.sterner.malum.common.registry.MalumEntityRegistry;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
@@ -109,7 +109,7 @@ public class VividNitrateEntity extends AbstractNitrateEntity {
             double lerpY = MathHelper.lerp(pDelta, oy, y) - motion.y / 4f;
             double lerpZ = MathHelper.lerp(pDelta, oz, z) - motion.z / 4f;
             float alphaMultiplier = (0.30f + extraAlpha) * Math.min(1, windUp * 2);
-			CommonParticleEffects.spawnSpiritParticles(getWorld(), lerpX, lerpY, lerpZ, alphaMultiplier + 0.1f, norm, firstColor, secondColor);
+			ParticleEffects.spawnSpiritParticles(getWorld(), lerpX, lerpY, lerpZ, alphaMultiplier + 0.1f, norm, firstColor, secondColor);
 			final ColorParticleData.ColorParticleDataBuilder colorDataBuilder = ColorParticleData.create(secondColor, SECOND_SMOKE_COLOR).setEasing(Easing.SINE_OUT).setCoefficient(2.25f);
 			WorldParticleBuilder.create(LodestoneParticleRegistry.SMOKE_PARTICLE)
 					.setTransparencyData(GenericParticleData.create(Math.min(1, 0.1f * alphaMultiplier), 0f).setEasing(Easing.SINE_IN, Easing.SINE_OUT).build())

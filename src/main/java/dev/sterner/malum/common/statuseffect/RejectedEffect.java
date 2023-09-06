@@ -7,11 +7,11 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.entity.effect.StatusEffectType;
+import net.minecraft.entity.effect.StatusEffectCategory;
 
 public class RejectedEffect extends StatusEffect {
 	public RejectedEffect() {
-		super(StatusEffectType.NEUTRAL, ColorHelper.getColor(20, 14, 22));
+		super(StatusEffectCategory.NEUTRAL, ColorHelper.getColor(20, 14, 22));
 		addAttributeModifier(EntityAttributes.GENERIC_MOVEMENT_SPEED, "248da214-2292-4637-a040-5597fb65db58", -0.2f, EntityAttributeModifier.Operation.MULTIPLY_TOTAL);
 	}
 
@@ -19,7 +19,7 @@ public class RejectedEffect extends StatusEffect {
 	public void applyUpdateEffect(LivingEntity entity, int amplifier) {
 		MalumComponents.TOUCH_OF_DARKNESS_COMPONENT.maybeGet(entity).ifPresent(l -> {
 			l.afflict(20);
-			if (entity.world.getTime() % 60L == 0) {
+			if (entity.getWorld().getTime() % 60L == 0) {
 				entity.damage(MalumDamageSourceRegistry.VOODOO, 1);
 			}
 		});

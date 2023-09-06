@@ -3,3 +3,5 @@ accessible field net/minecraft/item/SwordItem attackDamage F
 accessible field net/minecraft/item/SwordItem attributeModifiers Lcom/google/common/collect/Multimap;
 accessible method net/minecraft/item/ItemStack <init> (Lnet/minecraft/item/ItemConvertible;ILjava/util/Optional;)V
 accessible method net/minecraft/block/WoodType register (Lnet/minecraft/block/WoodType;)Lnet/minecraft/block/WoodType;
+accessible field net/minecraft/entity/mob/MobEntity goalSelector Lnet/minecraft/entity/ai/goal/GoalSelector;
+accessible method net/minecraft/client/render/entity/LivingEntityRenderer addFeature (Lnet/minecraft/client/render/entity/feature/FeatureRenderer;)Z

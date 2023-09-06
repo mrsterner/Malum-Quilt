@@ -1,7 +1,7 @@
 package dev.sterner.malum.common.entity.spirit;
 
 import com.sammy.lodestone.helpers.ItemHelper;
-import dev.sterner.malum.client.CommonParticleEffects;
+import dev.sterner.malum.client.ParticleEffects;
 import dev.sterner.malum.common.entity.FloatingItemEntity;
 import dev.sterner.malum.common.item.spirit.MalumSpiritItem;
 import dev.sterner.malum.common.registry.MalumAttributeRegistry;
@@ -66,7 +66,7 @@ public class SpiritItemEntity extends FloatingItemEntity {
 			double lerpX = MathHelper.lerp(i / cycles, x - motion.x, x);
 			double lerpY = MathHelper.lerp(i / cycles, y - motion.y, y);
 			double lerpZ = MathHelper.lerp(i / cycles, z - motion.z, z);
-			CommonParticleEffects.spawnSpiritParticles(getWorld(), lerpX, lerpY, lerpZ, 0.55f + extraAlpha, norm, color, endColor);
+			ParticleEffects.spawnSpiritParticles(getWorld(), lerpX, lerpY, lerpZ, 0.55f + extraAlpha, norm, color, endColor);
 		}
     }
 

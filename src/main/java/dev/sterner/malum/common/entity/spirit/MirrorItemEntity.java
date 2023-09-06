@@ -2,7 +2,7 @@ package dev.sterner.malum.common.entity.spirit;
 
 import com.sammy.lodestone.helpers.ColorHelper;
 import dev.sterner.malum.api.interfaces.item.FloatingGlowItem;
-import dev.sterner.malum.client.CommonParticleEffects;
+import dev.sterner.malum.client.ParticleEffects;
 import dev.sterner.malum.common.entity.FloatingItemEntity;
 import dev.sterner.malum.common.registry.MalumEntityRegistry;
 import dev.sterner.malum.common.registry.MalumSpiritTypeRegistry;
@@ -48,7 +48,7 @@ public class MirrorItemEntity extends FloatingItemEntity {
 
     @Override
     public void spawnParticles(double x, double y, double z) {
-		CommonParticleEffects.spawnSpiritParticles(getWorld(), x, y, z, 1.5f, Vec3d.ZERO, color, endColor);
+		ParticleEffects.spawnSpiritParticles(getWorld(), x, y, z, 1.5f, Vec3d.ZERO, color, endColor);
     }
 
     @Override

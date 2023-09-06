@@ -4,11 +4,11 @@ import com.sammy.lodestone.helpers.ColorHelper;
 import dev.sterner.malum.common.registry.MalumSpiritTypeRegistry;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.entity.effect.StatusEffectType;
+import net.minecraft.entity.effect.StatusEffectCategory;
 
 public class CorruptedInfernalAura extends StatusEffect {
     public CorruptedInfernalAura() {
-        super(StatusEffectType.BENEFICIAL, ColorHelper.getColor(MalumSpiritTypeRegistry.INFERNAL_SPIRIT.getColor()));
+        super(StatusEffectCategory.BENEFICIAL, ColorHelper.getColor(MalumSpiritTypeRegistry.INFERNAL_SPIRIT.getColor()));
     }
 
     @Override
