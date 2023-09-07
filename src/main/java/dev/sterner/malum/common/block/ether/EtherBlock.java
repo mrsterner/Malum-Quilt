@@ -1,6 +1,6 @@
 package dev.sterner.malum.common.block.ether;
 
-import com.sammy.lodestone.systems.block.WaterLoggedEntityBlock;
+import dev.sterner.lodestone.systems.block.WaterLoggedEntityBlock;
 import dev.sterner.malum.common.blockentity.EtherBlockEntity;
 import dev.sterner.malum.common.registry.MalumBlockEntityRegistry;
 import net.minecraft.block.*;

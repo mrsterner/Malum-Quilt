@@ -16,7 +16,7 @@ public interface SoulContainerItem {
 
     default TypedActionResult<ItemStack> fetchSoul(PlayerEntity player, Hand hand) {
 
-        ArrayList<SoulEntity> entities = new ArrayList<>(player.world.getNonSpectatingEntities(SoulEntity.class, player.getBoundingBox().expand(player.getAttributeValue(ReachEntityAttributes.REACH)*0.4f)));
+        ArrayList<SoulEntity> entities = new ArrayList<>(player.getWorld().getNonSpectatingEntities(SoulEntity.class, player.getBoundingBox().expand(player.getAttributeValue(ReachEntityAttributes.REACH)*0.4f)));
         double biggestAngle = 0;
         SoulEntity chosenEntity = null;
         for (SoulEntity entity : entities) {

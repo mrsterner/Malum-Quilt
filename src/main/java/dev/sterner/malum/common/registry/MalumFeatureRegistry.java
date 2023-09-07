@@ -15,7 +15,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.feature.*;
 
-public class MalumPlacedFeatureRegistry {
+public class MalumFeatureRegistry {
 	//ORES
 	public static RegistryKey<PlacedFeature> ORE_SOULSTONE_UPPER = placedFeature(Malum.id("ore_soulstone_upper"));
 	public static RegistryKey<PlacedFeature> ORE_SOULSTONE_LOWER = placedFeature(Malum.id("ore_soulstone_lower"));
@@ -61,7 +61,7 @@ public class MalumPlacedFeatureRegistry {
 	}
 
 	public static void init(){
-		PLACED_RUNEWOOD_TREE_FEATURE_KEY =  PlacedFeatures.of(Malum.id("runewood_tree").toString());
+		PLACED_RUNEWOOD_TREE_FEATURE_KEY =  PlacedFeatures.of(Malum.id("runewood_tree_placed").toString());
 		BiomeModification modifications = BiomeModifications.create(Malum.id("worldgen"));
 
 		modifications.add(ModificationPhase.ADDITIONS, BiomeSelectors.tag(BiomeTags.IS_FOREST), ctx -> {

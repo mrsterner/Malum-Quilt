@@ -14,7 +14,7 @@ import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.quiltmc.qsl.networking.api.PlayerLookup;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 
 import java.util.List;
 

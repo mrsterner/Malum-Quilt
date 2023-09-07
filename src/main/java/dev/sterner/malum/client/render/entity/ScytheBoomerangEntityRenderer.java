@@ -9,11 +9,12 @@ import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Axis;
+import net.minecraft.util.math.RotationAxis;
 
 public class ScytheBoomerangEntityRenderer extends EntityRenderer<ScytheBoomerangEntity> {
 	public final ItemRenderer itemRenderer;
@@ -29,11 +30,11 @@ public class ScytheBoomerangEntityRenderer extends EntityRenderer<ScytheBoomeran
 	public void render(ScytheBoomerangEntity entity, float yaw, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light) {
 		matrices.push();
 		ItemStack itemstack = entity.getStack();
-		BakedModel model = this.itemRenderer.getHeldItemModel(itemstack, entity.world, null, 1);
-		matrices.multiply(Axis.X_POSITIVE.rotationDegrees(90F));
+		BakedModel model = this.itemRenderer.getModel(itemstack, entity.getWorld(), null, 1);
+		matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(90F));
 		matrices.scale(2f, 2f, 2f);
-		matrices.multiply(Axis.Z_POSITIVE.rotation((entity.age + tickDelta) * 0.9f));
-		itemRenderer.renderItem(itemstack, itemstack.getItem() instanceof MalumScytheItem ? ModelTransformation.Mode.NONE : ModelTransformation.Mode.FIXED, false, matrices, vertexConsumers, light, OverlayTexture.DEFAULT_UV, model);
+		matrices.multiply(RotationAxis.POSITIVE_Y.rotation((entity.age + tickDelta) * 0.9f));
+		itemRenderer.renderItem(itemstack, itemstack.getItem() instanceof MalumScytheItem ? ModelTransformationMode.NONE : ModelTransformationMode.FIXED, false, matrices, vertexConsumers, light, OverlayTexture.DEFAULT_UV, model);
 
 		matrices.pop();
 

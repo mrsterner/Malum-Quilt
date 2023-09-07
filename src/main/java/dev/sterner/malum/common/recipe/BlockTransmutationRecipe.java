@@ -91,7 +91,7 @@ public record BlockTransmutationRecipe(Identifier id, String group, Ingredient i
         return null;
     }
 
-    public record Serializer<T extends BlockTransmutationRecipe>(RecipeFactory<T> recipeFactory) implements RecipeSerializer<T>, QuiltRecipeSerializer<T> {
+    public record Serializer<T extends BlockTransmutationRecipe>(RecipeFactory<T> recipeFactory) implements RecipeSerializer<T> {
 
         @Override
         public T read(Identifier id, JsonObject json) {

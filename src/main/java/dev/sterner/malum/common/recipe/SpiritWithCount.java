@@ -1,7 +1,7 @@
 package dev.sterner.malum.common.recipe;
 
 import com.google.gson.JsonObject;
-import com.sammy.lodestone.systems.recipe.IRecipeComponent;
+import dev.sterner.lodestone.systems.recipe.IRecipeComponent;
 import dev.sterner.malum.common.item.spirit.MalumSpiritItem;
 import dev.sterner.malum.common.spirit.MalumSpiritType;
 import dev.sterner.malum.common.spirit.SpiritHelper;

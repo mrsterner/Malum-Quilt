@@ -1,6 +1,6 @@
 package dev.sterner.malum.common.entity.spirit;
 
-import com.sammy.lodestone.helpers.ColorHelper;
+import dev.sterner.lodestone.helpers.ColorHelper;
 import dev.sterner.malum.api.interfaces.item.FloatingGlowItem;
 import dev.sterner.malum.client.ParticleEffects;
 import dev.sterner.malum.common.entity.FloatingItemEntity;

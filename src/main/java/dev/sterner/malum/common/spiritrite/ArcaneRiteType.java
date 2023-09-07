@@ -1,8 +1,8 @@
 package dev.sterner.malum.common.spiritrite;
 
-import com.sammy.lodestone.handlers.WorldEventHandler;
-import com.sammy.lodestone.helpers.BlockHelper;
-import com.sammy.lodestone.systems.blockentity.LodestoneBlockEntityInventory;
+import dev.sterner.lodestone.handlers.WorldEventHandler;
+import dev.sterner.lodestone.helpers.BlockHelper;
+import dev.sterner.lodestone.systems.blockentity.LodestoneBlockEntityInventory;
 import dev.sterner.malum.common.block.blight.BlightedSoilBlock;
 import dev.sterner.malum.common.blockentity.spirit_altar.IAltarProvider;
 import dev.sterner.malum.common.blockentity.totem.TotemBaseBlockEntity;
@@ -23,7 +23,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import org.quiltmc.qsl.networking.api.PlayerLookup;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 
 import java.util.List;
 import java.util.Set;
@@ -80,7 +80,7 @@ public class ArcaneRiteType extends MalumRiteType {
 				World world = totemBase.getWorld();
 				BlockPos pos = totemBase.getPos();
 				List<BlockPos> nearbyBlocks = getNearbyBlocks(totemBase, BlightedSoilBlock.class).toList();
-				List<ItemEntity> nearbyItems = getNearbyEntities(totemBase, ItemEntity.class, e -> e.world.getBlockState(e.getBlockPos()).getBlock() instanceof BlightedSoilBlock).toList();
+				List<ItemEntity> nearbyItems = getNearbyEntities(totemBase, ItemEntity.class, e -> e.getWorld().getBlockState(e.getBlockPos()).getBlock() instanceof BlightedSoilBlock).toList();
 				for (ItemEntity itemEntity : nearbyItems) {
 					if (!totemBase.cachedFilterInstances.isEmpty() && !totemBase.cachedFilterInstances.stream().map(e -> e.inventory.getStack(0)).anyMatch(i -> i.getItem().equals(itemEntity.getStack().getItem()))) {
 						continue;

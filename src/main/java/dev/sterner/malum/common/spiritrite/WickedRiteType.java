@@ -12,7 +12,7 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import org.quiltmc.qsl.networking.api.PlayerLookup;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 
 import static dev.sterner.malum.common.registry.MalumSpiritTypeRegistry.ARCANE_SPIRIT;
 import static dev.sterner.malum.common.registry.MalumSpiritTypeRegistry.WICKED_SPIRIT;
@@ -27,9 +27,10 @@ public class WickedRiteType extends MalumRiteType {
 			@Override
 			public void riteEffect(TotemBaseBlockEntity totemBase) {
 				getNearbyEntities(totemBase, LivingEntity.class, e -> !(e instanceof PlayerEntity)).forEach(e -> {
-					if (e.getHealth() > 2.5f && !e.isInvulnerableTo(MalumDamageSourceRegistry.VOODOO)) {
+					var v = MalumDamageSourceRegistry.create(e.getWorld(), MalumDamageSourceRegistry.VOODOO);
+					if (e.getHealth() > 2.5f && !e.isInvulnerableTo(v)) {
 						PlayerLookup.tracking(e).forEach(track -> MinorEntityEffectParticlePacket.send(track, getEffectSpirit().getColor(), e.getX(), e.getY() + e.getHeight() / 2f, e.getZ()));
-						e.damage(MalumDamageSourceRegistry.VOODOO, 2);
+						e.damage(v, 2);
 					}
 				});
 			}

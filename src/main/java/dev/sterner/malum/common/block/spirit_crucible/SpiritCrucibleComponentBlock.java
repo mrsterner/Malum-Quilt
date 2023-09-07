@@ -1,7 +1,7 @@
 package dev.sterner.malum.common.block.spirit_crucible;
 
-import com.sammy.lodestone.systems.multiblock.MultiBlockComponentBlock;
-import com.sammy.lodestone.systems.multiblock.MultiBlockComponentEntity;
+import dev.sterner.lodestone.systems.multiblock.MultiBlockComponentBlock;
+import dev.sterner.lodestone.systems.multiblock.MultiBlockComponentEntity;
 import dev.sterner.malum.common.registry.MalumObjects;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;

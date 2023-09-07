@@ -1,6 +1,7 @@
 package dev.sterner.malum.common.component;
 
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
+import dev.sterner.malum.common.util.handler.SoulHarvestHandler;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.NbtCompound;
 
@@ -18,6 +19,8 @@ public class MalumPlayerComponent implements AutoSyncedComponent {
 	public int soulsShattered;
 	public boolean obtainedEncyclopedia;
 
+	public SoulHarvestHandler soulHarvestHandler = new SoulHarvestHandler();
+
     public MalumPlayerComponent(LivingEntity player) {
         obj = player;
     }
@@ -32,6 +35,10 @@ public class MalumPlayerComponent implements AutoSyncedComponent {
 
         soulWard = tag.getFloat("soulWard");
         soulWardProgress = tag.getFloat("soulWardProgress");
+
+		if (tag.contains("soulHarvestData")) {
+			soulHarvestHandler.deserializeNBT(tag.getCompound("soulHarvestData"));
+		}
     }
 
     @Override
@@ -44,5 +51,7 @@ public class MalumPlayerComponent implements AutoSyncedComponent {
 
         tag.putFloat("soulWard", soulWard);
         tag.putFloat("soulWardProgress", soulWardProgress);
+
+		tag.put("soulHarvestData", soulHarvestHandler.serializeNBT());
     }
 }

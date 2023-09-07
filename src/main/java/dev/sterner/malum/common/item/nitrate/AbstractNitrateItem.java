@@ -1,8 +1,9 @@
 package dev.sterner.malum.common.item.nitrate;
 
-import com.sammy.lodestone.handlers.screenparticle.ParticleEmitterHandler;
-import com.sammy.lodestone.systems.particle.screen.LodestoneScreenParticleTextureSheet;
-import com.sammy.lodestone.systems.particle.screen.base.ScreenParticle;
+import dev.sterner.lodestone.handlers.screenparticle.ParticleEmitterHandler;
+import dev.sterner.lodestone.systems.particle.screen.LodestoneScreenParticleTextureSheet;
+import dev.sterner.lodestone.systems.particle.screen.ScreenParticleHolder;
+import dev.sterner.lodestone.systems.particle.screen.base.ScreenParticle;
 import dev.sterner.malum.common.entity.nitrate.AbstractNitrateEntity;
 import dev.sterner.malum.common.registry.MalumSoundRegistry;
 import net.minecraft.entity.player.PlayerEntity;
@@ -48,9 +49,4 @@ public class AbstractNitrateItem extends Item implements ParticleEmitterHandler.
         return TypedActionResult.success(itemstack, world.isClient());
     }
 
-
-	@Override
-	public void spawnParticles(HashMap<LodestoneScreenParticleTextureSheet, ArrayList<ScreenParticle>> target, World world, float partialTick, ItemStack stack) {
-
-	}
 }

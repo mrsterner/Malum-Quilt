@@ -1,6 +1,6 @@
 package dev.sterner.malum.common.block.spirit_altar;
 
-import com.sammy.lodestone.systems.block.WaterLoggedEntityBlock;
+import dev.sterner.lodestone.systems.block.WaterLoggedEntityBlock;
 import dev.sterner.malum.common.blockentity.spirit_altar.SpiritAltarBlockEntity;
 import dev.sterner.malum.common.registry.MalumBlockEntityRegistry;
 import net.minecraft.block.*;

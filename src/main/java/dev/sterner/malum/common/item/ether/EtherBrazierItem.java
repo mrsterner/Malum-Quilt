@@ -1,13 +1,14 @@
 package dev.sterner.malum.common.item.ether;
 
-import com.sammy.lodestone.setup.LodestoneScreenParticleRegistry;
-import com.sammy.lodestone.systems.easing.Easing;
-import com.sammy.lodestone.systems.particle.ScreenParticleBuilder;
-import com.sammy.lodestone.systems.particle.data.ColorParticleData;
-import com.sammy.lodestone.systems.particle.data.GenericParticleData;
-import com.sammy.lodestone.systems.particle.data.SpinParticleData;
-import com.sammy.lodestone.systems.particle.screen.LodestoneScreenParticleTextureSheet;
-import com.sammy.lodestone.systems.particle.screen.base.ScreenParticle;
+import dev.sterner.lodestone.setup.LodestoneScreenParticleRegistry;
+import dev.sterner.lodestone.systems.easing.Easing;
+import dev.sterner.lodestone.systems.particle.ScreenParticleBuilder;
+import dev.sterner.lodestone.systems.particle.data.ColorParticleData;
+import dev.sterner.lodestone.systems.particle.data.GenericParticleData;
+import dev.sterner.lodestone.systems.particle.data.SpinParticleData;
+import dev.sterner.lodestone.systems.particle.screen.LodestoneScreenParticleTextureSheet;
+import dev.sterner.lodestone.systems.particle.screen.ScreenParticleHolder;
+import dev.sterner.lodestone.systems.particle.screen.base.ScreenParticle;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -21,9 +22,8 @@ public class EtherBrazierItem extends AbstractEtherItem{
         super(blockIn, builder, iridescent);
     }
 
-
 	@Override
-	public void spawnParticles(HashMap<LodestoneScreenParticleTextureSheet, ArrayList<ScreenParticle>> target, World world, float partialTick, ItemStack stack) {
+	public void spawnLateParticles(ScreenParticleHolder target, World world, float partialTick, ItemStack stack, float x, float y) {
 		float time = world.getTime() + partialTick;
 		AbstractEtherItem etherItem = (AbstractEtherItem) stack.getItem();
 		Color firstColor = new Color(etherItem.getFirstColor(stack));

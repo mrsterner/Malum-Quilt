@@ -14,7 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.quiltmc.qsl.networking.api.PlayerLookup;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 
 import java.util.Set;
 
@@ -64,7 +64,7 @@ public class EldritchEarthenRiteType extends MalumRiteType {
 				World world = totemBase.getWorld();
 				getBlocksUnderBase(totemBase, Block.class).forEach(p -> {
 					BlockState state = world.getBlockState(p);
-					boolean canBreak = state.isAir() || state.getMaterial().isReplaceable();
+					boolean canBreak = state.isAir() || state.isReplaceable();
 					if (canBreak) {
 						BlockState cobblestone = Blocks.COBBLESTONE.getDefaultState();
 						world.setBlockState(p, cobblestone);

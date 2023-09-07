@@ -1,8 +1,8 @@
 package dev.sterner.malum.common.block.storage;
 
-import com.sammy.lodestone.forge.ItemHandlerHelper;
-import com.sammy.lodestone.helpers.BlockHelper;
-import com.sammy.lodestone.systems.block.WaterLoggedEntityBlock;
+import dev.sterner.lodestone.forge.ItemHandlerHelper;
+import dev.sterner.lodestone.helpers.BlockHelper;
+import dev.sterner.lodestone.systems.block.WaterLoggedEntityBlock;
 import dev.sterner.malum.common.blockentity.storage.SpiritJarBlockEntity;
 import dev.sterner.malum.common.registry.MalumBlockEntityRegistry;
 import net.minecraft.block.*;

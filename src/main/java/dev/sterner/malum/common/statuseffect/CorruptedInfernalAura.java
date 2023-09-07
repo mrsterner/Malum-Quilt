@@ -1,6 +1,6 @@
 package dev.sterner.malum.common.statuseffect;
 
-import com.sammy.lodestone.helpers.ColorHelper;
+import dev.sterner.lodestone.helpers.ColorHelper;
 import dev.sterner.malum.common.registry.MalumSpiritTypeRegistry;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;

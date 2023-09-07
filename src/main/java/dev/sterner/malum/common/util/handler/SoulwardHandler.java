@@ -1,15 +1,14 @@
 package dev.sterner.malum.common.util.handler;
 
-import com.mojang.blaze3d.glfw.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.sammy.lodestone.handlers.screenparticle.ScreenParticleHandler;
-import com.sammy.lodestone.setup.LodestoneScreenParticleRegistry;
-import com.sammy.lodestone.setup.LodestoneShaderRegistry;
-import com.sammy.lodestone.systems.particle.ScreenParticleBuilder;
-import com.sammy.lodestone.systems.particle.data.ColorParticleData;
-import com.sammy.lodestone.systems.particle.data.GenericParticleData;
-import com.sammy.lodestone.systems.particle.data.SpinParticleData;
-import com.sammy.lodestone.systems.rendering.VFXBuilders;
+import dev.sterner.lodestone.handlers.screenparticle.ScreenParticleHandler;
+import dev.sterner.lodestone.setup.LodestoneScreenParticleRegistry;
+import dev.sterner.lodestone.setup.LodestoneShaderRegistry;
+import dev.sterner.lodestone.systems.particle.ScreenParticleBuilder;
+import dev.sterner.lodestone.systems.particle.data.ColorParticleData;
+import dev.sterner.lodestone.systems.particle.data.GenericParticleData;
+import dev.sterner.lodestone.systems.particle.data.SpinParticleData;
+import dev.sterner.lodestone.systems.rendering.VFXBuilders;
 import dev.sterner.malum.Malum;
 import dev.sterner.malum.api.event.SoulwardDamageAbsorbDamageEvent;
 import dev.sterner.malum.common.component.MalumComponents;
@@ -19,13 +18,16 @@ import dev.sterner.malum.common.registry.MalumSoundRegistry;
 import dev.sterner.malum.common.registry.MalumSpiritTypeRegistry;
 import dev.sterner.malum.common.spirit.MalumSpiritAffinity;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.ShaderProgram;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.render.ShaderProgram;
+import net.minecraft.client.util.Window;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Identifier;
@@ -47,7 +49,7 @@ public class SoulwardHandler extends MalumSpiritAffinity {
 		if (cap != null) {
 			if (component.soulWard < cap.getValue() && component.soulWardProgress <= 0) {
 				component.soulWard++;
-				if (player.world.isClient && !player.isCreative()) {
+				if (player.getWorld().isClient && !player.isCreative()) {
 					player.playSound(component.soulWard >= cap.getValue() ? MalumSoundRegistry.SOUL_WARD_CHARGE : MalumSoundRegistry.SOUL_WARD_GROW, 1, MathHelper.nextFloat(player.getRandom(), 0.6f, 1.4f));
 				}
 				component.soulWardProgress = getSoulWardCooldown(player);
@@ -63,11 +65,11 @@ public class SoulwardHandler extends MalumSpiritAffinity {
 
 	public static float shieldPlayer(LivingEntity entity, DamageSource source, float amount) {
 		if (entity instanceof PlayerEntity player) {
-			if (!player.world.isClient) {
+			if (!player.getWorld().isClient) {
 				MalumPlayerComponent component = MalumComponents.PLAYER_COMPONENT.get(player);
 				component.soulWardProgress = getSoulWardCooldown(0) + getSoulWardCooldown(player);
 				if (component.soulWard > 0) {
-					float multiplier = source.isMagic() ? 0.1f : 0.7f;
+					float multiplier = source.isOf(DamageTypes.MAGIC) ? 0.1f : 0.7f;
 					float result = amount * multiplier;
 					float absorbed = amount - result;
 					double strength = player.getAttributeValue(MalumAttributeRegistry.SOUL_WARD_STRENGTH);
@@ -80,7 +82,7 @@ public class SoulwardHandler extends MalumSpiritAffinity {
 					}
 
 					SoulwardDamageAbsorbDamageEvent.ON_ABSORB_DAMAGE_EVENT.invoker().react(player, source, soulwardLost, absorbed);
-					player.world.playSound(null, player.getBlockPos(), MalumSoundRegistry.SOUL_WARD_HIT, SoundCategory.PLAYERS, 1, MathHelper.nextFloat(player.getRandom(), 1.5f, 2f));
+					player.getWorld().playSound(null, player.getBlockPos(), MalumSoundRegistry.SOUL_WARD_HIT, SoundCategory.PLAYERS, 1, MathHelper.nextFloat(player.getRandom(), 1.5f, 2f));
 					MalumComponents.PLAYER_COMPONENT.sync(player);
 					return result;
 				}
@@ -108,7 +110,8 @@ public class SoulwardHandler extends MalumSpiritAffinity {
 			return Malum.id("textures/gui/soul_ward/default.png");
 		}
 
-		public static void renderSoulWard(MatrixStack matrices, Window window) {
+		public static void renderSoulWard(DrawContext context, Window window) {
+			MatrixStack matrixStack = context.getMatrices();
 			final MinecraftClient client = MinecraftClient.getInstance();
 			ClientPlayerEntity player = client.player;
 			if (player != null && client.world != null && !player.isCreative() && !player.isSpectator()) {
@@ -127,17 +130,17 @@ public class SoulwardHandler extends MalumSpiritAffinity {
 					int healthRows = MathHelper.ceil((maxHealth + absorb) / 2.0F / 10.0F);
 					int rowHeight = Math.max(10 - (healthRows - 2), 3);
 
-					matrices.push();
+					matrixStack.push();
 					RenderSystem.depthMask(false);
 					RenderSystem.enableBlend();
 					RenderSystem.defaultBlendFunc();
 					RenderSystem.setShaderTexture(0, getSoulWardTexture());
 					RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 					ShaderProgram shader = LodestoneShaderRegistry.DISTORTED_TEXTURE.getInstance().get();
-					shader.getUniformOrDefault("YFrequency").setFloat(15f);
-					shader.getUniformOrDefault("XFrequency").setFloat(15f);
-					shader.getUniformOrDefault("Speed").setFloat(550f);
-					shader.getUniformOrDefault("Intensity").setFloat(150f);
+					shader.getUniformOrDefault("YFrequency").set(15f);
+					shader.getUniformOrDefault("XFrequency").set(15f);
+					shader.getUniformOrDefault("Speed").set(550f);
+					shader.getUniformOrDefault("Intensity").set(150f);
 					VFXBuilders.ScreenVFXBuilder builder = VFXBuilders.createScreen()
 							.setPosColorTexLightmapDefaultFormat()
 							.setShader(() -> shader);
@@ -148,12 +151,12 @@ public class SoulwardHandler extends MalumSpiritAffinity {
 						int progress = Math.min(3, (int) soulWard - i * 3);
 						int xTextureOffset = 1 + (3 - progress) * 15;
 
-						shader.getUniformOrDefault("UVCoordinates").setVec4(new Vector4f(xTextureOffset / 45f, (xTextureOffset + 12) / 45f, 1 / 45f, 13 / 45f));
-						shader.getUniformOrDefault("TimeOffset").setFloat(i * 150f);
+						shader.getUniformOrDefault("UVCoordinates").set(new Vector4f(xTextureOffset / 45f, (xTextureOffset + 12) / 45f, 1 / 45f, 13 / 45f));
+						shader.getUniformOrDefault("TimeOffset").set(i * 150f);
 
 						builder.setPositionWithWidth(x - 2, y - 2, 13, 13)
 								.setUVWithWidth(xTextureOffset, 0, 13, 13, 45)
-								.draw(matrices);
+								.draw(matrixStack);
 						if (ScreenParticleHandler.canSpawnParticles) {
 							final float spin = client.world.random.nextFloat() * 6.28f;
 							ScreenParticleBuilder.create(LodestoneScreenParticleRegistry.WISP, ScreenParticleHandler.EARLY_PARTICLES)
@@ -170,7 +173,7 @@ public class SoulwardHandler extends MalumSpiritAffinity {
 					}
 					RenderSystem.depthMask(true);
 					RenderSystem.disableBlend();
-					matrices.pop();
+					matrixStack.pop();
 				}
 			}
 		}

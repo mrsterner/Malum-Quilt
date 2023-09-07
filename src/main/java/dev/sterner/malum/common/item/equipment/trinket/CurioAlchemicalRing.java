@@ -1,6 +1,6 @@
 package dev.sterner.malum.common.item.equipment.trinket;
 
-import com.sammy.lodestone.helpers.EntityHelper;
+import dev.sterner.lodestone.helpers.EntityHelper;
 import dev.emi.trinkets.api.SlotReference;
 import dev.emi.trinkets.api.TrinketItem;
 import dev.emi.trinkets.api.TrinketsApi;
@@ -33,7 +33,7 @@ public class CurioAlchemicalRing extends TrinketItem implements SpiritCollectAct
                     if (type.isBeneficial()) {
                         EntityHelper.extendEffect(statusEffectInstance, livingEntity, (int) (statusEffectInstance.getDuration()*0.25f*multiplier));
                     }
-                    else if (type.getType() == StatusEffectCategory.HARMFUL) {
+                    else if (type.getCategory() == StatusEffectCategory.HARMFUL) {
                         EntityHelper.shortenEffect(statusEffectInstance, livingEntity, (int) (statusEffectInstance.getDuration()*0.33f*multiplier));
                     }
                 });
@@ -50,7 +50,7 @@ public class CurioAlchemicalRing extends TrinketItem implements SpiritCollectAct
                 int base = 40 +(int)(arcaneResonance*20);
                 EntityHelper.extendEffect(statusEffectInstance, livingEntity, (int) (base*multiplier), 1200);
             }
-            else if (statusEffect.getType().equals(StatusEffectCategory.HARMFUL)) {
+            else if (statusEffect.getCategory().equals(StatusEffectCategory.HARMFUL)) {
                 int base = 60 +(int)(arcaneResonance*30);
                 EntityHelper.shortenEffect(statusEffectInstance, livingEntity, (int) (base*multiplier));
             }

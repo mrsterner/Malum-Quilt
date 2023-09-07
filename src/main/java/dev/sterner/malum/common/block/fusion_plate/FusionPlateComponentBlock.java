@@ -1,6 +1,6 @@
 package dev.sterner.malum.common.block.fusion_plate;
 
-import com.sammy.lodestone.systems.multiblock.MultiBlockComponentBlock;
+import dev.sterner.lodestone.systems.multiblock.MultiBlockComponentBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;

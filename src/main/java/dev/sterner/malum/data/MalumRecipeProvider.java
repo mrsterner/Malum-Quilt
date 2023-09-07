@@ -12,7 +12,8 @@ public class MalumRecipeProvider extends FabricRecipeProvider {
 	}
 
 	@Override
-	public void generateRecipes(Consumer<RecipeJsonProvider> exporter) {
+	public void generate(Consumer<RecipeJsonProvider> exporter) {
 
 	}
+
 }

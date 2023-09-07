@@ -1,6 +1,6 @@
 package dev.sterner.malum.common.statuseffect;
 
-import com.sammy.lodestone.helpers.ColorHelper;
+import dev.sterner.lodestone.helpers.ColorHelper;
 import dev.sterner.malum.common.item.tools.MalumScytheItem;
 import dev.sterner.malum.common.registry.MalumAttributeRegistry;
 import dev.sterner.malum.common.registry.MalumObjects;
@@ -9,6 +9,7 @@ import dev.sterner.malum.common.registry.MalumStatusEffectRegistry;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.entity.player.PlayerEntity;
@@ -22,7 +23,7 @@ public class WickedIntentEffect extends StatusEffect {
     }
 
     public static void removeWickedIntent(DamageSource damageSource) {
-        if (damageSource.isMagic() || (damageSource instanceof EntityDamageSource entityDamageSource && entityDamageSource.isThorns())) {
+        if (damageSource.isOf(DamageTypes.MAGIC) || (damageSource.isOf(DamageTypes.THORNS))) {
             return;
         }
         if (damageSource.getSource() instanceof LivingEntity livingEntity) {

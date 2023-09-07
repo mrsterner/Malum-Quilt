@@ -1,14 +1,15 @@
 package dev.sterner.malum.common.item.nitrate;
 
-import com.sammy.lodestone.helpers.ColorHelper;
-import com.sammy.lodestone.setup.LodestoneScreenParticleRegistry;
-import com.sammy.lodestone.systems.easing.Easing;
-import com.sammy.lodestone.systems.particle.ScreenParticleBuilder;
-import com.sammy.lodestone.systems.particle.data.ColorParticleData;
-import com.sammy.lodestone.systems.particle.data.GenericParticleData;
-import com.sammy.lodestone.systems.particle.data.SpinParticleData;
-import com.sammy.lodestone.systems.particle.screen.LodestoneScreenParticleTextureSheet;
-import com.sammy.lodestone.systems.particle.screen.base.ScreenParticle;
+import dev.sterner.lodestone.helpers.ColorHelper;
+import dev.sterner.lodestone.setup.LodestoneScreenParticleRegistry;
+import dev.sterner.lodestone.systems.easing.Easing;
+import dev.sterner.lodestone.systems.particle.ScreenParticleBuilder;
+import dev.sterner.lodestone.systems.particle.data.ColorParticleData;
+import dev.sterner.lodestone.systems.particle.data.GenericParticleData;
+import dev.sterner.lodestone.systems.particle.data.SpinParticleData;
+import dev.sterner.lodestone.systems.particle.screen.LodestoneScreenParticleTextureSheet;
+import dev.sterner.lodestone.systems.particle.screen.ScreenParticleHolder;
+import dev.sterner.lodestone.systems.particle.screen.base.ScreenParticle;
 import dev.sterner.malum.common.entity.nitrate.EthericNitrateEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -23,7 +24,7 @@ public class EthericNitrateItem extends AbstractNitrateItem {
     }
 
 	@Override
-	public void spawnParticles(HashMap<LodestoneScreenParticleTextureSheet, ArrayList<ScreenParticle>> target, World world, float partialTick, ItemStack stack) {
+	public void spawnLateParticles(ScreenParticleHolder target, World world, float partialTick, ItemStack stack, float x, float y) {
 		float gameTime = (float) (world.getTime() + partialTick + Math.sin(((world.getTime() + partialTick) * 0.1f)));
 		Color firstColor = ColorHelper.brighter(EthericNitrateEntity.FIRST_COLOR, 2);
 		Color secondColor = EthericNitrateEntity.SECOND_COLOR;

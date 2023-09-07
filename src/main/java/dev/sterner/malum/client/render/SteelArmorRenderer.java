@@ -27,7 +27,7 @@ public class SteelArmorRenderer implements ArmorRenderer {
 			armorModel = new SoulStainedSteelArmorModel(client.getEntityModelLoader().getModelPart(SoulStainedSteelArmorModel.LAYER));
 		}
 
-		contextModel.setAttributes(armorModel);
+		contextModel.copyBipedStateTo(armorModel);
 		armorModel.copyFromDefault(contextModel);
 		armorModel.setVisible(false);
 

@@ -22,7 +22,7 @@ public class ServerWorldMixin {
 
 	}
 
-	@Inject(method = "shouldCreateNewEntityWithPassenger", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;spawnEntityAndPassengers(Lnet/minecraft/entity/Entity;)V"))
+	@Inject(method = "spawnNewEntityAndPassengers", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;spawnEntityAndPassengers(Lnet/minecraft/entity/Entity;)V"))
 	private void malum$eventInject2(Entity entity, CallbackInfoReturnable<Boolean> cir){
 		if(entity instanceof LivingEntity livingEntity){
 			LivingEntityEvent.ADDED_EVENT.invoker().react(livingEntity, false);

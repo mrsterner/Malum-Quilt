@@ -11,8 +11,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(MobEntity.class)
 public class MobEntityMixin {
 
-	@Inject(method = "setTarget", at = @At("HEAD"))
+	@Inject(method = "setTarget", at = @At("HEAD"), cancellable = true)
 	private void malum$setTargetEvent(LivingEntity target, CallbackInfo ci){
-		LivingEntityEvent.ON_TARGETING_EVENT.invoker().react((MobEntity)(Object)this, target);
+		boolean bl = LivingEntityEvent.ON_TARGETING_EVENT.invoker().react((MobEntity)(Object)this, target);
+		if (bl) {
+			ci.cancel();
+		}
 	}
 }

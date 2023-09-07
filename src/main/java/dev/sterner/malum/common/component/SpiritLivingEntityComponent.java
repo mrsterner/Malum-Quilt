@@ -17,14 +17,8 @@ public class SpiritLivingEntityComponent implements AutoSyncedComponent {
     private final LivingEntity obj;
 
     private MalumEntitySpiritData spiritData;
+	public List<ItemStack> soulsToApplyToDrops;
 
-    private float soulHarvestProgress;
-    public float exposedSoul;
-    private boolean soulless = false;
-    private boolean spawnerSpawned = false;
-    private UUID soulThiefUUID;
-
-    public List<ItemStack> soulsToApplyToDrops;
     public UUID killerUUID;
 
     public SpiritLivingEntityComponent(LivingEntity livingEntity) {
@@ -32,101 +26,38 @@ public class SpiritLivingEntityComponent implements AutoSyncedComponent {
         spiritData = SpiritHelper.getEntitySpiritData(obj);
     }
 
-    public float getPreviewProgress() {
-        return soulless ? 10 : Math.min(10, soulHarvestProgress);
-    }
-    public float getHarvestProgress() {
-        return Math.max(0, soulHarvestProgress-10);
-    }
-
-    public void setSoulThiefUuid(UUID ownerUuid) {
-        this.soulThiefUUID = ownerUuid;
-    }
-
-    public void setSoulHarvestProgress(float soulHarvestProgress) {
-        this.soulHarvestProgress = soulHarvestProgress;
-    }
-
-    public void setSoulless(boolean soulless) {
-        this.soulless = soulless;
-    }
-
-    public boolean isSoulless() {
-        return soulless;
-    }
-
-    public boolean isSpawnerSpawned() {
-        return spawnerSpawned;
-    }
-
-    public void setSpawnerSpawned(boolean spawnerSpawned) {
-        this.spawnerSpawned = spawnerSpawned;
-    }
-
-    public void setSpiritData(MalumEntitySpiritData spiritData) {
-        this.spiritData = spiritData;
-    }
-
-    public float getSoulHarvestProgress() {
-        return soulHarvestProgress;
-    }
-
-    public MalumEntitySpiritData getSpiritData() {
-        return spiritData;
-    }
-
-    public UUID getSoulThiefUuid() {
-        return soulThiefUUID;
-    }
-
     @Override
     public void readFromNbt(NbtCompound tag) {
-        tag.putFloat("soulHarvestProgress", soulHarvestProgress);
-        tag.putFloat("exposedSoul", exposedSoul);
-        if (soulsToApplyToDrops != null) {
-            NbtList souls = new NbtList();
-            for (ItemStack soul : soulsToApplyToDrops) {
-                souls.add(soul.getNbt());
-            }
-            tag.put("soulsToApplyToDrops", souls);
-        }
         if (killerUUID != null) {
             tag.putUuid("killerUUID", killerUUID);
         }
-        tag.putBoolean("soulless", soulless);
-        tag.putBoolean("spawnerSpawned", spawnerSpawned);
-        if (soulThiefUUID != null) {
-            tag.putUuid("soulThiefUUID", soulThiefUUID);
-        }
+		if (soulsToApplyToDrops != null) {
+			NbtList souls = new NbtList();
+			for (ItemStack soul : soulsToApplyToDrops) {
+				souls.add(soul.serializeNBT());
+			}
+			tag.put("soulsToApplyToDrops", souls);
+		}
         if(spiritData != null)
             spiritData.saveTo(tag);
     }
+
     @Override
     public void writeToNbt(NbtCompound tag) {
-        soulHarvestProgress = tag.getFloat("soulHarvestProgress");
-        exposedSoul = tag.getFloat("exposedSoul");
-        soulless = tag.getBoolean("soulless");
-
-        if (tag.contains("soulsToApplyToDrops", NbtElement.LIST_TYPE)) {
-            soulsToApplyToDrops = new ArrayList<>();
-            NbtList souls = tag.getList("soulsToApplyToDrops", NbtElement.COMPOUND_TYPE);
-            for (int i = 0; i < souls.size(); i++) {
-                soulsToApplyToDrops.add(ItemStack.fromNbt(souls.getCompound(i)));
-            }
-        } else {
-            soulsToApplyToDrops = null;
-        }
-
         if (tag.contains("killerUUID")) {
             killerUUID = tag.getUuid("killerUUID");
         } else {
             killerUUID = null;
         }
-
-        spawnerSpawned = tag.getBoolean("spawnerSpawned");
-        if (tag.contains("soulThiefUUID")) {
-			soulThiefUUID = tag.getUuid("soulThiefUUID");
-        }
+		if (tag.contains("soulsToApplyToDrops", NbtElement.LIST_TYPE)) {
+			soulsToApplyToDrops = new ArrayList<>();
+			NbtList souls = tag.getList("soulsToApplyToDrops", NbtElement.COMPOUND_TYPE);
+			for (int i = 0; i < souls.size(); i++) {
+				soulsToApplyToDrops.add(ItemStack.fromNbt(souls.getCompound(i)));
+			}
+		} else {
+			soulsToApplyToDrops = null;
+		}
         if(MalumEntitySpiritData.load(tag) != null)
             spiritData = MalumEntitySpiritData.load(tag);
     }

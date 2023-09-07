@@ -1,8 +1,8 @@
 package dev.sterner.malum.client.render.block;
 
-import com.sammy.lodestone.handlers.RenderHandler;
-import com.sammy.lodestone.setup.LodestoneRenderLayers;
-import com.sammy.lodestone.systems.rendering.VFXBuilders;
+import dev.sterner.lodestone.handlers.RenderHandler;
+import dev.sterner.lodestone.setup.LodestoneRenderLayerRegistry;
+import dev.sterner.lodestone.systems.rendering.VFXBuilders;
 import dev.sterner.malum.Malum;
 import dev.sterner.malum.common.blockentity.VoidConduitBlockEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -27,7 +27,7 @@ public class VoidConduitBlockEntityRenderer implements BlockEntityRenderer<VoidC
 	public void renderQuad(MatrixStack matrices) {
 		float height = 0.75f;
 		float width = 1.5f;
-		var textureConsumer = RenderHandler.DELAYED_RENDER.getBuffer(LodestoneRenderLayers.TRANSPARENT_TEXTURE.applyAndCache(VIGNETTE));
+		var textureConsumer = RenderHandler.DELAYED_RENDER.getBuffer(LodestoneRenderLayerRegistry.TRANSPARENT_TEXTURE.applyAndCache(VIGNETTE));
 		Vector3f[] positions = new Vector3f[]{new Vector3f(-width, height, width), new Vector3f(width, height, width), new Vector3f(width, height, -width), new Vector3f(-width, height, -width)};
 		VFXBuilders.WorldVFXBuilder builder = VFXBuilders.createWorld().setPosColorTexLightmapDefaultFormat();
 

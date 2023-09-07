@@ -20,8 +20,9 @@ public final class LivingEntityEvent {
 	public static final Event<Targeting> ON_TARGETING_EVENT = EventFactory.createArrayBacked(Targeting.class,
 			(listeners) -> (mobEntity, target) -> {
 				for (Targeting event : listeners) {
-					event.react(mobEntity, target);
+					return event.react(mobEntity, target);
 				}
+				return false;
 			}
 	);
 
@@ -54,7 +55,7 @@ public final class LivingEntityEvent {
 
 	@FunctionalInterface
 	public interface Targeting {
-		void react(MobEntity mobEntity, @Nullable LivingEntity target);
+		boolean react(MobEntity mobEntity, @Nullable LivingEntity target);
 	}
 
 	@FunctionalInterface

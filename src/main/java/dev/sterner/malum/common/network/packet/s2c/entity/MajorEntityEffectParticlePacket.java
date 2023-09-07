@@ -1,12 +1,12 @@
 package dev.sterner.malum.common.network.packet.s2c.entity;
 
-import com.sammy.lodestone.helpers.ColorHelper;
-import com.sammy.lodestone.setup.LodestoneParticleRegistry;
-import com.sammy.lodestone.systems.easing.Easing;
-import com.sammy.lodestone.systems.particle.WorldParticleBuilder;
-import com.sammy.lodestone.systems.particle.data.ColorParticleData;
-import com.sammy.lodestone.systems.particle.data.GenericParticleData;
-import com.sammy.lodestone.systems.particle.data.SpinParticleData;
+import dev.sterner.lodestone.helpers.ColorHelper;
+import dev.sterner.lodestone.setup.LodestoneParticleRegistry;
+import dev.sterner.lodestone.systems.easing.Easing;
+import dev.sterner.lodestone.systems.particle.WorldParticleBuilder;
+import dev.sterner.lodestone.systems.particle.data.ColorParticleData;
+import dev.sterner.lodestone.systems.particle.data.GenericParticleData;
+import dev.sterner.lodestone.systems.particle.data.SpinParticleData;
 import dev.sterner.malum.Malum;
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.MinecraftClient;

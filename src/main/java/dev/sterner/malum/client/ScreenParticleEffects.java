@@ -1,14 +1,14 @@
 package dev.sterner.malum.client;
 
-import com.sammy.lodestone.setup.LodestoneScreenParticleRegistry;
-import com.sammy.lodestone.systems.easing.Easing;
-import com.sammy.lodestone.systems.particle.ScreenParticleBuilder;
-import com.sammy.lodestone.systems.particle.data.ColorParticleData;
-import com.sammy.lodestone.systems.particle.data.GenericParticleData;
-import com.sammy.lodestone.systems.particle.data.SpinParticleData;
-import com.sammy.lodestone.systems.particle.screen.LodestoneScreenParticleTextureSheet;
-import com.sammy.lodestone.systems.particle.screen.ScreenParticleHolder;
-import com.sammy.lodestone.systems.particle.screen.base.ScreenParticle;
+import dev.sterner.lodestone.setup.LodestoneScreenParticleRegistry;
+import dev.sterner.lodestone.systems.easing.Easing;
+import dev.sterner.lodestone.systems.particle.ScreenParticleBuilder;
+import dev.sterner.lodestone.systems.particle.data.ColorParticleData;
+import dev.sterner.lodestone.systems.particle.data.GenericParticleData;
+import dev.sterner.lodestone.systems.particle.data.SpinParticleData;
+import dev.sterner.lodestone.systems.particle.screen.LodestoneScreenParticleTextureSheet;
+import dev.sterner.lodestone.systems.particle.screen.ScreenParticleHolder;
+import dev.sterner.lodestone.systems.particle.screen.base.ScreenParticle;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.random.Random;

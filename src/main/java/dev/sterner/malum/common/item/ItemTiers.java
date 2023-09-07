@@ -11,7 +11,7 @@ public class ItemTiers {
 	public enum ItemTierEnum implements ToolMaterial {
 		SOUL_STAINED_STEEL(1250, 7.5f, 2.5f, 3, 16, MalumObjects.SOUL_STAINED_STEEL_INGOT),
 		TYRVING(850, 8f, 1f, 3, 12, Items.OAK_PLANKS),
-		VOID(1750, 8f, 6f, 4, 14, MalumObjects.TWISTED_ROCK.asItem());
+		VOID(1750, 8f, 6f, 4, 14, MalumObjects.ASTRAL_WEAVE);
 		private final int maxUses;
 		private final float efficiency;
 		private final float attackDamage;

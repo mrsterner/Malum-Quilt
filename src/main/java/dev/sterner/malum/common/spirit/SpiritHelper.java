@@ -1,6 +1,6 @@
 package dev.sterner.malum.common.spirit;
 
-import com.sammy.lodestone.helpers.ItemHelper;
+import dev.sterner.lodestone.helpers.ItemHelper;
 import dev.sterner.malum.Malum;
 import dev.sterner.malum.MalumConfig;
 import dev.sterner.malum.common.component.MalumComponents;

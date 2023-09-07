@@ -1,6 +1,6 @@
 package dev.sterner.malum.common.block.blight;
 
-import com.sammy.lodestone.systems.block.LodestoneLogBlock;
+import dev.sterner.lodestone.systems.block.LodestoneLogBlock;
 import net.minecraft.block.Block;
 
 public class SoulwoodBlock extends LodestoneLogBlock {

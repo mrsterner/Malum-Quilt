@@ -73,7 +73,7 @@ public class MalumClient implements ClientModInitializer {
 		BlockEntityRendererFactories.register(MalumBlockEntityRegistry.SPIRIT_CRUCIBLE, SpiritCrucibleBlockEntityRenderer::new);
 		BlockEntityRendererFactories.register(MalumBlockEntityRegistry.SPIRIT_CATALYZER, SpiritCatalyzerBlockEntityRenderer::new);
 		BlockEntityRendererFactories.register(MalumBlockEntityRegistry.TWISTED_TABLET, ItemStandBlockEntityRenderer::new);
-		BlockEntityRendererFactories.register(MalumBlockEntityRegistry.PLINTH, PlinthBlockEntityRenderer::new);
+		//BlockEntityRendererFactories.register(MalumBlockEntityRegistry.PLINTH, PlinthBlockEntityRenderer::new);
 		BlockEntityRendererFactories.register(MalumBlockEntityRegistry.TOTEM_POLE, TotemPoleBlockEntityRenderer::new);
 		BlockEntityRendererFactories.register(MalumBlockEntityRegistry.ITEM_STAND, ItemStandBlockEntityRenderer::new);
 		BlockEntityRendererFactories.register(MalumBlockEntityRegistry.ITEM_PEDESTAL, ItemPedestalBlockEntityRenderer::new);
@@ -190,13 +190,13 @@ public class MalumClient implements ClientModInitializer {
 			if (tintIndex != 1 || world == null || pos == null) return -1;
 			BlockEntity blockEntity = world.getBlockEntity(pos);
 			if (!(blockEntity instanceof EtherBlockEntity ether)) return -1;
-			return ether.firstColorRGB;
+			return ether.firstColor.getRGB();
 		}, WALL_ETHER_TORCH, ETHER_TORCH);
 		ColorProviderRegistry.BLOCK.register((state, world, pos, tintIndex) -> {
 			if (tintIndex == -1 || tintIndex == 0 || world == null || pos == null) return -1;
 			BlockEntity blockEntity = world.getBlockEntity(pos);
 			if (!(blockEntity instanceof EtherBlockEntity ether)) return -1;
-			return tintIndex == 1 ? ether.firstColorRGB : ether.secondColorRGB;
+			return tintIndex == 1 ? ether.firstColor.getRGB() : ether.secondColor.getRGB();
 		}, IRIDESCENT_ETHER_TORCH, IRIDESCENT_WALL_ETHER_TORCH);
 	}
 }

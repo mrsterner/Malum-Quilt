@@ -1,7 +1,87 @@
 accessWidener v2 named
-accessible field net/minecraft/item/SwordItem attackDamage F
-accessible field net/minecraft/item/SwordItem attributeModifiers Lcom/google/common/collect/Multimap;
-accessible method net/minecraft/item/ItemStack <init> (Lnet/minecraft/item/ItemConvertible;ILjava/util/Optional;)V
-accessible method net/minecraft/block/WoodType register (Lnet/minecraft/block/WoodType;)Lnet/minecraft/block/WoodType;
-accessible field net/minecraft/entity/mob/MobEntity goalSelector Lnet/minecraft/entity/ai/goal/GoalSelector;
-accessible method net/minecraft/client/render/entity/LivingEntityRenderer addFeature (Lnet/minecraft/client/render/entity/feature/FeatureRenderer;)Z
+transitive-accessible field net/minecraft/item/SwordItem attackDamage F
+transitive-accessible field net/minecraft/item/SwordItem attributeModifiers Lcom/google/common/collect/Multimap;
+transitive-accessible method net/minecraft/item/ItemStack <init> (Lnet/minecraft/item/ItemConvertible;ILjava/util/Optional;)V
+transitive-accessible method net/minecraft/block/WoodType register (Lnet/minecraft/block/WoodType;)Lnet/minecraft/block/WoodType;
+transitive-accessible field net/minecraft/entity/mob/MobEntity goalSelector Lnet/minecraft/entity/ai/goal/GoalSelector;
+transitive-accessible method net/minecraft/client/render/entity/LivingEntityRenderer addFeature (Lnet/minecraft/client/render/entity/feature/FeatureRenderer;)Z
+transitive-accessible method net/minecraft/entity/Entity fall (DZLnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;)V
+transitive-mutable	field	net/minecraft/item/SwordItem	attackDamage	F
+transitive-mutable	field	net/minecraft/item/SwordItem	attributeModifiers	Lcom/google/common/collect/Multimap;
+transitive-mutable	field	net/minecraft/item/ArmorItem	attributeModifiers	Lcom/google/common/collect/Multimap;
+transitive-accessible field net/minecraft/item/Item ATTACK_DAMAGE_MODIFIER_ID Ljava/util/UUID;
+transitive-accessible class net/minecraft/client/particle/ParticleManager$SimpleSpriteProvider
+transitive-accessible field net/minecraft/entity/player/PlayerInventory combinedInventory Ljava/util/List;
+transitive-accessible field net/minecraft/util/collection/DefaultedList delegate Ljava/util/List;
+transitive-accessible field net/minecraft/block/entity/AbstractFurnaceBlockEntity cookTime I
+transitive-accessible field net/minecraft/block/entity/AbstractFurnaceBlockEntity cookTimeTotal I
+transitive-accessible method net/minecraft/entity/mob/ZombieEntity setTicksUntilWaterConversion (I)V
+transitive-accessible method net/minecraft/block/PointedDripstoneBlock isHeldByPointedDripstone (Lnet/minecraft/block/BlockState;Lnet/minecraft/world/WorldView;Lnet/minecraft/util/math/BlockPos;)Z
+transitive-accessible field net/minecraft/entity/ai/goal/EatGrassGoal GRASS_PREDICATE Ljava/util/function/Predicate;
+transitive-accessible field net/minecraft/entity/passive/SheepEntity eatGrassGoal Lnet/minecraft/entity/ai/goal/EatGrassGoal;
+transitive-accessible class net/minecraft/entity/passive/BeeEntity$PollinateGoal
+transitive-accessible field net/minecraft/entity/passive/BeeEntity pollinateGoal Lnet/minecraft/entity/passive/BeeEntity$PollinateGoal;
+transitive-accessible field net/minecraft/entity/passive/BeeEntity$PollinateGoal pollinationTicks I
+transitive-accessible method net/minecraft/entity/attribute/EntityAttributeInstance onUpdate ()V
+transitive-accessible field net/minecraft/loot/context/LootContext$Builder parameters Lnet/minecraft/loot/context/LootContextParameterSet;
+transitive-accessible field net/minecraft/entity/effect/StatusEffectInstance amplifier I
+transitive-accessible field net/minecraft/item/ArmorItem MODIFIERS Ljava/util/EnumMap;
+transitive-accessible method net/minecraft/block/entity/AbstractFurnaceBlockEntity isBurning ()Z
+transitive-extendable class net/minecraft/enchantment/EnchantmentTarget
+
+transitive-accessible      class     net/minecraft/client/render/RenderLayer$MultiPhase
+
+
+
+transitive-accessible field net/minecraft/client/render/WorldRenderer transparencyPostProcessor Lnet/minecraft/client/gl/PostEffectProcessor;
+transitive-accessible field net/minecraft/client/gl/ShaderProgram uniforms Ljava/util/List;
+transitive-accessible class net/minecraft/client/render/BackgroundRenderer$FogData
+transitive-accessible field net/minecraft/entity/LivingEntity effectsChanged Z
+transitive-accessible method net/minecraft/entity/LivingEntity onStatusEffectUpgraded (Lnet/minecraft/entity/effect/StatusEffectInstance;ZLnet/minecraft/entity/Entity;)V
+transitive-accessible class net/minecraft/enchantment/EnchantmentHelper$Consumer
+transitive-accessible method net/minecraft/enchantment/EnchantmentHelper forEachEnchantment (Lnet/minecraft/enchantment/EnchantmentHelper$Consumer;Lnet/minecraft/item/ItemStack;)V
+
+transitive-accessible field net/minecraft/client/render/RenderLayer$MultiPhase phases Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters;
+
+transitive-accessible class net/minecraft/client/render/RenderPhase$Transparency
+transitive-accessible class net/minecraft/client/render/RenderPhase$ShaderProgram
+transitive-accessible method net/minecraft/client/render/Camera setRotation (FF)V
+transitive-accessible class net/minecraft/client/render/RenderPhase$Transparency
+transitive-accessible field net/minecraft/client/render/RenderPhase name Ljava/lang/String;
+transitive-accessible field net/minecraft/entity/effect/StatusEffectInstance duration I
+transitive-accessible class net/minecraft/client/render/RenderLayer$MultiPhaseParameters
+transitive-accessible field net/minecraft/client/particle/ParticleManager spriteAwareFactories Ljava/util/Map;
+
+transitive-accessible method net/minecraft/client/gl/ShaderProgram addUniform (Lcom/google/gson/JsonElement;)V
+transitive-extendable method net/minecraft/client/gl/ShaderProgram addUniform (Lcom/google/gson/JsonElement;)V
+transitive-accessible field net/minecraft/client/render/RenderLayer$MultiPhaseParameters transparency Lnet/minecraft/client/render/RenderPhase$Transparency;
+transitive-accessible field net/minecraft/client/render/RenderLayer$MultiPhaseParameters texture Lnet/minecraft/client/render/RenderPhase$TextureBase;
+transitive-accessible field net/minecraft/client/render/RenderLayer$MultiPhaseParameters program Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
+transitive-accessible method net/minecraft/client/render/GameRenderer getFov (Lnet/minecraft/client/render/Camera;FZ)D
+transitive-accessible field net/minecraft/item/MiningToolItem attributeModifiers Lcom/google/common/collect/Multimap;
+transitive-accessible field net/minecraft/client/gl/PostEffectProcessor passes Ljava/util/List;
+transitive-accessible field net/minecraft/client/render/RenderPhase$ShaderProgram supplier Ljava/util/Optional;
+transitive-accessible field net/minecraft/item/ArmorItem attributeModifiers Lcom/google/common/collect/Multimap;
+transitive-accessible method net/minecraft/enchantment/EnchantmentHelper forEachEnchantment (Lnet/minecraft/enchantment/EnchantmentHelper$Consumer;Ljava/lang/Iterable;)V
+transitive-accessible field net/minecraft/client/MinecraftClient renderTickCounter Lnet/minecraft/client/render/RenderTickCounter;
+
+
+transitive-accessible  class net/minecraft/client/render/RenderLayer$MultiPhase
+transitive-accessible  class net/minecraft/client/render/RenderLayer$MultiPhaseParameters
+transitive-accessible  class net/minecraft/client/render/RenderLayer$OutlineMode
+transitive-accessible  class net/minecraft/client/render/RenderPhase$Cull
+transitive-accessible  class net/minecraft/client/render/RenderPhase$DepthTest
+transitive-accessible  class net/minecraft/client/render/RenderPhase$WriteMaskState
+transitive-accessible  class net/minecraft/client/render/RenderPhase$Layering
+transitive-accessible  class net/minecraft/client/render/RenderPhase$Target
+transitive-accessible  class net/minecraft/client/render/RenderPhase$LineWidth
+transitive-accessible  class net/minecraft/client/render/RenderPhase$Toggleable
+transitive-accessible  class net/minecraft/client/render/RenderPhase$OffsetTexturing
+transitive-accessible  class net/minecraft/client/render/RenderPhase$Textures
+
+
+transitive-accessible      class     net/minecraft/client/render/RenderLayer$MultiPhase
+transitive-accessible      class     net/minecraft/block/entity/BlockEntityType$BlockEntityFactory
+transitive-accessible      class     net/minecraft/client/particle/ParticleManager$SimpleSpriteProvider
+
+

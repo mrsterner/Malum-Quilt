@@ -1,7 +1,7 @@
 package dev.sterner.malum.common.statuseffect;
 
 import com.jamieswhiteshirt.reachentityattributes.ReachEntityAttributes;
-import com.sammy.lodestone.helpers.ColorHelper;
+import dev.sterner.lodestone.helpers.ColorHelper;
 import dev.sterner.malum.common.registry.MalumSpiritTypeRegistry;
 import dev.sterner.malum.common.registry.MalumStatusEffectRegistry;
 import net.minecraft.entity.LivingEntity;

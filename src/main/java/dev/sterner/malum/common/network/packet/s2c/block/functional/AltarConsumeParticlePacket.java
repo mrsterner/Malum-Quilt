@@ -1,9 +1,9 @@
 package dev.sterner.malum.common.network.packet.s2c.block.functional;
 
-import com.sammy.lodestone.setup.LodestoneParticleRegistry;
-import com.sammy.lodestone.systems.particle.WorldParticleBuilder;
-import com.sammy.lodestone.systems.particle.data.ColorParticleData;
-import com.sammy.lodestone.systems.particle.data.GenericParticleData;
+import dev.sterner.lodestone.setup.LodestoneParticleRegistry;
+import dev.sterner.lodestone.systems.particle.WorldParticleBuilder;
+import dev.sterner.lodestone.systems.particle.data.ColorParticleData;
+import dev.sterner.lodestone.systems.particle.data.GenericParticleData;
 import dev.sterner.malum.Malum;
 import dev.sterner.malum.common.spirit.MalumSpiritType;
 import dev.sterner.malum.common.spirit.SpiritHelper;

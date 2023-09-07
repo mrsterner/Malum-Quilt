@@ -1,6 +1,5 @@
 package dev.sterner.malum.mixin.common;
 
-import dev.sterner.malum.api.event.EntitySpawnedEvent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
@@ -20,8 +19,5 @@ import java.util.function.Consumer;
 public class EntityTypeMixin {
 
 
-	@Inject(method = "m_ixnkjsoi",at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;spawnEntityAndPassengers(Lnet/minecraft/entity/Entity;)V"), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
-	public void malum$spawnEvent(ServerWorld world, @Nullable NbtCompound nbtCompound, @Nullable Consumer consumer, BlockPos pos, SpawnReason reason, boolean bl, boolean bl2, CallbackInfoReturnable cir, Entity entity) {
-		EntitySpawnedEvent.EVENT.invoker().onEntitySpawned(entity, world, (float)entity.getX(), (float)entity.getY(), (float)entity.getZ(), null, reason);
-	}
+
 }

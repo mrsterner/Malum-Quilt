@@ -83,13 +83,13 @@ abstract class PlayerEntityMixin extends LivingEntity {
 				spawnSweepParticles((PlayerEntity) (Object) this, MalumParticleRegistry.SCYTHE_CUT_ATTACK_PARTICLE);
 				sound = MalumSoundRegistry.SCYTHE_CUT;
 			}
-			world.playSound(null, target.getX(), target.getY(), target.getZ(), sound, this.getSoundCategory(), 1, 1);
+			getWorld().playSound(null, target.getX(), target.getY(), target.getZ(), sound, this.getSoundCategory(), 1, 1);
 
 			float damage = 1.0F + EnchantmentHelper.getSweepingMultiplier(this) * f;
-			world.getOtherEntities(this, target.getBoundingBox().expand(1)).forEach(e -> {
+			getWorld().getOtherEntities(this, target.getBoundingBox().expand(1)).forEach(e -> {
 				if (e instanceof LivingEntity livingEntity) {
 					if (livingEntity.isAlive()) {
-						livingEntity.damage(MalumDamageSourceRegistry.scytheSweepDamage(this), damage);
+						livingEntity.damage(MalumDamageSourceRegistry.create(livingEntity.getWorld(), MalumDamageSourceRegistry.SCYTHE_SWEEP,this), damage);
 						livingEntity.takeKnockback(0.4F, MathHelper.sin(this.getYaw() * ((float) Math.PI / 180F)), (-MathHelper.cos(this.getYaw() * ((float) Math.PI / 180F))));
 					}
 				}
@@ -100,7 +100,7 @@ abstract class PlayerEntityMixin extends LivingEntity {
 	public void spawnSweepParticles(PlayerEntity player, DefaultParticleType type) {
 		double d0 = (-MathHelper.sin(player.getYaw() * ((float) Math.PI / 180F)));
 		double d1 = MathHelper.cos(player.getYaw() * ((float) Math.PI / 180F));
-		if (player.world instanceof ServerWorld serverWorld) {
+		if (player.getWorld() instanceof ServerWorld serverWorld) {
 			serverWorld.spawnParticles(type, player.getX() + d0, player.getBodyY(0.5D), player.getZ() + d1, 0, d0, 0.0D, d1, 0.0D);
 		}
 	}

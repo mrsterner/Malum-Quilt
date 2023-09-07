@@ -9,6 +9,7 @@ import dev.sterner.malum.common.spiritrite.MalumRiteType;
 import dev.sterner.malum.common.spiritrite.effect.BlockAffectingRiteEffect;
 import dev.sterner.malum.common.spiritrite.effect.EntityAffectingRiteEffect;
 import dev.sterner.malum.common.spiritrite.effect.MalumRiteEffect;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FallingBlock;
@@ -27,7 +28,6 @@ import net.minecraft.stat.Stats;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.quiltmc.qsl.networking.api.PlayerLookup;
 
 import java.util.List;
 
@@ -51,7 +51,7 @@ public class EldritchAerialRiteType extends MalumRiteType {
 						if (FallingBlock.canFallThrough(stateBelow) || !stateBelow.isOpaque() || stateBelow.isIn(BlockTags.SLABS)) {
 							BlockState state = world.getBlockState(p);
 							if (!state.isAir() && world.getBlockEntity(p) == null && canSilkTouch(serverWorld, pos, state)) {
-								FallingBlockEntity.fall(world, p, state);
+								FallingBlockEntity.spawnFromBlock(world, p, state);
 								world.playSound(null, p, MalumSoundRegistry.AERIAL_FALL, SoundCategory.BLOCKS, 0.5f, 2.6F + (world.random.nextFloat() - world.random.nextFloat()) * 0.8F);
 								PlayerLookup.tracking(serverWorld, serverWorld.getWorldChunk(pos).getPos()).forEach(track -> BlockDownwardSparkleParticlePacket.send(track, AERIAL_SPIRIT.getColor(), p));
 							}

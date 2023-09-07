@@ -3,8 +3,12 @@ package dev.sterner.malum.client.screen.codex.page;
 import dev.sterner.malum.Malum;
 import dev.sterner.malum.client.screen.codex.ProgressionBookScreen;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.*;
+
+import static dev.sterner.malum.client.screen.codex.ArcanaCodexHelper.renderItem;
+import static dev.sterner.malum.client.screen.codex.ProgressionBookScreen.screen;
 
 public class CraftingBookPage extends BookPage{
 	private final ItemStack outputStack;
@@ -32,7 +36,7 @@ public class CraftingBookPage extends BookPage{
 	}
 
 	@Override
-	public void renderLeft(MinecraftClient minecraft, MatrixStack poseStack, float xOffset, float yOffset, int mouseX, int mouseY, float partialTicks) {
+	public void renderLeft(MinecraftClient minecraft, DrawContext ctx, float xOffset, float yOffset, int mouseX, int mouseY, float partialTicks) {
 		int guiLeft = guiLeft();
 		int guiTop = guiTop();
 
@@ -43,17 +47,17 @@ public class CraftingBookPage extends BookPage{
 					ItemStack itemStack = inputStacks[index];
 					int itemPosX = guiLeft + 45 + j * 22;
 					int itemPosY = guiTop + 34 + i * 22;
-					ProgressionBookScreen.renderItem(poseStack, itemStack, itemPosX, itemPosY, mouseX, mouseY);
+					renderItem(screen, ctx, itemStack, itemPosX, itemPosY, mouseX, mouseY);
 				}
 			}
 		}
 
-		ProgressionBookScreen.renderItem(poseStack, outputStack, guiLeft + 67, guiTop + 126, mouseX, mouseY);
+		renderItem(screen, ctx, outputStack, guiLeft + 67, guiTop + 126, mouseX, mouseY);
 
 	}
 
 	@Override
-	public void renderRight(MinecraftClient minecraft, MatrixStack poseStack, float xOffset, float yOffset, int mouseX, int mouseY, float partialTicks) {
+	public void renderRight(MinecraftClient minecraft, DrawContext ctx, float xOffset, float yOffset, int mouseX, int mouseY, float partialTicks) {
 		int guiLeft = guiLeft();
 		int guiTop = guiTop();
 
@@ -64,12 +68,12 @@ public class CraftingBookPage extends BookPage{
 					ItemStack itemStack = inputStacks[index];
 					int itemPosX = guiLeft + 187 + j * 22;
 					int itemPosY = guiTop + 34 + i * 22;
-					ProgressionBookScreen.renderItem(poseStack, itemStack, itemPosX, itemPosY, mouseX, mouseY);
+					renderItem(screen, ctx, itemStack, itemPosX, itemPosY, mouseX, mouseY);
 				}
 			}
 		}
 
-		ProgressionBookScreen.renderItem(poseStack, outputStack, guiLeft + 209, guiTop + 126, mouseX, mouseY);
+		renderItem(screen, ctx, outputStack, guiLeft + 209, guiTop + 126, mouseX, mouseY);
 	}
 
 	public static CraftingBookPage fullPage(Item output, Item input) {

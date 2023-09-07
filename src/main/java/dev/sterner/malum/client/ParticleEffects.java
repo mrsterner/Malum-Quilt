@@ -1,16 +1,17 @@
 package dev.sterner.malum.client;
 
-import com.sammy.lodestone.setup.LodestoneParticleRegistry;
-import com.sammy.lodestone.setup.LodestoneScreenParticleRegistry;
-import com.sammy.lodestone.systems.easing.Easing;
-import com.sammy.lodestone.systems.particle.ScreenParticleBuilder;
-import com.sammy.lodestone.systems.particle.SimpleParticleEffect;
-import com.sammy.lodestone.systems.particle.WorldParticleBuilder;
-import com.sammy.lodestone.systems.particle.data.ColorParticleData;
-import com.sammy.lodestone.systems.particle.data.GenericParticleData;
-import com.sammy.lodestone.systems.particle.data.SpinParticleData;
-import com.sammy.lodestone.systems.particle.screen.LodestoneScreenParticleTextureSheet;
-import com.sammy.lodestone.systems.particle.screen.base.ScreenParticle;
+import dev.sterner.lodestone.setup.LodestoneParticleRegistry;
+import dev.sterner.lodestone.setup.LodestoneScreenParticleRegistry;
+import dev.sterner.lodestone.systems.easing.Easing;
+import dev.sterner.lodestone.systems.particle.ScreenParticleBuilder;
+import dev.sterner.lodestone.systems.particle.SimpleParticleEffect;
+import dev.sterner.lodestone.systems.particle.WorldParticleBuilder;
+import dev.sterner.lodestone.systems.particle.data.ColorParticleData;
+import dev.sterner.lodestone.systems.particle.data.GenericParticleData;
+import dev.sterner.lodestone.systems.particle.data.SpinParticleData;
+import dev.sterner.lodestone.systems.particle.screen.LodestoneScreenParticleTextureSheet;
+import dev.sterner.lodestone.systems.particle.screen.ScreenParticleHolder;
+import dev.sterner.lodestone.systems.particle.screen.base.ScreenParticle;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Vec3d;
@@ -123,7 +124,7 @@ public class ParticleEffects {
 				.repeat(level, x, y, z, 1);
 	}
 
-	public static void spawnSpiritScreenParticles(HashMap<LodestoneScreenParticleTextureSheet, ArrayList<ScreenParticle>> target, Color color, Color endColor, ItemStack stack, float pXPosition, float pYPosition) {
+	public static void spawnSpiritScreenParticles(ScreenParticleHolder target, Color color, Color endColor, ItemStack stack, float pXPosition, float pYPosition) {
 		var rand = MinecraftClient.getInstance().world.getRandom();
 		ScreenParticleBuilder.create(LodestoneScreenParticleRegistry.SPARKLE, target)
 				.setTransparencyData(GenericParticleData.create(0.04f, 0f).build())

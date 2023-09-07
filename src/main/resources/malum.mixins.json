@@ -7,7 +7,6 @@
   "mixins": [
     "plugin.MojangWhy",
 
-    "common.ArmorMaterialsMixin",
     "common.AxeItemMixin",
     "common.CookingRecipeSerializerMixin",
     "common.EnchantingTableBlockMixin",

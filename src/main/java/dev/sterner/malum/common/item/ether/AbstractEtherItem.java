@@ -1,6 +1,6 @@
 package dev.sterner.malum.common.item.ether;
 
-import com.sammy.lodestone.handlers.screenparticle.ParticleEmitterHandler;
+import dev.sterner.lodestone.handlers.screenparticle.ParticleEmitterHandler;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.DyeableItem;

@@ -33,7 +33,7 @@ public class SoulwoodGrowthBlock extends MalumSaplingBlock {
     }
 
     @Override
-    protected boolean canPlantOnTop(BlockState floor, BlockView world, BlockPos pos) {
+	public boolean canPlantOnTop(BlockState floor, BlockView world, BlockPos pos) {
         if (floor.isIn(BlockTagRegistry.BLIGHTED_BLOCKS)) {
             return true;
         }

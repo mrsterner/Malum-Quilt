@@ -2,8 +2,8 @@ package dev.sterner.malum.common.recipe;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.sammy.lodestone.forge.CraftingHelper;
-import com.sammy.lodestone.systems.recipe.ILodestoneRecipe;
+import dev.sterner.lodestone.forge.CraftingHelper;
+import dev.sterner.lodestone.systems.recipe.ILodestoneRecipe;
 import dev.sterner.malum.common.registry.MalumRecipeSerializerRegistry;
 import dev.sterner.malum.common.registry.MalumRecipeTypeRegistry;
 import net.minecraft.item.ItemStack;

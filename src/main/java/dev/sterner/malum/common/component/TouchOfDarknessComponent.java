@@ -1,9 +1,9 @@
 package dev.sterner.malum.common.component;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.sammy.lodestone.systems.easing.Easing;
-import com.sammy.lodestone.systems.rendering.VFXBuilders;
-import com.sammy.lodestone.systems.rendering.shader.ExtendedShader;
+import dev.sterner.lodestone.systems.easing.Easing;
+import dev.sterner.lodestone.systems.rendering.VFXBuilders;
+import dev.sterner.lodestone.systems.rendering.shader.ExtendedShader;
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
 import dev.onyxstudios.cca.api.v3.component.tick.ServerTickingComponent;
 import dev.sterner.malum.common.block.weeping_well.PrimordialSoupBlock;
@@ -13,6 +13,7 @@ import dev.sterner.malum.common.registry.*;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
@@ -153,7 +154,7 @@ public class TouchOfDarknessComponent implements AutoSyncedComponent, ServerTick
 		if (!livingEntity.getWorld().isClient) {
 			PlayerLookup.tracking(livingEntity).forEach(track -> VoidConduitParticlePacket.send(track, livingEntity.getX(), livingEntity.getY()+livingEntity.getHeight()/2f, livingEntity.getZ()));
 			PlayerLookup.tracking(livingEntity).forEach(track -> VoidRejectionPacket.send(track, livingEntity.getId()));
-			livingEntity.damage(new DamageSource(MalumDamageSourceRegistry.GUARANTEED_SOUL_SHATTER), 4);
+			livingEntity.damage(livingEntity.getWorld().getDamageSources().create(MalumDamageSourceRegistry.GUARANTEED_SOUL_SHATTER), 4);
 			livingEntity.getWorld().playSound(null, livingEntity.getBlockPos(), MalumSoundRegistry.VOID_REJECTION, SoundCategory.HOSTILE, 2f, MathHelper.nextFloat(livingEntity.getRandom(), 0.85f, 1.35f));
 		}
 		livingEntity.addStatusEffect(new StatusEffectInstance(MalumStatusEffectRegistry.REJECTED, 400, 0));
@@ -180,7 +181,8 @@ public class TouchOfDarknessComponent implements AutoSyncedComponent, ServerTick
 	public static class ClientOnly {
 		private static final Tessellator INSTANCE = new Tessellator();
 
-		public static void renderDarknessVignette(MatrixStack poseStack) {
+		public static void renderDarknessVignette(DrawContext ctx) {
+			MatrixStack matrixStack = ctx.getMatrices();
 			MinecraftClient minecraft = MinecraftClient.getInstance();
 			PlayerEntity player = minecraft.player;
 			if(player != null){
@@ -209,20 +211,20 @@ public class TouchOfDarknessComponent implements AutoSyncedComponent, ServerTick
 						.setAlpha(alpha)
 						.setShader(MalumShaderRegistry.TOUCH_OF_DARKNESS.getInstance());
 
-				poseStack.push();
+				matrixStack.push();
 				RenderSystem.enableBlend();
 				RenderSystem.defaultBlendFunc();
 
 				setZoom.accept(zoom);
 				setIntensity.accept(intensity);
-				builder.draw(poseStack);
+				builder.draw(matrixStack);
 
 				setZoom.accept(zoom * 1.25f + 0.15f);
 				setIntensity.accept(intensity * 0.8f + 0.5f);
-				builder.setAlpha(0.5f * alpha).draw(poseStack);
+				builder.setAlpha(0.5f * alpha).draw(matrixStack);
 
 				RenderSystem.disableBlend();
-				poseStack.pop();
+				matrixStack.pop();
 
 				shaderInstance.setUniformDefaults();
 			}

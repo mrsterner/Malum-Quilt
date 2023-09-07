@@ -2,7 +2,7 @@ package dev.sterner.malum.common.item.equipment.trinket;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import com.sammy.lodestone.setup.LodestoneAttributeRegistry;
+import dev.sterner.lodestone.setup.LodestoneAttributeRegistry;
 import dev.emi.trinkets.api.SlotReference;
 import dev.emi.trinkets.api.TrinketItem;
 import dev.sterner.malum.api.interfaces.item.SpiritCollectActivity;

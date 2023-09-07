@@ -1,6 +1,6 @@
 package dev.sterner.malum.common.item.spirit;
 
-import com.sammy.lodestone.systems.item.tools.LodestoneSwordItem;
+import dev.sterner.lodestone.systems.item.tools.LodestoneSwordItem;
 import dev.sterner.malum.common.network.packet.s2c.entity.MajorEntityEffectParticlePacket;
 import dev.sterner.malum.common.registry.MalumDamageSourceRegistry;
 import dev.sterner.malum.common.registry.MalumSoundRegistry;
@@ -17,7 +17,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.quiltmc.qsl.networking.api.PlayerLookup;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 
 
 public class TyrvingItem extends LodestoneSwordItem {
@@ -41,7 +41,7 @@ public class TyrvingItem extends LodestoneSwordItem {
 
 			if (target.isAlive()) {
 				target.timeUntilRegen = 0;
-				target.damage(MalumDamageSourceRegistry.causeVoodooDamage(attacker), spiritCount);
+				target.damage(MalumDamageSourceRegistry.create(attacker.getWorld(), MalumDamageSourceRegistry.VOODOO, attacker), spiritCount);
 			}
 			attacker.getWorld().playSound(null, target.getBlockPos(), MalumSoundRegistry.VOID_SLASH, SoundCategory.PLAYERS, 1, 1f + target.getWorld().random.nextFloat() * 0.25f);
 			PlayerLookup.tracking(target).forEach(track -> MajorEntityEffectParticlePacket.send(track, MalumSpiritTypeRegistry.ELDRITCH_SPIRIT.getColor(), target.getX(), target.getY() + target.getHeight() / 2, target.getZ()));

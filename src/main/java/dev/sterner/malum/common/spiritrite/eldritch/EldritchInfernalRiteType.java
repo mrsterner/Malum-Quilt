@@ -18,7 +18,7 @@ import net.minecraft.recipe.SmeltingRecipe;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.quiltmc.qsl.networking.api.PlayerLookup;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 
 import java.util.Optional;
 
@@ -41,7 +41,7 @@ public class EldritchInfernalRiteType extends MalumRiteType {
 					Optional<SmeltingRecipe> optional = world.getRecipeManager().getFirstMatch(RecipeType.SMELTING, new SimpleInventory(new ItemStack(state.getBlock().asItem(), 1)), world);
 					if (optional.isPresent()) {
 						SmeltingRecipe recipe = optional.get();
-						ItemStack output = recipe.getOutput();
+						ItemStack output = recipe.getOutput(world.getRegistryManager());
 						if (output.getItem() instanceof BlockItem) {
 							Block block = ((BlockItem) output.getItem()).getBlock();
 							BlockState newState = block.getDefaultState();

@@ -1,7 +1,7 @@
 package dev.sterner.malum.common.spiritrite.effect;
 
 
-import com.sammy.lodestone.helpers.BlockHelper;
+import dev.sterner.lodestone.helpers.BlockHelper;
 import dev.sterner.malum.common.blockentity.totem.TotemBaseBlockEntity;
 import dev.sterner.malum.common.registry.MalumTagRegistry;
 import net.minecraft.block.Block;

@@ -1,6 +1,6 @@
 package dev.sterner.malum.common.blockentity.obelisk;
 
-import com.sammy.lodestone.systems.multiblock.MultiBlockStructure;
+import dev.sterner.lodestone.systems.multiblock.MultiBlockStructure;
 import dev.sterner.malum.common.registry.MalumBlockEntityRegistry;
 import dev.sterner.malum.common.registry.MalumObjects;
 import net.minecraft.block.BlockState;

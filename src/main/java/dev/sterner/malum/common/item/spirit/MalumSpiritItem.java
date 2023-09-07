@@ -1,10 +1,12 @@
 package dev.sterner.malum.common.item.spirit;
 
-import com.sammy.lodestone.handlers.screenparticle.ParticleEmitterHandler;
-import com.sammy.lodestone.systems.particle.screen.LodestoneScreenParticleTextureSheet;
-import com.sammy.lodestone.systems.particle.screen.base.ScreenParticle;
+import dev.sterner.lodestone.handlers.screenparticle.ParticleEmitterHandler;
+import dev.sterner.lodestone.systems.particle.screen.LodestoneScreenParticleTextureSheet;
+import dev.sterner.lodestone.systems.particle.screen.ScreenParticleHolder;
+import dev.sterner.lodestone.systems.particle.screen.base.ScreenParticle;
 import dev.sterner.malum.api.interfaces.item.FloatingGlowItem;
 import dev.sterner.malum.client.ParticleEffects;
+import dev.sterner.malum.client.ScreenParticleEffects;
 import dev.sterner.malum.common.spirit.MalumSpiritType;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -45,7 +47,7 @@ public class MalumSpiritItem extends Item implements FloatingGlowItem, ParticleE
 
     @Environment(EnvType.CLIENT)
 	@Override
-	public void spawnParticles(HashMap<LodestoneScreenParticleTextureSheet, ArrayList<ScreenParticle>> target, World world, float partialTick, ItemStack stack) {
-		ParticleEffects.spawnSpiritScreenParticles(target, type.getColor(), type.getEndColor(), stack);
+	public void spawnLateParticles(ScreenParticleHolder target, World level, float partialTick, ItemStack stack, float x, float y) {
+		ScreenParticleEffects.spawnSpiritShardScreenParticles(target, type.getColor(), type.getEndColor(), stack, x, y);
 	}
 }

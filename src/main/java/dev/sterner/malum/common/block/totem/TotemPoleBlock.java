@@ -1,6 +1,6 @@
 package dev.sterner.malum.common.block.totem;
 
-import com.sammy.lodestone.systems.block.LodestoneEntityBlock;
+import dev.sterner.lodestone.systems.block.LodestoneEntityBlock;
 import dev.sterner.malum.common.blockentity.totem.TotemPoleBlockEntity;
 import dev.sterner.malum.common.registry.MalumBlockEntityRegistry;
 import dev.sterner.malum.common.registry.MalumSpiritTypeRegistry;

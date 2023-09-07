@@ -3,6 +3,7 @@ package dev.sterner.malum.mixin.client;
 import dev.sterner.malum.common.component.TouchOfDarknessComponent;
 import dev.sterner.malum.common.util.handler.SoulwardHandler;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.util.math.MatrixStack;
 import org.spongepowered.asm.mixin.Final;
@@ -18,13 +19,13 @@ final class InGameHudMixin {
 	@Final
 	private MinecraftClient client;
 
-	@Inject(method = "renderStatusBars(Lnet/minecraft/client/util/math/MatrixStack;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/Profiler;pop()V"))
-	private void malum$renderArmorOverlay(MatrixStack matrices, CallbackInfo info) {
-		SoulwardHandler.Client.renderSoulWard(matrices, this.client.getWindow());
+	@Inject(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/Profiler;pop()V"))
+	private void malum$renderArmorOverlay(DrawContext context, CallbackInfo ci) {
+		SoulwardHandler.Client.renderSoulWard(context, this.client.getWindow());
 	}
 
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;getSleepTimer()I"))
-	private void malum$renderDarknessOverlay(MatrixStack matrices, float tickDelta, CallbackInfo ci) {
-		TouchOfDarknessComponent.ClientOnly.renderDarknessVignette(matrices);
+	private void malum$renderDarknessOverlay(DrawContext context, float tickDelta, CallbackInfo ci) {
+		TouchOfDarknessComponent.ClientOnly.renderDarknessVignette(context);
 	}
 }

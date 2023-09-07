@@ -15,9 +15,9 @@ public class ScytheAttackParticle extends SpriteBillboardParticle {
 		this.spriteWithAge = spriteWithAge;
 		this.maxAge = 4;
 		float f = this.random.nextFloat() * 0.6F + 0.4F;
-		this.colorRed = f;
-		this.colorGreen = f;
-		this.colorBlue = f;
+		this.red = f;
+		this.green = f;
+		this.blue = f;
 		this.scale = 1.0F - (float) scale * 0.5F;
 		this.setSpriteForAge(spriteWithAge);
 	}

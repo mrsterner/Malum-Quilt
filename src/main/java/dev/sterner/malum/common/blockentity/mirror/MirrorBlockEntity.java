@@ -1,7 +1,7 @@
 package dev.sterner.malum.common.blockentity.mirror;
 
-import com.sammy.lodestone.forge.ItemHandler;
-import com.sammy.lodestone.systems.blockentity.LodestoneBlockEntity;
+import dev.sterner.lodestone.forge.ItemHandler;
+import dev.sterner.lodestone.systems.blockentity.LodestoneBlockEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;

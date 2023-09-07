@@ -15,7 +15,7 @@ import net.minecraft.entity.passive.ChickenEntity;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
-import org.quiltmc.qsl.networking.api.PlayerLookup;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +30,7 @@ public class SacredRiteType extends MalumRiteType{
 			public void act(TotemBaseBlockEntity totemBaseBlockEntity, SheepEntity sheep) {
 				if (sheep.getRandom().nextInt(sheep.isBaby() ? 5 : 25) == 0) {
 					BlockPos blockpos = sheep.getBlockPos();
-					if (EatGrassGoal.GRASS_PREDICATE.test(sheep.world.getBlockState(blockpos)) || sheep.world.getBlockState(blockpos.down()).isOf(Blocks.GRASS_BLOCK)) {
+					if (EatGrassGoal.GRASS_PREDICATE.test(sheep.getWorld().getBlockState(blockpos)) || sheep.getWorld().getBlockState(blockpos.down()).isOf(Blocks.GRASS_BLOCK)) {
 						EatGrassGoal goal = sheep.eatGrassGoal;
 						goal.start();
 						PlayerLookup.tracking(sheep).forEach(track -> MajorEntityEffectParticlePacket.send(track, SACRED_SPIRIT.getColor(), sheep.getX(), sheep.getY() + sheep.getHeight() / 2f, sheep.getZ()));

@@ -1,6 +1,6 @@
 package dev.sterner.malum.common.entity.spirit;
 
-import com.sammy.lodestone.helpers.ItemHelper;
+import dev.sterner.lodestone.helpers.ItemHelper;
 import dev.sterner.malum.client.ParticleEffects;
 import dev.sterner.malum.common.entity.FloatingItemEntity;
 import dev.sterner.malum.common.item.spirit.MalumSpiritItem;

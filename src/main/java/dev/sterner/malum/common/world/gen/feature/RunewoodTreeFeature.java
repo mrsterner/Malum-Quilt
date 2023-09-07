@@ -2,8 +2,8 @@ package dev.sterner.malum.common.world.gen.feature;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.sammy.lodestone.helpers.BlockHelper;
-import com.sammy.lodestone.systems.worldgen.LodestoneBlockFiller;
+import dev.sterner.lodestone.helpers.BlockHelper;
+import dev.sterner.lodestone.systems.worldgen.LodestoneBlockFiller;
 import dev.sterner.malum.common.block.MalumLeavesBlock;
 import dev.sterner.malum.common.block.MalumSaplingBlock;
 import dev.sterner.malum.common.registry.MalumObjects;
@@ -12,7 +12,7 @@ import net.minecraft.block.PillarBlock;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.random.RandomGenerator;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
@@ -44,7 +44,7 @@ public class RunewoodTreeFeature extends Feature<DefaultFeatureConfig> {
     }
 
     @Override
-    public boolean place(FeatureContext<DefaultFeatureConfig> context) {
+    public boolean generate(FeatureContext<DefaultFeatureConfig> context) {
         StructureWorldAccess world = context.getWorld();
         var pos = context.getOrigin();
         var rand = context.getRandom();
@@ -137,7 +137,7 @@ public class RunewoodTreeFeature extends Feature<DefaultFeatureConfig> {
         while (true);
     }
 
-    public static void makeLeafBlob(LodestoneBlockFiller filler, RandomGenerator rand, BlockPos pos) {
+    public static void makeLeafBlob(LodestoneBlockFiller filler, Random rand, BlockPos pos) {
         makeLeafSlice(filler, pos, 1, 0);
         makeLeafSlice(filler, pos.up(1), 2, 1);
         makeLeafSlice(filler, pos.up(2), 2, 2);
@@ -162,7 +162,7 @@ public class RunewoodTreeFeature extends Feature<DefaultFeatureConfig> {
             return false;
         }
         BlockState state = world.getBlockState(pos);
-        return state.getBlock() instanceof MalumSaplingBlock || world.isAir(pos) || state.getMaterial().isReplaceable();
+        return state.getBlock() instanceof MalumSaplingBlock || world.isAir(pos) || state.isReplaceable();
     }
 
     public static void updateLeaves(WorldAccess pWorld, Set<BlockPos> logPositions) {

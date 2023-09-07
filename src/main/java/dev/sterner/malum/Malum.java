@@ -12,16 +12,12 @@ import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistrySetupCallback;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.random.Random;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Set;
 
 
 /**TODO
@@ -38,6 +34,7 @@ public class Malum implements ModInitializer {
 	public void onInitialize() {
 		MalumObjects.init();
 		MalumSpiritTypeRegistry.init();
+		MalumDamageSourceRegistry.init();
 
 		MalumAttributeRegistry.init();
 		MalumParticleRegistry.init();
@@ -62,7 +59,6 @@ public class Malum implements ModInitializer {
 
 		MalumStructures.init();
 		MalumFeatureRegistry.init();
-		MalumPlacedFeatureRegistry.init();
 
 		UseItemCallback.EVENT.register(ReboundEnchantment::onRightClickItem);
 		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new SpiritDataReloadListenerFabricImpl());
@@ -70,8 +66,8 @@ public class Malum implements ModInitializer {
 
 		DynamicRegistrySetupCallback.EVENT.register((registryView) -> {
 			registryView.getOptional(RegistryKeys.CONFIGURED_FEATURE).ifPresent(configuredFeatures -> {
-				MalumPlacedFeatureRegistry.init(registryView, configuredFeatures);
-			}, Set.of(RegistryKeys.PLACED_FEATURE, RegistryKeys.CONFIGURED_FEATURE));
+				MalumFeatureRegistry.init(registryView, configuredFeatures);
+			});
 		});
 	}
 

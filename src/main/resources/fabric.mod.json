@@ -28,7 +28,10 @@
 		],
 		"cardinal-components-entity": [
 			"dev.sterner.malum.common.component.MalumComponents"
-		]
+		],
+    "mm:early_risers": [
+      "dev.sterner.malum.MalumEarlyRiser"
+    ]
 	},
 	"mixins": [
 		"malum.mixins.json"
@@ -44,7 +47,8 @@
 		"cardinal-components": [
 			"malum:spirit",
 			"malum:player",
-			"malum:touch_of_darkness"
+			"malum:touch_of_darkness",
+      "malum:soul"
 		]
 	}
 }

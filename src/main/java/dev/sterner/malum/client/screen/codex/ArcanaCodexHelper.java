@@ -1,11 +1,11 @@
 package dev.sterner.malum.client.screen.codex;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.sammy.lodestone.setup.LodestoneShaderRegistry;
-import com.sammy.lodestone.systems.easing.Easing;
-import com.sammy.lodestone.systems.recipe.IRecipeComponent;
-import com.sammy.lodestone.systems.rendering.VFXBuilders;
-import com.sammy.lodestone.systems.rendering.shader.ExtendedShader;
+import dev.sterner.lodestone.setup.LodestoneShaderRegistry;
+import dev.sterner.lodestone.systems.easing.Easing;
+import dev.sterner.lodestone.systems.recipe.IRecipeComponent;
+import dev.sterner.lodestone.systems.rendering.VFXBuilders;
+import dev.sterner.lodestone.systems.rendering.shader.ExtendedShader;
 import dev.sterner.malum.common.spiritrite.MalumRiteType;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -37,11 +37,11 @@ public class ArcanaCodexHelper {
 		DEFAULT, EASY_READING
 	}
 
-	public static void renderRiteIcon(MalumRiteType rite, MatrixStack stack, boolean corrupted, int x, int y) {
-		renderRiteIcon(rite, stack, corrupted, x, y, 0);
+	public static void renderRiteIcon(MalumRiteType rite, DrawContext ctx, boolean corrupted, int x, int y) {
+		renderRiteIcon(rite, ctx, corrupted, x, y, 0);
 	}
 
-	public static void renderRiteIcon(MalumRiteType rite, MatrixStack stack, boolean corrupted, int x, int y, int z) {
+	public static void renderRiteIcon(MalumRiteType rite, DrawContext ctx, boolean corrupted, int x, int y, int z) {
 		ExtendedShader shaderInstance = (ExtendedShader) LodestoneShaderRegistry.DISTORTED_TEXTURE.getInstance().get();
 		shaderInstance.getUniformOrDefault("YFrequency").set(corrupted ? 5f : 11f);
 		shaderInstance.getUniformOrDefault("XFrequency").set(corrupted ? 12f : 17f);
@@ -61,26 +61,26 @@ public class ArcanaCodexHelper {
 		RenderSystem.enableBlend();
 		RenderSystem.disableDepthTest();
 		RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-		renderTexture(rite.getIcon(), stack, builder, x, y, 0, 0, 16, 16, 16, 16);
+		renderTexture(rite.getIcon(), ctx, builder, x, y, 0, 0, 16, 16, 16, 16);
 		builder.setAlpha(0.4f);
-		renderTexture(rite.getIcon(), stack, builder, x - 1, y, 0, 0, 16, 16, 16, 16);
-		renderTexture(rite.getIcon(), stack, builder, x + 1, y, 0, 0, 16, 16, 16, 16);
-		renderTexture(rite.getIcon(), stack, builder, x, y - 1, 0, 0, 16, 16, 16, 16);
+		renderTexture(rite.getIcon(), ctx, builder, x - 1, y, 0, 0, 16, 16, 16, 16);
+		renderTexture(rite.getIcon(), ctx, builder, x + 1, y, 0, 0, 16, 16, 16, 16);
+		renderTexture(rite.getIcon(), ctx, builder, x, y - 1, 0, 0, 16, 16, 16, 16);
 		if (corrupted) {
 			builder.setColor(rite.getEffectSpirit().getEndColor());
 		}
-		renderTexture(rite.getIcon(), stack, builder, x, y + 1, 0, 0, 16, 16, 16, 16);
+		renderTexture(rite.getIcon(), ctx, builder, x, y + 1, 0, 0, 16, 16, 16, 16);
 		shaderInstance.setUniformDefaults();
 		RenderSystem.enableDepthTest();
 		RenderSystem.defaultBlendFunc();
 		RenderSystem.disableBlend();
 	}
 
-	public static void renderWavyIcon(Identifier location, MatrixStack stack, int x, int y) {
-		renderWavyIcon(location, stack, x, y, 0);
+	public static void renderWavyIcon(Identifier location, DrawContext ctx, int x, int y) {
+		renderWavyIcon(location, ctx, x, y, 0);
 	}
 
-	public static void renderWavyIcon(Identifier location, MatrixStack stack, int x, int y, int z) {
+	public static void renderWavyIcon(Identifier location, DrawContext ctx, int x, int y, int z) {
 		ExtendedShader shaderInstance = (ExtendedShader) LodestoneShaderRegistry.DISTORTED_TEXTURE.getInstance().get();
 		shaderInstance.getUniformOrDefault("YFrequency").set(10f);
 		shaderInstance.getUniformOrDefault("XFrequency").set(12f);
@@ -99,36 +99,36 @@ public class ArcanaCodexHelper {
 		RenderSystem.enableBlend();
 		RenderSystem.disableDepthTest();
 		RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-		renderTexture(location, stack, builder, x, y, 0, 0, 16, 16, 16, 16);
+		renderTexture(location, ctx, builder, x, y, 0, 0, 16, 16, 16, 16);
 		builder.setAlpha(0.1f);
-		renderTexture(location, stack, builder, x - 1, y, 0, 0, 16, 16, 16, 16);
-		renderTexture(location, stack, builder, x + 1, y, 0, 0, 16, 16, 16, 16);
-		renderTexture(location, stack, builder, x, y - 1, 0, 0, 16, 16, 16, 16);
-		renderTexture(location, stack, builder, x, y + 1, 0, 0, 16, 16, 16, 16);
+		renderTexture(location, ctx, builder, x - 1, y, 0, 0, 16, 16, 16, 16);
+		renderTexture(location, ctx, builder, x + 1, y, 0, 0, 16, 16, 16, 16);
+		renderTexture(location, ctx, builder, x, y - 1, 0, 0, 16, 16, 16, 16);
+		renderTexture(location, ctx, builder, x, y + 1, 0, 0, 16, 16, 16, 16);
 		shaderInstance.setUniformDefaults();
 		RenderSystem.enableDepthTest();
 		RenderSystem.defaultBlendFunc();
 		RenderSystem.disableBlend();
 	}
 
-	public static void renderTexture(Identifier texture, MatrixStack poseStack, int x, int y, float u, float v, int width, int height, int textureWidth, int textureHeight) {
-		renderTexture(texture, poseStack, VFX_BUILDER, x, y, u, v, width, height, textureWidth, textureHeight);
+	public static void renderTexture(Identifier texture, DrawContext ctx, int x, int y, float u, float v, int width, int height, int textureWidth, int textureHeight) {
+		renderTexture(texture, ctx, VFX_BUILDER, x, y, u, v, width, height, textureWidth, textureHeight);
 	}
 
-	public static void renderTexture(Identifier texture, MatrixStack poseStack, VFXBuilders.ScreenVFXBuilder builder, int x, int y, float u, float v, int width, int height, int textureWidth, int textureHeight) {
+	public static void renderTexture(Identifier texture, DrawContext ctx, VFXBuilders.ScreenVFXBuilder builder, int x, int y, float u, float v, int width, int height, int textureWidth, int textureHeight) {
 		builder.setPositionWithWidth(x, y, width, height)
 			.setShaderTexture(texture)
 			.setUVWithWidth(u, v, width, height, textureWidth, textureHeight)
-			.draw(poseStack);
+			.draw(ctx.getMatrices());
 	}
 
-	public static void renderTransparentTexture(Identifier texture, MatrixStack poseStack, int x, int y, float u, float v, int width, int height, int textureWidth, int textureHeight) {
-		renderTransparentTexture(texture, poseStack, VFX_BUILDER, x, y, u, v, width, height, textureWidth, textureHeight);
+	public static void renderTransparentTexture(Identifier texture, DrawContext ctx, int x, int y, float u, float v, int width, int height, int textureWidth, int textureHeight) {
+		renderTransparentTexture(texture, ctx, VFX_BUILDER, x, y, u, v, width, height, textureWidth, textureHeight);
 	}
-	public static void renderTransparentTexture(Identifier texture, MatrixStack poseStack, VFXBuilders.ScreenVFXBuilder builder, int x, int y, float u, float v, int width, int height, int textureWidth, int textureHeight) {
+	public static void renderTransparentTexture(Identifier texture, DrawContext ctx, VFXBuilders.ScreenVFXBuilder builder, int x, int y, float u, float v, int width, int height, int textureWidth, int textureHeight) {
 		RenderSystem.enableBlend();
 		RenderSystem.enableDepthTest();
-		renderTexture(texture, poseStack, builder, x, y, u, v, width, height, textureWidth, textureHeight);
+		renderTexture(texture, ctx, builder, x, y, u, v, width, height, textureWidth, textureHeight);
 		RenderSystem.disableDepthTest();
 		RenderSystem.disableBlend();
 	}
@@ -177,9 +177,9 @@ public class ArcanaCodexHelper {
 		}
 	}
 
-	public static Runnable renderItemList(AbstractMalumScreen screen, DrawContext guiGraphics, java.util.List<ItemStack> items, int left, int top, int mouseX, int mouseY, boolean vertical) {
+	public static Runnable renderItemList(AbstractMalumScreen screen, DrawContext ctx, java.util.List<ItemStack> items, int left, int top, int mouseX, int mouseY, boolean vertical) {
 		int slots = items.size();
-		renderItemFrames(guiGraphics.getMatrices(), slots, left, top, vertical);
+		renderItemFrames(ctx, slots, left, top, vertical);
 		return () -> {
 			int finalLeft = left;
 			int finalTop = top;
@@ -193,12 +193,12 @@ public class ArcanaCodexHelper {
 				int offset = i * 20;
 				int oLeft = finalLeft + 2 + (vertical ? 0 : offset);
 				int oTop = finalTop + 2 + (vertical ? offset : 0);
-				renderItem(screen, guiGraphics, stack, oLeft, oTop, mouseX, mouseY);
+				renderItem(screen, ctx, stack, oLeft, oTop, mouseX, mouseY);
 			}
 		};
 	}
 
-	public static void renderItemFrames(MatrixStack poseStack, int slots, int left, int top, boolean vertical) {
+	public static void renderItemFrames(DrawContext ctx, int slots, int left, int top, boolean vertical) {
 		if (vertical) {
 			top -= 10 * (slots - 1);
 		} else {
@@ -209,40 +209,40 @@ public class ArcanaCodexHelper {
 			int offset = i * 20;
 			int oLeft = left + (vertical ? 0 : offset);
 			int oTop = top + (vertical ? offset : 0);
-			renderTexture(EntryScreen.BOOK_TEXTURE, poseStack, oLeft, oTop, 75, 192, 20, 20, 512, 512);
+			renderTexture(EntryScreen.BOOK_TEXTURE, ctx, oLeft, oTop, 75, 192, 20, 20, 512, 512);
 
 			if (vertical) {
 				//bottom fade
 				if (slots > 1 && i != slots - 1) {
-					renderTexture(EntryScreen.BOOK_TEXTURE, poseStack, left + 1, oTop + 19, 75, 213, 18, 2, 512, 512);
+					renderTexture(EntryScreen.BOOK_TEXTURE, ctx, left + 1, oTop + 19, 75, 213, 18, 2, 512, 512);
 				}
 				//bottommost fade
 				if (i == slots - 1) {
-					renderTexture(EntryScreen.BOOK_TEXTURE, poseStack, oLeft + 1, oTop + 19, 75, 216, 18, 2, 512, 512);
+					renderTexture(EntryScreen.BOOK_TEXTURE, ctx, oLeft + 1, oTop + 19, 75, 216, 18, 2, 512, 512);
 				}
 			} else {
 				//bottom fade
-				renderTexture(EntryScreen.BOOK_TEXTURE, poseStack, oLeft + 1, top + 19, 75, 216, 18, 2, 512, 512);
+				renderTexture(EntryScreen.BOOK_TEXTURE, ctx, oLeft + 1, top + 19, 75, 216, 18, 2, 512, 512);
 				if (slots > 1 && i != slots - 1) {
 					//side fade
-					renderTexture(EntryScreen.BOOK_TEXTURE, poseStack, oLeft + 19, top, 96, 192, 2, 20, 512, 512);
+					renderTexture(EntryScreen.BOOK_TEXTURE, ctx, oLeft + 19, top, 96, 192, 2, 20, 512, 512);
 				}
 			}
 		}
 
 		//crown
 		int crownLeft = left + 5 + (vertical ? 0 : 10 * (slots - 1));
-		renderTexture(EntryScreen.BOOK_TEXTURE, poseStack, crownLeft, top - 5, 128, 192, 10, 6, 512, 512);
+		renderTexture(EntryScreen.BOOK_TEXTURE, ctx, crownLeft, top - 5, 128, 192, 10, 6, 512, 512);
 
 		//side-bars
 		if (vertical) {
-			renderTexture(EntryScreen.BOOK_TEXTURE, poseStack, left - 4, top - 4, 99, 200, 28, 7, 512, 512);
-			renderTexture(EntryScreen.BOOK_TEXTURE, poseStack, left - 4, top + 17 + 20 * (slots - 1), 99, 192, 28, 7, 512, 512);
+			renderTexture(EntryScreen.BOOK_TEXTURE, ctx, left - 4, top - 4, 99, 200, 28, 7, 512, 512);
+			renderTexture(EntryScreen.BOOK_TEXTURE, ctx, left - 4, top + 17 + 20 * (slots - 1), 99, 192, 28, 7, 512, 512);
 		}
 		// top bars
 		else {
-			renderTexture(EntryScreen.BOOK_TEXTURE, poseStack, left - 4, top - 4, 59, 192, 7, 28, 512, 512);
-			renderTexture(EntryScreen.BOOK_TEXTURE, poseStack, left + 17 + 20 * (slots - 1), top - 4, 67, 192, 7, 28, 512, 512);
+			renderTexture(EntryScreen.BOOK_TEXTURE, ctx, left - 4, top - 4, 59, 192, 7, 28, 512, 512);
+			renderTexture(EntryScreen.BOOK_TEXTURE, ctx, left + 17 + 20 * (slots - 1), top - 4, 67, 192, 7, 28, 512, 512);
 		}
 	}
 

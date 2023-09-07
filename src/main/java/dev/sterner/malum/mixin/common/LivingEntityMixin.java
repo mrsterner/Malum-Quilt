@@ -1,5 +1,6 @@
 package dev.sterner.malum.mixin.common;
 
+import com.llamalad7.mixinextras.injector.ModifyReceiver;
 import dev.sterner.malum.api.event.LivingEntityEvent;
 import dev.sterner.malum.common.component.MalumComponents;
 import dev.sterner.malum.common.item.equipment.trinket.CurioAlchemicalRing;
@@ -15,6 +16,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -30,7 +32,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import static com.sammy.lodestone.setup.LodestoneAttributeRegistry.MAGIC_RESISTANCE;
+import static dev.sterner.lodestone.setup.LodestoneAttributeRegistry.MAGIC_RESISTANCE;
 
 @Mixin(LivingEntity.class)
 abstract class LivingEntityMixin extends Entity {
@@ -81,15 +83,8 @@ abstract class LivingEntityMixin extends Entity {
 
 	@Inject(method = "onDeath", at = @At("HEAD"))
 	private void malum$onDeath(DamageSource source, CallbackInfo ci) {
-		if (!world.isClient) {
+		if (!getWorld().isClient) {
 			SpiritHarvestHandler.shatterSoul(source, (LivingEntity) (Object) this);
-		}
-	}
-
-	@Inject(method = "damage", at = @At("HEAD"))
-	private void malum$damage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
-		if (!world.isClient) {
-			SoulHarvestHandler.exposeSoul(source, amount, (LivingEntity) (Object) this);
 		}
 	}
 
@@ -99,9 +94,9 @@ abstract class LivingEntityMixin extends Entity {
 		return LivingEntityEvent.ON_DAMAGE_EVENT.invoker().react((LivingEntity) (Object) this, source, amount);
 	}
 
-	@ModifyVariable(method = "applyEnchantmentsToDamage", at = @At(value = "RETURN", ordinal = 2, shift = At.Shift.BEFORE), index = 2, argsOnly = true)
+	@ModifyVariable(method = "modifyAppliedDamage", at = @At(value = "RETURN", ordinal = 2, shift = At.Shift.BEFORE), index = 2, argsOnly = true)
 	private float malum$applyEnchantmentsToDamage(float value, DamageSource source, float amount) {
-		if (source == DamageSource.MAGIC) {
+		if (source.isOf(DamageTypes.MAGIC)) {
 			float multiplier = 1.0f - (float) Math.max(((1 - (0.5 * (1 / (0.6 * this.getAttributeValue(MAGIC_RESISTANCE))))) * 0.6), 0);
 			return value * multiplier;
 		}
@@ -113,11 +108,20 @@ abstract class LivingEntityMixin extends Entity {
 		// todo, fix corrupted aerial aura
 		return d;
 	}
-
-	@Inject(method = "consumeItem", at = @At(value = "INVOKE", shift = At.Shift.BY, by = 2, target = "Lnet/minecraft/item/ItemStack;finishUsing(Lnet/minecraft/world/World;Lnet/minecraft/entity/LivingEntity;)Lnet/minecraft/item/ItemStack;"), locals = LocalCapture.CAPTURE_FAILHARD)
+/*
+	@Inject(method = "consumeItem", at = @At(value = "INVOKE", shift = At.Shift.BY, by = 1, target = "Lnet/minecraft/item/ItemStack;finishUsing(Lnet/minecraft/world/World;Lnet/minecraft/entity/LivingEntity;)Lnet/minecraft/item/ItemStack;"), locals = LocalCapture.CAPTURE_FAILHARD)
 	public void malum$onFinishUsing(CallbackInfo ci, Hand hand, ItemStack result) {
 		CurioVoraciousRing.finishEating((LivingEntity)(Object) this, result);
 		GluttonyEffect.finishEating(result, (LivingEntity)(Object) this);
+	}
+
+ */
+
+	@ModifyReceiver(method = "consumeItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;finishUsing(Lnet/minecraft/world/World;Lnet/minecraft/entity/LivingEntity;)Lnet/minecraft/item/ItemStack;"))
+	private ItemStack malum$onFinished(ItemStack itemStack, World world, LivingEntity livingEntity){
+		CurioVoraciousRing.finishEating((LivingEntity)(Object) this, itemStack);
+		GluttonyEffect.finishEating(itemStack, (LivingEntity)(Object) this);
+		return itemStack;
 	}
 
 	@ModifyVariable(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;getFluidState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/fluid/FluidState;"))

@@ -22,7 +22,7 @@ public class ItemRendererMixin {
 	@Final
 	private ItemModels models;
 
-	@Inject(method = "getHeldItemModel", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "getModel", at = @At("HEAD"), cancellable = true)
 	private void malum$getHeldItemModel(ItemStack stack, World world, LivingEntity entity, int seed, CallbackInfoReturnable<BakedModel> cir) {
 		if (stack.getItem() instanceof MalumScytheItem) {
 			BakedModel bakedModel = models.getModelManager().getModel(new ModelIdentifier("minecraft", "trident_in_hand", "inventory")); // this is the model type (not the texture), its insane that copy-pasting this works first try

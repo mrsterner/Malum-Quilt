@@ -13,6 +13,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
@@ -55,11 +56,9 @@ public class MalumTrinketEvents {
 
 	public static void onSoulwardAbsorbDamage(LivingEntity wardedEntity,DamageSource source, float soulwardLost, float damageAbsorbed) {
 		if (source.getAttacker() != null) {
-			if (source instanceof EntityDamageSource entityDamageSource) {
-				if (!entityDamageSource.isThorns()) {
-					source.getAttacker().damage(MalumDamageSourceRegistry.causeMagebaneDamage(wardedEntity), damageAbsorbed);
-				}
-			}
+			if (!source.isOf(DamageTypes.THORNS)) {
+                source.getAttacker().damage(MalumDamageSourceRegistry.create(wardedEntity.getWorld(), MalumDamageSourceRegistry.MAGEBANE, wardedEntity), damageAbsorbed);
+            }
 		}
 	}
 

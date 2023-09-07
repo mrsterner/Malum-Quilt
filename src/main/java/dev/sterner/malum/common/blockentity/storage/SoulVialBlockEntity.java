@@ -1,8 +1,8 @@
 package dev.sterner.malum.common.blockentity.storage;
 
-import com.sammy.lodestone.helpers.BlockHelper;
-import com.sammy.lodestone.helpers.ItemHelper;
-import com.sammy.lodestone.systems.blockentity.LodestoneBlockEntity;
+import dev.sterner.lodestone.helpers.BlockHelper;
+import dev.sterner.lodestone.helpers.ItemHelper;
+import dev.sterner.lodestone.systems.blockentity.LodestoneBlockEntity;
 import dev.sterner.malum.api.interfaces.item.SoulContainerItem;
 import dev.sterner.malum.client.ParticleEffects;
 import dev.sterner.malum.common.registry.MalumBlockEntityRegistry;

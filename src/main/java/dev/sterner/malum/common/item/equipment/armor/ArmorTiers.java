@@ -2,6 +2,7 @@ package dev.sterner.malum.common.item.equipment.armor;
 
 import dev.sterner.malum.common.registry.MalumObjects;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ArmorMaterial;
 import net.minecraft.item.Item;
 import net.minecraft.recipe.Ingredient;
@@ -36,13 +37,13 @@ public class ArmorTiers
         }
 
         @Override
-        public int getDurability(EquipmentSlot slot) {
-            return durabilityMultiplier * MAX_DAMAGE_ARRAY[slot.getEntitySlotId()];
+        public int getDurability(ArmorItem.Type type) {
+            return durabilityMultiplier * MAX_DAMAGE_ARRAY[type.getEquipmentSlot().getEntitySlotId()];
         }
 
         @Override
-        public int getProtectionAmount(EquipmentSlot slot) {
-            return damageReduction[slot.getEntitySlotId()];
+        public int getProtection(ArmorItem.Type type) {
+            return damageReduction[type.getEquipmentSlot().getEntitySlotId()];
         }
 
         @Override

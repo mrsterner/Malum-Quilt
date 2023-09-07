@@ -1,12 +1,12 @@
 package dev.sterner.malum.client.render.block;
 
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.sammy.lodestone.handlers.RenderHandler;
-import com.sammy.lodestone.setup.LodestoneRenderLayers;
-import com.sammy.lodestone.systems.rendering.VFXBuilders;
+import dev.sterner.lodestone.handlers.RenderHandler;
+import dev.sterner.lodestone.setup.LodestoneRenderLayerRegistry;
+import dev.sterner.lodestone.systems.rendering.VFXBuilders;
 import dev.sterner.malum.common.blockentity.totem.TotemPoleBlockEntity;
 import dev.sterner.malum.common.registry.MalumSpiritTypeRegistry;
 import dev.sterner.malum.common.spirit.MalumSpiritType;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
@@ -23,7 +23,7 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.sammy.lodestone.helpers.RenderHelper.FULL_BRIGHT;
+import static dev.sterner.lodestone.helpers.RenderHelper.FULL_BRIGHT;
 
 public class TotemPoleBlockEntityRenderer implements BlockEntityRenderer<TotemPoleBlockEntity> {
 	public static Map<MalumSpiritType, SpriteIdentifier> overlayHashmap = new HashMap<>();
@@ -45,7 +45,7 @@ public class TotemPoleBlockEntityRenderer implements BlockEntityRenderer<TotemPo
 
 	public void renderQuad(SpriteIdentifier material, Color color, float alpha, Direction direction, MatrixStack matrices) {
 		Sprite sprite = material.getSprite();
-		VertexConsumer consumer = RenderHandler.DELAYED_RENDER.getBuffer(LodestoneRenderLayers.ADDITIVE_BLOCK);
+		VertexConsumer consumer = RenderHandler.DELAYED_RENDER.getBuffer(LodestoneRenderLayerRegistry.ADDITIVE_BLOCK);
 
 		Vector3f[] positions = new Vector3f[]{new Vector3f(0, 0, 2.01f), new Vector3f(2, 0, 2.01f), new Vector3f(2, 2, 2.01f), new Vector3f(0, 2, 2.01f)};
 

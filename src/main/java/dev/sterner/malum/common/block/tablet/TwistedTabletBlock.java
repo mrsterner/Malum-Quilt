@@ -1,6 +1,6 @@
 package dev.sterner.malum.common.block.tablet;
 
-import com.sammy.lodestone.systems.block.WaterLoggedEntityBlock;
+import dev.sterner.lodestone.systems.block.WaterLoggedEntityBlock;
 import dev.sterner.malum.common.block.spirit_crucible.SpiritCrucibleComponentBlock;
 import dev.sterner.malum.common.blockentity.tablet.TwistedTabletBlockEntity;
 import dev.sterner.malum.common.registry.MalumBlockEntityRegistry;

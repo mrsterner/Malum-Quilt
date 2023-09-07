@@ -1,7 +1,7 @@
 package dev.sterner.malum.common.blockentity.totem;
 
-import com.sammy.lodestone.helpers.BlockHelper;
-import com.sammy.lodestone.systems.blockentity.LodestoneBlockEntity;
+import dev.sterner.lodestone.helpers.BlockHelper;
+import dev.sterner.lodestone.systems.blockentity.LodestoneBlockEntity;
 import dev.sterner.malum.common.block.totem.TotemBaseBlock;
 import dev.sterner.malum.common.blockentity.storage.ItemStandBlockEntity;
 import dev.sterner.malum.common.network.packet.s2c.block.TotemBaseActivationParticlePacket;

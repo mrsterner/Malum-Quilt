@@ -1,16 +1,12 @@
 package dev.sterner.malum.common.util.handler;
 
-import com.sammy.lodestone.setup.LodestoneRenderLayerRegistry;
-import com.sammy.lodestone.systems.rendering.VFXBuilders;
+import dev.sterner.lodestone.setup.LodestoneRenderLayerRegistry;
+import dev.sterner.lodestone.systems.rendering.VFXBuilders;
 import dev.sterner.malum.Malum;
-import dev.sterner.malum.api.event.EntitySpawnedEvent;
-import dev.sterner.malum.api.event.LivingEntityEvent;
 import dev.sterner.malum.common.component.MalumComponents;
-import dev.sterner.malum.common.entity.boomerang.ScytheBoomerangEntity;
-import dev.sterner.malum.common.entity.spirit.SoulEntity;
+import dev.sterner.malum.common.component.SoulDataComponent;
 import dev.sterner.malum.common.item.spirit.SoulStaveItem;
 import dev.sterner.malum.common.network.packet.s2c.entity.SuccessfulSoulHarvestParticlePacket;
-import dev.sterner.malum.common.registry.MalumTagRegistry;
 import dev.sterner.malum.common.spirit.MalumEntitySpiritData;
 import dev.sterner.malum.common.spirit.SpiritHelper;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
@@ -26,201 +22,145 @@ import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.goal.*;
-import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Box;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.MobSpawnerLogic;
-import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
-import static com.sammy.lodestone.handlers.RenderHandler.DELAYED_RENDER;
-import static com.sammy.lodestone.helpers.RenderHelper.FULL_BRIGHT;
+import static dev.sterner.lodestone.handlers.RenderHandler.DELAYED_RENDER;
 
 public class SoulHarvestHandler {
-	public static void init(){
-		EntitySpawnedEvent.EVENT.register(SoulHarvestHandler::markAsSpawnerSpawned);
-		LivingEntityEvent.TICK_EVENT.register(SoulHarvestHandler::entityTick);
-		LivingEntityEvent.TICK_EVENT.register(SoulHarvestHandler::playerTick);
-		LivingEntityEvent.ON_TARGETING_EVENT.register(SoulHarvestHandler::preventTargeting);
-		LivingEntityEvent.ADDED_EVENT.register(SoulHarvestHandler::updateAi);
-	}
 
-	public static void exposeSoul(DamageSource source, float amount, LivingEntity target) {
-		if (amount == 0) {
-			return;
+	public static final float PRIMING_END = 10f;
+	public static final float HARVEST_DURATION = 90f;
+
+	public UUID targetedSoulUUID;
+	public int targetedSoulId;
+	public int soulFetchCooldown;
+
+	public NbtCompound serializeNBT() {
+		NbtCompound tag = new NbtCompound();
+		if (targetedSoulUUID != null) {
+			tag.putUuid("targetedSoulUUID", targetedSoulUUID);
 		}
-		if (source.getAttacker() instanceof LivingEntity attacker) {
-			ItemStack stack = attacker.getMainHandStack();
-			if (source.getSource() instanceof ScytheBoomerangEntity) {
-				stack = ((ScytheBoomerangEntity) source.getSource()).scythe;
-			}
-			if (stack.isIn(MalumTagRegistry.SOUL_HUNTER_WEAPON)) {
-				MalumComponents.SPIRIT_COMPONENT.get(target).exposedSoul = 200;
-			}
+		if (targetedSoulId != 0) {
+			tag.putInt("targetedSoulId", targetedSoulId);
 		}
-	}
-
-	private static void markAsSpawnerSpawned(Entity entity, World world, float v, float v1, float v2, MobSpawnerLogic mobSpawnerLogic, SpawnReason spawnReason) {
-		if (spawnReason != null) {
-			if (entity instanceof LivingEntity livingEntity) {
-				MalumComponents.SPIRIT_COMPONENT.maybeGet(livingEntity).ifPresent(ec -> {
-					if (spawnReason.equals(SpawnReason.SPAWNER)) {
-						ec.setSpawnerSpawned(true);
-					}
-				});
-			}
+		if (soulFetchCooldown != 0) {
+			tag.putInt("soulFetchCooldown", soulFetchCooldown);
 		}
+		return tag;
 	}
 
-	private static void updateAi(LivingEntity livingEntity, boolean b) {
-		MalumComponents.SPIRIT_COMPONENT.maybeGet(livingEntity).ifPresent(ec -> {
-			if (livingEntity instanceof MobEntity mob) {
-				if (ec.isSoulless()) {
-					removeSentience(mob);
-				}
-			}
-		});
-	}
-
-
-	private static boolean preventTargeting(MobEntity mobEntity, @Nullable LivingEntity livingEntity) {
-		MalumComponents.SPIRIT_COMPONENT.maybeGet(mobEntity).ifPresent(ec -> {
-			if (ec.isSoulless()) {
-				mobEntity.setTarget(null);
-			}
-		});
-		return false;
+	public void deserializeNBT(NbtCompound tag) {
+		if (tag.contains("targetedSoulUUID")) {
+			targetedSoulUUID = tag.getUuid("targetedSoulUUID");
+		}
+		targetedSoulId = tag.getInt("targetedSoulId");
+		soulFetchCooldown = tag.getInt("soulFetchCooldown");
 	}
 
 
-	public static void entityTick(LivingEntity livingEntity) {
-		MalumComponents.SPIRIT_COMPONENT.maybeGet(livingEntity).ifPresent(ec -> {
-			if (ec.exposedSoul > 0) {
-				ec.exposedSoul--;
-			}
-			if (ec.getSoulThiefUuid() != null && ec.getSoulHarvestProgress() > 0) {
-				PlayerEntity player = livingEntity.getWorld().getPlayerByUuid(ec.getSoulThiefUuid());
-				if (player != null) {
-					MalumComponents.PLAYER_COMPONENT.maybeGet(player).ifPresent(c -> {
-						if (!player.isUsingItem() && ec.getSoulHarvestProgress() > 10) {
-							ec.setSoulHarvestProgress(ec.getSoulHarvestProgress() - 2f);
-						}
-						if (ec.getSoulHarvestProgress() <= 10 && !ec.isSoulless()) {
-							if (c.targetedSoulUUID == null || !livingEntity.getUuid().equals(c.targetedSoulUUID)) {
-								ec.setSoulHarvestProgress(ec.getSoulHarvestProgress() - 0.5f);
-								if (ec.getSoulHarvestProgress() == 0) {
-									ec.setSoulThiefUuid(null);
-								}
-							}
-						}
-					});
-				}
-			}
-		});
-	}
 
 	public static void playerTick(LivingEntity p) {
-		if(p instanceof PlayerEntity player) {
-			MalumComponents.PLAYER_COMPONENT.maybeGet(player).ifPresent(c -> {
-				boolean isHoldingStave = (player.isHolding(s -> s.getItem() instanceof SoulStaveItem));
-				if (isHoldingStave) {
-					boolean isUsingStave = player.isUsingItem();
-					int harvestVFXCap = isUsingStave ? 160 : 10;
-					if (c.targetedSoulUUID != null) {
-						Entity entity = player.getWorld().getEntityById(c.targetedSoulId);
-						if (entity instanceof LivingEntity livingEntity) {
-							MalumComponents.SPIRIT_COMPONENT.maybeGet(livingEntity).ifPresent(ec -> {
-								if (ec.getSoulHarvestProgress() < harvestVFXCap) {
-									ec.setSoulHarvestProgress(ec.getSoulHarvestProgress() + 1);
-								}
-							});
-						}
-					}
-					if (isUsingStave) {
-						//harvest soul
-						if (player.getWorld() instanceof ServerWorld serverWorld) {
-							if (c.targetedSoulUUID != null) {
-								Entity entity = serverWorld.getEntityById(c.targetedSoulId);
-								if (entity instanceof LivingEntity livingEntity) {
-									MalumComponents.SPIRIT_COMPONENT.maybeGet(livingEntity).ifPresent(ec -> {
-										if (ec.getHarvestProgress() >= 150) {
-											Vec3d position = entity.getPos().add(0, entity.getHeight() / 2f, 0);
-											MalumEntitySpiritData data = SpiritHelper.getEntitySpiritData(livingEntity);
-											SoulEntity soulEntity = new SoulEntity(entity.getWorld(), data, player.getUuid(),
-													position.x,
-													position.y,
-													position.z,
-													MathHelper.nextFloat(Malum.RANDOM, -0.1f, 0.1f),
-													0.05f + MathHelper.nextFloat(Malum.RANDOM, 0.05f, 0.15f),
-													MathHelper.nextFloat(Malum.RANDOM, -0.1f, 0.1f));
-											serverWorld.spawnEntity(soulEntity);
-											PlayerLookup.tracking(entity).forEach(track -> SuccessfulSoulHarvestParticlePacket.send(track, data.primaryType.getColor(), data.primaryType.getEndColor(), position.x, position.y, position.z));
-											if (livingEntity instanceof MobEntity mob) {
-												removeSentience(mob);
-											}
-											ec.setSoulless(true);
-											ec.setSoulThiefUuid(player.getUuid());
-											player.swingHand(player.getActiveHand(), true);
-											player.stopUsingItem();
-											MalumComponents.SPIRIT_COMPONENT.sync(livingEntity);
-										}
-									});
-								}
+		if (p instanceof PlayerEntity player) {
+			SoulHarvestHandler soulHarvestHandler = MalumComponents.PLAYER_COMPONENT.get(player).soulHarvestHandler;
+
+			boolean isHoldingStave = (player.isHolding(s -> s.getItem() instanceof SoulStaveItem));
+			boolean isUsingStave = player.isUsingItem();
+			if (isHoldingStave) {
+				if (!isUsingStave) {
+					//Here we try and figure out what entity the player wants to target with their stave.
+					//We basically just find all nearby entities, and search for the one with the least angle difference between the angle towards the player, and the look direction of the player
+					soulHarvestHandler.soulFetchCooldown--;
+					if (soulHarvestHandler.soulFetchCooldown <= 0) {
+						soulHarvestHandler.soulFetchCooldown = 5;
+						List<LivingEntity> entities = new ArrayList<>(player.getWorld().getEntitiesByClass(LivingEntity.class, player.getBoundingBox().expand(7f), e -> !e.getUuid().equals(player.getUuid())));
+						double biggestAngle = 0;
+						LivingEntity chosenEntity = null;
+						for (LivingEntity entity : entities) {
+							if (!entity.isAlive() || MalumComponents.SOUL_COMPONENT.get(entity).isSoulless() || SpiritHelper.getEntitySpiritData(entity) == null) {
+								continue;
+							}
+							Vec3d lookDirection = player.getRotationVector();
+							Vec3d directionToEntity = entity.getPos().subtract(player.getPos()).normalize();
+							double angle = lookDirection.dotProduct(directionToEntity);
+							if (angle > biggestAngle && angle > 0.5f) {
+								biggestAngle = angle;
+								chosenEntity = entity;
 							}
 						}
-					} else {
-						//fetch soul
-						c.soulFetchCooldown--;
-						if (c.soulFetchCooldown <= 0) {
-							c.soulFetchCooldown = 5;
-							List<LivingEntity> entities = new ArrayList<>(player.getWorld().getEntitiesByClass(LivingEntity.class, player.getBoundingBox().expand(7f), e -> !e.getUuid().equals(player.getUuid())));
-							double biggestAngle = 0;
-							LivingEntity chosenEntity = null;
-							for (LivingEntity entity : entities) {
-								if (!entity.isAlive() || MalumComponents.SPIRIT_COMPONENT.get(entity).isSoulless() || SpiritHelper.getEntitySpiritData(entity) == null) {
-									continue;
-								}
-								Vec3d lookDirection = player.getRotationVector();
-								Vec3d directionToEntity = entity.getPos().subtract(player.getPos()).normalize();
-								double angle = lookDirection.dotProduct(directionToEntity);
-								if (angle > biggestAngle && angle > 0.5f) {
-									biggestAngle = angle;
-									chosenEntity = entity;
-								}
-							}
-							if (chosenEntity != null && (!chosenEntity.getUuid().equals(c.targetedSoulUUID) || MalumComponents.SPIRIT_COMPONENT.get(chosenEntity).getSoulThiefUuid() == null)) {
-								c.targetedSoulUUID = chosenEntity.getUuid();
-								c.targetedSoulId = chosenEntity.getId();
-								MalumComponents.SPIRIT_COMPONENT.maybeGet(chosenEntity).ifPresent(ec -> ec.setSoulThiefUuid(player.getUuid()));
-								if (chosenEntity.getWorld() instanceof ServerWorld) {
-									MalumComponents.SPIRIT_COMPONENT.sync(chosenEntity);
-								}
-							}
-							if (chosenEntity == null) {
-								c.targetedSoulUUID = null;
-								c.targetedSoulId = -1;
+						if (chosenEntity == null) {
+							soulHarvestHandler.targetedSoulUUID = null;
+							soulHarvestHandler.targetedSoulId = -1;
+						} else if (!chosenEntity.getUuid().equals(soulHarvestHandler.targetedSoulUUID) || MalumComponents.SOUL_COMPONENT.get(chosenEntity).getSoulThiefUUID() == null) {
+							soulHarvestHandler.targetedSoulUUID = chosenEntity.getUuid();
+							soulHarvestHandler.targetedSoulId = chosenEntity.getId();
+							MalumComponents.SOUL_COMPONENT.get(chosenEntity).setSoulThiefUUID(player.getUuid());
+							if (chosenEntity.getWorld() instanceof ServerWorld) {
+								MalumComponents.SOUL_COMPONENT.sync(chosenEntity);
 							}
 						}
 					}
-				} else if (c.targetedSoulUUID != null) {
-					c.targetedSoulUUID = null;
-					c.targetedSoulId = -1;
 				}
-			});
+
+				int desiredProgress = isUsingStave ? 160 : 10;
+				if (soulHarvestHandler.targetedSoulUUID != null) {
+					//Here we essentially "prime" the entity that we are targeting.
+					//If the player isn't using their staff, we raise their target's soul harvest progress to ten, which the renderer understands as "put a target on this guy"
+					//If the player is using their staff, we instead just start draining the soul
+					Entity entity = player.getWorld().getEntityById(soulHarvestHandler.targetedSoulId);
+					if (entity instanceof LivingEntity livingEntity) {
+						var soulData = MalumComponents.SOUL_COMPONENT.get(livingEntity);
+						if (soulData.getSoulSeparationProgress() < desiredProgress) {
+							soulData.setSoulSeparationProgress(soulData.getSoulSeparationProgress() + 1);
+						}
+					}
+				}
+				//and here's where all the magic happens. When a player is using their staff, we check if the harvest progress has reached it's maximum.
+				//Once it has, we will spawn a soul and mark the targeted entity as soulless.
+				if (isUsingStave) {
+					if (player.getWorld() instanceof ServerWorld) {
+						if (soulHarvestHandler.targetedSoulUUID != null) {
+							Entity entity = player.getWorld().getEntityById(soulHarvestHandler.targetedSoulId);
+							if (entity instanceof LivingEntity livingEntity) {
+								var soulData = MalumComponents.SOUL_COMPONENT.get(livingEntity);
+
+								if (soulData.getSoulSeparationProgress() >= HARVEST_DURATION) {
+									Vec3d position = entity.getPos().add(0, entity.getStandingEyeHeight() / 2f, 0);
+									MalumEntitySpiritData data = SpiritHelper.getEntitySpiritData(livingEntity);
+									PlayerLookup.tracking(entity).forEach(track -> SuccessfulSoulHarvestParticlePacket.send(track, data.primaryType.getColor(), data.primaryType.getEndColor(), position.x, position.y, position.z));
+
+									if (livingEntity instanceof MobEntity mob) {
+										SoulDataComponent.removeSentience(mob);
+									}
+									soulData.setSoulless(true);
+									soulData.setSoulThiefUUID(player.getUuid());
+
+									player.swingHand(player.getActiveHand(), true);
+									player.stopUsingItem();
+									MalumComponents.SOUL_COMPONENT.sync(livingEntity);
+								}
+							}
+						}
+					}
+				}
+			} else if (soulHarvestHandler.targetedSoulUUID != null) {
+				soulHarvestHandler.targetedSoulUUID = null;
+				soulHarvestHandler.targetedSoulId = -1;
+			}
 		}
+
 	}
 
 	public static void removeSentience(MobEntity mob) {
@@ -252,13 +192,13 @@ public class SoulHarvestHandler {
 
 			@Override
 			public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, T entity, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
-				MalumComponents.SPIRIT_COMPONENT.maybeGet(entity).ifPresent(c -> {
-					if (c.getSoulThiefUuid() != null) {
-						PlayerEntity player = entity.getWorld().getPlayerByUuid(c.getSoulThiefUuid());
+				MalumComponents.SOUL_COMPONENT.maybeGet(entity).ifPresent(c -> {
+					if (c.getSoulThiefUUID() != null) {
+						PlayerEntity player = entity.getWorld().getPlayerByUuid(c.getSoulThiefUUID());
 						if (player != null && player.isAlive() && entity.isAlive()) {
 							MalumEntitySpiritData data = SpiritHelper.getEntitySpiritData(entity);
 							matrices.pop();
-							renderSoulHarvestEffects(matrices, entity, player, data.primaryType.getColor(), c.getSoulData(), tickDelta);
+							renderSoulHarvestEffects(matrices, entity, player, data.primaryType.getColor(), c, tickDelta);
 							matrices.push();
 						}
 					}
@@ -267,13 +207,13 @@ public class SoulHarvestHandler {
 		}
 
 
-		public static void renderSoulHarvestEffects(MatrixStack poseStack, LivingEntity target, PlayerEntity player, Color color, SoulDataHandler soulData, float partialTicks) {
-			if (soulData.soulSeparationProgress > 0f) {
+		public static void renderSoulHarvestEffects(MatrixStack poseStack, LivingEntity target, PlayerEntity player, Color color, SoulDataComponent soulData, float partialTicks) {
+			if (soulData.getSoulSeparationProgress() > 0f) {
 				poseStack.push();
 				Box boundingBox = target.getBoundingBox();
 				Vec3d playerPosition = new Vec3d(player.prevX, player.prevY, player.prevZ).lerp(player.getPos(), partialTicks);
 				Vec3d entityPosition = new Vec3d(target.prevX, target.prevY, target.prevZ).lerp(target.getPos(), partialTicks);
-				Vec3d toPlayer = playerPosition.subtract(entityPosition).normalize().multiply(boundingBox.getXsize() * 0.5f, 0, boundingBox.getZsize() * 0.5f);
+				Vec3d toPlayer = playerPosition.subtract(entityPosition).normalize().multiply(boundingBox.getXLength() * 0.5f, 0, boundingBox.getZLength() * 0.5f);
 
 				VertexConsumer soulNoise = DELAYED_RENDER.getBuffer(TARGET_TYPE);
 
@@ -282,7 +222,7 @@ public class SoulHarvestHandler {
 				poseStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180f));
 
 				//preview
-				float intensity = Math.min(10, soulData.soulSeparationProgress) / 10f;
+				float intensity = Math.min(10, soulData.getSoulSeparationProgress()) / 10f;
 
 
 				VFXBuilders.createWorld().setPosColorTexLightmapDefaultFormat()

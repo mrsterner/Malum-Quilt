@@ -1,32 +1,33 @@
 package dev.sterner.malum.common.registry;
 
+import dev.sterner.malum.Malum;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.damage.EntityDamageSource;
+import net.minecraft.entity.damage.DamageType;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 public interface MalumDamageSourceRegistry {
-	String VOODOO_IDENTIFIER = "voodoo";
-	String MAGEBANE_IDENTIFIER = "magebane";
-	String SCYTHE_SWEEP_IDENTIFIER = "scythe_sweep";
-	String GUARANTEED_SOUL_SHATTER = "soul_strike";
+	RegistryKey<DamageType> VOODOO = RegistryKey.of(RegistryKeys.DAMAGE_TYPE, Malum.id("voodoo"));
+	RegistryKey<DamageType> MAGEBANE = RegistryKey.of(RegistryKeys.DAMAGE_TYPE, Malum.id("magebane"));
+	RegistryKey<DamageType> SCYTHE_SWEEP = RegistryKey.of(RegistryKeys.DAMAGE_TYPE, Malum.id("scythe_sweep"));
+	RegistryKey<DamageType> GUARANTEED_SOUL_SHATTER = RegistryKey.of(RegistryKeys.DAMAGE_TYPE, Malum.id("soul_strike"));
 
-	DamageSource VOODOO = new DamageSource(VOODOO_IDENTIFIER).setUsesMagic();
-	DamageSource SOUL_STRIKE = new DamageSource(GUARANTEED_SOUL_SHATTER).setUsesMagic();
-
-
-    static DamageSource causeVoodooDamage(Entity attacker) {
-		return new EntityDamageSource(VOODOO_IDENTIFIER, attacker).setUsesMagic();
+	static DamageSource create(World world, RegistryKey<DamageType> key, @Nullable Entity source, @Nullable Entity attacker) {
+		return new DamageSource(world.getRegistryManager().get(RegistryKeys.DAMAGE_TYPE).entryOf(key), source, attacker);
 	}
 
-	static DamageSource causeSoulStrikeDamage(Entity attacker) {
-		return new EntityDamageSource(GUARANTEED_SOUL_SHATTER, attacker).setUsesMagic();
+	static DamageSource create(World world, RegistryKey<DamageType> key, @Nullable Entity attacker) {
+		return new DamageSource(world.getRegistryManager().get(RegistryKeys.DAMAGE_TYPE).entryOf(key), attacker);
 	}
 
-	static DamageSource causeMagebaneDamage(Entity attacker) {
-		return new EntityDamageSource(MAGEBANE_IDENTIFIER, attacker).setThorns().setUsesMagic();
+	static DamageSource create(World world, RegistryKey<DamageType> key) {
+		return new DamageSource(world.getRegistryManager().get(RegistryKeys.DAMAGE_TYPE).entryOf(key));
 	}
 
-	static DamageSource scytheSweepDamage(Entity attacker) {
-		return new EntityDamageSource(SCYTHE_SWEEP_IDENTIFIER, attacker);
+	static void init(){
+
 	}
 }

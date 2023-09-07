@@ -1,7 +1,7 @@
 package dev.sterner.malum.common.blockentity.alteration_plinth;
 
-import com.sammy.lodestone.helpers.BlockHelper;
-import com.sammy.lodestone.systems.blockentity.LodestoneBlockEntityInventory;
+import dev.sterner.lodestone.helpers.BlockHelper;
+import dev.sterner.lodestone.systems.blockentity.LodestoneBlockEntityInventory;
 import dev.sterner.malum.common.blockentity.storage.ItemPedestalBlockEntity;
 import dev.sterner.malum.common.network.packet.s2c.block.blight.BlightTransformItemParticlePacket;
 import dev.sterner.malum.common.recipe.AugmentingRecipe;

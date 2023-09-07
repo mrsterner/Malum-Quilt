@@ -1,6 +1,6 @@
 package dev.sterner.malum.common.entity.nitrate;
 
-import com.sammy.lodestone.helpers.EntityHelper;
+import dev.sterner.lodestone.helpers.EntityHelper;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.thrown.ThrownEntity;

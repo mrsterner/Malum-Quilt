@@ -1,6 +1,6 @@
 package dev.sterner.malum.common.entity.boomerang;
 
-import com.sammy.lodestone.helpers.ItemHelper;
+import dev.sterner.lodestone.helpers.ItemHelper;
 import dev.sterner.malum.common.item.tools.MalumScytheItem;
 import dev.sterner.malum.common.registry.MalumEnchantmentRegistry;
 import dev.sterner.malum.common.registry.MalumEntityRegistry;
@@ -79,7 +79,7 @@ public class ScytheBoomerangEntity extends ThrownItemEntity {
             return;
         }
 
-        DamageSource source = DamageSource.mobProjectile(this, owner);
+        DamageSource source = getWorld().getDamageSources().mobProjectile(this, owner);
         Entity entity = entityHitResult.getEntity();
         if (getWorld().isClient) {
             return;

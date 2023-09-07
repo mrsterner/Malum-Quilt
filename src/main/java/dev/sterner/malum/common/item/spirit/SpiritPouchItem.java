@@ -1,6 +1,6 @@
 package dev.sterner.malum.common.item.spirit;
 
-import com.sammy.lodestone.systems.container.ItemInventory;
+import dev.sterner.lodestone.systems.container.ItemInventory;
 import dev.sterner.malum.common.screen.SpiritPouchScreenHandler;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;

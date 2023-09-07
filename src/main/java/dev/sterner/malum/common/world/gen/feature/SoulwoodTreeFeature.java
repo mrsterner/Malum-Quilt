@@ -1,8 +1,8 @@
 package dev.sterner.malum.common.world.gen.feature;
 
 import com.google.common.collect.ImmutableList;
-import com.sammy.lodestone.helpers.BlockHelper;
-import com.sammy.lodestone.systems.worldgen.LodestoneBlockFiller;
+import dev.sterner.lodestone.helpers.BlockHelper;
+import dev.sterner.lodestone.systems.worldgen.LodestoneBlockFiller;
 import dev.sterner.malum.common.block.BlockTagRegistry;
 import dev.sterner.malum.common.block.MalumLeavesBlock;
 import dev.sterner.malum.common.registry.MalumObjects;
@@ -10,15 +10,16 @@ import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.PillarBlock;
+import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.noise.OctaveSimplexNoiseSampler;
-import net.minecraft.util.random.LegacySimpleRandom;
-import net.minecraft.util.random.RandomGenerator;
+import net.minecraft.util.math.random.CheckedRandom;
+import net.minecraft.util.math.random.ChunkRandom;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.StructureWorldAccess;
-import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.util.FeatureContext;
@@ -33,7 +34,7 @@ import static dev.sterner.malum.common.world.gen.feature.RunewoodTreeFeature.upd
 import static net.minecraft.registry.tag.BlockTags.*;
 
 public class SoulwoodTreeFeature extends Feature<DefaultFeatureConfig> {
-    private static final OctaveSimplexNoiseSampler BLIGHT_NOISE = new OctaveSimplexNoiseSampler(new ChunkRandom(new LegacySimpleRandom(1234L)), ImmutableList.of(0));
+    private static final OctaveSimplexNoiseSampler BLIGHT_NOISE = new OctaveSimplexNoiseSampler(new ChunkRandom(new CheckedRandom(1234L)), ImmutableList.of(0));
 
     private static final int minimumSapBlockCount = 3;
     private static final int extraSapBlockCount = 5;
@@ -61,10 +62,10 @@ public class SoulwoodTreeFeature extends Feature<DefaultFeatureConfig> {
     }
 
     @Override
-    public boolean place(FeatureContext<DefaultFeatureConfig> ctx) {
+    public boolean generate(FeatureContext<DefaultFeatureConfig> ctx) {
         var world = ctx.getWorld();
         BlockPos pos = ctx.getOrigin();
-        RandomGenerator rand = ctx.getRandom();
+        Random rand = ctx.getRandom();
         if (world.isAir(pos.down()) || !MalumObjects.SOULWOOD_GROWTH.getDefaultState().canPlaceAt(world, pos)) {
             return false;
         }
@@ -213,7 +214,7 @@ public class SoulwoodTreeFeature extends Feature<DefaultFeatureConfig> {
         return i > 1;
     }
 
-    public static void makeLeafBlob(LodestoneBlockFiller filler, RandomGenerator rand, BlockPos pos) {
+    public static void makeLeafBlob(LodestoneBlockFiller filler, Random rand, BlockPos pos) {
         makeLeafSlice(filler, rand, pos, 1, 0);
         makeLeafSlice(filler, rand, pos.up(1), 2, 1);
         makeLeafSlice(filler, rand, pos.up(2), 3, 2);
@@ -224,7 +225,7 @@ public class SoulwoodTreeFeature extends Feature<DefaultFeatureConfig> {
         makeLeafSlice(filler, rand, pos.up(6), 1, 4);
     }
 
-    public static void makeLeafSlice(LodestoneBlockFiller filler, RandomGenerator rand, BlockPos pos, int leavesSize, int leavesColor) {
+    public static void makeLeafSlice(LodestoneBlockFiller filler, Random rand, BlockPos pos, int leavesSize, int leavesColor) {
         for (int x = -leavesSize; x <= leavesSize; x++) {
             for (int z = -leavesSize; z <= leavesSize; z++) {
                 if (Math.abs(x) == leavesSize && Math.abs(z) == leavesSize) {
@@ -284,7 +285,7 @@ public class SoulwoodTreeFeature extends Feature<DefaultFeatureConfig> {
                         if (plantState.isIn(BlockTagRegistry.BLIGHTED_PLANTS)) {
                             break;
                         }
-                        if ((plantState.getMaterial().isReplaceable() || plantState.isIn(REPLACEABLE_PLANTS) || plantState.isIn(FLOWERS))) {
+                        if ((plantState.isReplaceable() || plantState.isIn(REPLACEABLE) || plantState.isIn(FLOWERS))) {
                             filler.getEntries().put(blockPos.toImmutable(), new LodestoneBlockFiller.BlockStateEntry(Blocks.AIR.getDefaultState()));
                             blockPos.move(Direction.DOWN);
                         } else {

@@ -25,7 +25,7 @@ public class CloakArmorRenderer implements ArmorRenderer {
 		if (armorModel == null) {
 			armorModel = new SoulHunterArmorModel(client.getEntityModelLoader().getModelPart(SoulHunterArmorModel.LAYER));
 		}
-		contextModel.setAttributes(armorModel);
+		contextModel.copyBipedStateTo(armorModel);
 		armorModel.copyFromDefault(contextModel);
 		armorModel.setVisible(false);
 

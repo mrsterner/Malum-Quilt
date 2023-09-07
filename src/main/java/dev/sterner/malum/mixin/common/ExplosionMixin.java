@@ -8,7 +8,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.item.ItemStack;
-import net.minecraft.loot.context.LootContext;
+import net.minecraft.loot.context.LootContextParameterSet;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
@@ -44,8 +44,8 @@ public abstract class ExplosionMixin {
 	@Final
 	private World world;
 
-	@ModifyArg(method = "affectWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getDroppedStacks(Lnet/minecraft/loot/context/LootContext$Builder;)Ljava/util/List;"))
-	private LootContext.Builder malum$getBlockDrops(LootContext.Builder builder) {
+	@ModifyArg(method = "affectWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getDroppedStacks(Lnet/minecraft/loot/context/LootContextParameterSet$Builder;)Ljava/util/List;"))
+	private LootContextParameterSet.Builder malum$getBlockDrops(LootContextParameterSet.Builder builder) {
 		return CurioProspectorBelt.applyFortune(getCausingEntity(), builder);
 	}
 
@@ -69,7 +69,7 @@ public abstract class ExplosionMixin {
 		return CurioHoarderRing.getExplosionPos(hasEarthenRing, value, getCausingEntity(), droppedItem);
 	}
 
-	@Inject(method = "collectBlocksAndDamageEntities", at = @At(value = "NEW", target = "net/minecraft/util/math/Vec3d", ordinal = 1), locals = LocalCapture.CAPTURE_FAILHARD)
+	@Inject(method = "collectBlocksAndDamageEntities", at = @At(value = "NEW", target = "(DDD)Lnet/minecraft/util/math/Vec3d;", ordinal = 1), locals = LocalCapture.CAPTURE_FAILHARD)
 	public void malum$onExplode(CallbackInfo ci, Set<BlockPos> blocks, int i, float j, int k, int l, int d, int q, int e, int r, List<Entity> list) {//Dont fix the red squiggly lines, they have to be broken
 		ExplosionEvent.DETONATE.invoker().onDetonate(this.world, (Explosion) (Object) this, list, j);
 	}

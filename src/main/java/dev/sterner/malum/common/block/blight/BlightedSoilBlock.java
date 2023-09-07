@@ -1,6 +1,6 @@
 package dev.sterner.malum.common.block.blight;
 
-import com.sammy.lodestone.systems.worldgen.LodestoneBlockFiller;
+import dev.sterner.lodestone.systems.worldgen.LodestoneBlockFiller;
 import dev.sterner.malum.common.item.spirit.MalumSpiritItem;
 import dev.sterner.malum.common.network.packet.s2c.block.blight.BlightMistParticlePacket;
 import dev.sterner.malum.common.registry.MalumSoundRegistry;

@@ -1,12 +1,12 @@
 package dev.sterner.malum.common.blockentity.obelisk;
 
-import com.sammy.lodestone.helpers.BlockHelper;
-import com.sammy.lodestone.setup.LodestoneParticleRegistry;
-import com.sammy.lodestone.systems.multiblock.MultiBlockStructure;
-import com.sammy.lodestone.systems.particle.WorldParticleBuilder;
-import com.sammy.lodestone.systems.particle.data.ColorParticleData;
-import com.sammy.lodestone.systems.particle.data.GenericParticleData;
-import com.sammy.lodestone.systems.particle.data.SpinParticleData;
+import dev.sterner.lodestone.helpers.BlockHelper;
+import dev.sterner.lodestone.setup.LodestoneParticleRegistry;
+import dev.sterner.lodestone.systems.multiblock.MultiBlockStructure;
+import dev.sterner.lodestone.systems.particle.WorldParticleBuilder;
+import dev.sterner.lodestone.systems.particle.data.ColorParticleData;
+import dev.sterner.lodestone.systems.particle.data.GenericParticleData;
+import dev.sterner.lodestone.systems.particle.data.SpinParticleData;
 import dev.sterner.malum.common.blockentity.spirit_altar.IAltarAccelerator;
 import dev.sterner.malum.common.registry.MalumBlockEntityRegistry;
 import dev.sterner.malum.common.registry.MalumObjects;

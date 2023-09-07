@@ -1,12 +1,12 @@
 package dev.sterner.malum.common.entity.nitrate;
 
-import com.sammy.lodestone.setup.LodestoneParticleRegistry;
-import com.sammy.lodestone.systems.easing.Easing;
-import com.sammy.lodestone.systems.particle.WorldParticleBuilder;
-import com.sammy.lodestone.systems.particle.data.ColorParticleData;
-import com.sammy.lodestone.systems.particle.data.GenericParticleData;
-import com.sammy.lodestone.systems.particle.data.SpinParticleData;
-import com.sammy.lodestone.systems.particle.world.LodestoneWorldParticleTextureSheet;
+import dev.sterner.lodestone.setup.LodestoneParticleRegistry;
+import dev.sterner.lodestone.systems.easing.Easing;
+import dev.sterner.lodestone.systems.particle.WorldParticleBuilder;
+import dev.sterner.lodestone.systems.particle.data.ColorParticleData;
+import dev.sterner.lodestone.systems.particle.data.GenericParticleData;
+import dev.sterner.lodestone.systems.particle.data.SpinParticleData;
+import dev.sterner.lodestone.systems.particle.world.LodestoneWorldParticleTextureSheet;
 import dev.sterner.malum.client.ParticleEffects;
 import dev.sterner.malum.common.network.packet.s2c.entity.EthericNitrateParticlePacket;
 import dev.sterner.malum.common.registry.MalumEntityRegistry;

@@ -1,15 +1,15 @@
 package dev.sterner.malum.common.blockentity.crucible;
 
-import com.sammy.lodestone.helpers.BlockHelper;
-import com.sammy.lodestone.setup.LodestoneParticleRegistry;
-import com.sammy.lodestone.systems.blockentity.LodestoneBlockEntityInventory;
-import com.sammy.lodestone.systems.multiblock.HorizontalDirectionStructure;
-import com.sammy.lodestone.systems.multiblock.MultiBlockCoreEntity;
-import com.sammy.lodestone.systems.multiblock.MultiBlockStructure;
-import com.sammy.lodestone.systems.particle.WorldParticleBuilder;
-import com.sammy.lodestone.systems.particle.data.ColorParticleData;
-import com.sammy.lodestone.systems.particle.data.GenericParticleData;
-import com.sammy.lodestone.systems.particle.data.SpinParticleData;
+import dev.sterner.lodestone.helpers.BlockHelper;
+import dev.sterner.lodestone.setup.LodestoneParticleRegistry;
+import dev.sterner.lodestone.systems.blockentity.LodestoneBlockEntityInventory;
+import dev.sterner.lodestone.systems.multiblock.HorizontalDirectionStructure;
+import dev.sterner.lodestone.systems.multiblock.MultiBlockCoreEntity;
+import dev.sterner.lodestone.systems.multiblock.MultiBlockStructure;
+import dev.sterner.lodestone.systems.particle.WorldParticleBuilder;
+import dev.sterner.lodestone.systems.particle.data.ColorParticleData;
+import dev.sterner.lodestone.systems.particle.data.GenericParticleData;
+import dev.sterner.lodestone.systems.particle.data.SpinParticleData;
 import dev.sterner.malum.common.item.spirit.MalumSpiritItem;
 import dev.sterner.malum.common.registry.MalumBlockEntityRegistry;
 import dev.sterner.malum.common.registry.MalumObjects;

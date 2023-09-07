@@ -2,6 +2,7 @@ package dev.sterner.malum.client.screen.codex;
 
 import dev.sterner.malum.client.screen.codex.objects.BookObject;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -113,24 +114,24 @@ public abstract class AbstractProgressionCodexScreen extends AbstractMalumScreen
 		yOffset = -object.posY + guiTop + bookInsideHeight;
 	}
 
-	public void renderEntries(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
+	public void renderEntries(DrawContext ctx, int mouseX, int mouseY, float partialTicks) {
 		for (int i = bookObjects.size() - 1; i >= 0; i--) {
 			BookObject object = bookObjects.get(i);
 			boolean isHovering = object.isHovering(this, xOffset, yOffset, mouseX, mouseY);
 			object.isHovering = isHovering;
 			object.hover = isHovering ? Math.min(object.hover+1, object.hoverCap()) : Math.max(object.hover-1, 0);
-			object.render(client, stack, xOffset, yOffset, mouseX, mouseY, partialTicks);
+			object.render(client, ctx, xOffset, yOffset, mouseX, mouseY, partialTicks);
 		}
 	}
 
-	public void lateEntryRender(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
+	public void lateEntryRender(DrawContext ctx, int mouseX, int mouseY, float partialTicks) {
 		for (int i = bookObjects.size() - 1; i >= 0; i--) {
 			BookObject object = bookObjects.get(i);
-			object.lateRender(client, stack, xOffset, yOffset, mouseX, mouseY, partialTicks);
+			object.lateRender(client, ctx, xOffset, yOffset, mouseX, mouseY, partialTicks);
 		}
 	}
 
-	public void renderBackground(Identifier texture, MatrixStack poseStack, float xModifier, float yModifier) {
+	public void renderBackground(Identifier texture, DrawContext ctx, float xModifier, float yModifier) {
 		int guiLeft = (width - bookWidth) / 2;
 		int guiTop = (height - bookHeight) / 2;
 		int insideLeft = guiLeft + 17;
@@ -146,7 +147,7 @@ public abstract class AbstractProgressionCodexScreen extends AbstractMalumScreen
 		if (uOffset > (bookInsideWidth - 8) / 2f) {
 			uOffset = (bookInsideWidth - 8) / 2f;
 		}
-		renderTexture(texture, poseStack, insideLeft, insideTop, uOffset, vOffset, bookInsideWidth, bookInsideHeight, backgroundImageWidth / 2, backgroundImageHeight / 2);
+		renderTexture(texture, ctx, insideLeft, insideTop, uOffset, vOffset, bookInsideWidth, bookInsideHeight, backgroundImageWidth / 2, backgroundImageHeight / 2);
 	}
 
 	public boolean isInView(double mouseX, double mouseY) {

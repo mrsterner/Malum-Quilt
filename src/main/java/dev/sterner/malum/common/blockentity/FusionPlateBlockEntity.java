@@ -1,7 +1,7 @@
 package dev.sterner.malum.common.blockentity;
 
-import com.sammy.lodestone.systems.multiblock.MultiBlockCoreEntity;
-import com.sammy.lodestone.systems.multiblock.MultiBlockStructure;
+import dev.sterner.lodestone.systems.multiblock.MultiBlockCoreEntity;
+import dev.sterner.lodestone.systems.multiblock.MultiBlockStructure;
 import dev.sterner.malum.common.block.fusion_plate.FusionPlateComponentBlock;
 import dev.sterner.malum.common.registry.MalumBlockEntityRegistry;
 import dev.sterner.malum.common.registry.MalumObjects;

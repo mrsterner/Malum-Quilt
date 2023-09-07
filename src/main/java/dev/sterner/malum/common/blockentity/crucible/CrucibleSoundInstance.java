@@ -1,6 +1,6 @@
 package dev.sterner.malum.common.blockentity.crucible;
 
-import com.sammy.lodestone.systems.sound.LodestoneBlockEntitySoundInstance;
+import dev.sterner.lodestone.systems.sound.LodestoneBlockEntitySoundInstance;
 import dev.sterner.malum.common.registry.MalumSoundRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.random.Random;

@@ -1,6 +1,6 @@
 package dev.sterner.malum.common.util.handler;
 
-import com.sammy.lodestone.helpers.ItemHelper;
+import dev.sterner.lodestone.helpers.ItemHelper;
 import dev.sterner.malum.MalumConfig;
 import dev.sterner.malum.common.component.MalumComponents;
 import dev.sterner.malum.common.reaping.MalumReapingDropsData;
@@ -14,6 +14,7 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
@@ -40,24 +41,25 @@ public class EsotericReapingHandler {
 				});
 			}
 		}
-		List<MalumReapingDropsData> data = ReapingDataReloadListener.REAPING_DATA.get(target.getType().getBuiltInRegistryHolder().getRegistryKey().getValue());
-		if (data != null) {
-			var capability = MalumComponents.SPIRIT_COMPONENT.get(target);
-			float multiplier = capability.exposedSoul > 0 ? 1 : 0.35f;
-			for (MalumReapingDropsData dropData : data) {
-				World world = target.world;
-				var random = world.random;
-				if (random.nextFloat() < dropData.chance * multiplier) {
-					Ingredient ingredient = dropData.drop;
-					ItemStack stack = ItemHelper.copyWithNewCount(ingredient.getMatchingStacks()[random.nextInt(ingredient.getMatchingStacks().length)], MathHelper.nextInt(random, dropData.min, dropData.max));
-					ItemEntity itemEntity = new ItemEntity(world, target.getX(), target.getY(), target.getZ(), stack);
-					itemEntity.setToDefaultPickupDelay();
-					itemEntity.setVelocity(MathHelper.nextFloat(random, -0.1F, 0.1F), MathHelper.nextFloat(random, 0.25f, 0.5f), MathHelper.nextFloat(random, -0.1F, 0.1F));
-					world.spawnEntity(itemEntity);
+		var v = Registries.ENTITY_TYPE.getKey(target.getType());
+		if (v.isPresent()) {
+			List<MalumReapingDropsData> data = ReapingDataReloadListener.REAPING_DATA.get(v.get().getValue());
+			if (data != null) {
+				var capability = MalumComponents.SOUL_COMPONENT.get(target);
+				float multiplier = capability.getExposedSoulDuration() > 0 ? 1 : 0.35f;
+				for (MalumReapingDropsData dropData : data) {
+					World world = target.getWorld();
+					var random = world.random;
+					if (random.nextFloat() < dropData.chance * multiplier) {
+						Ingredient ingredient = dropData.drop;
+						ItemStack stack = ItemHelper.copyWithNewCount(ingredient.getMatchingStacks()[random.nextInt(ingredient.getMatchingStacks().length)], MathHelper.nextInt(random, dropData.min, dropData.max));
+						ItemEntity itemEntity = new ItemEntity(world, target.getX(), target.getY(), target.getZ(), stack);
+						itemEntity.setToDefaultPickupDelay();
+						itemEntity.setVelocity(MathHelper.nextFloat(random, -0.1F, 0.1F), MathHelper.nextFloat(random, 0.25f, 0.5f), MathHelper.nextFloat(random, -0.1F, 0.1F));
+						world.spawnEntity(itemEntity);
+					}
 				}
 			}
 		}
 	}
-
-
 }

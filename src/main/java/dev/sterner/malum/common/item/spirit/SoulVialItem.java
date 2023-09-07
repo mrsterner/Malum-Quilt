@@ -1,6 +1,6 @@
 package dev.sterner.malum.common.item.spirit;
 
-import com.sammy.lodestone.helpers.ItemHelper;
+import dev.sterner.lodestone.helpers.ItemHelper;
 import dev.sterner.malum.api.interfaces.item.SoulContainerItem;
 import dev.sterner.malum.common.entity.spirit.SoulEntity;
 import dev.sterner.malum.common.spirit.MalumEntitySpiritData;

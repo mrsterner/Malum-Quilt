@@ -1,14 +1,15 @@
 package dev.sterner.malum.common.entity.night_terror;
 
-import com.sammy.lodestone.helpers.EntityHelper;
-import com.sammy.lodestone.setup.LodestoneParticleRegistry;
-import com.sammy.lodestone.systems.easing.Easing;
-import com.sammy.lodestone.systems.particle.WorldParticleBuilder;
-import com.sammy.lodestone.systems.particle.data.ColorParticleData;
-import com.sammy.lodestone.systems.particle.data.GenericParticleData;
-import com.sammy.lodestone.systems.particle.data.SpinParticleData;
-import com.sammy.lodestone.systems.particle.world.LodestoneWorldParticleTextureSheet;
+import dev.sterner.lodestone.helpers.EntityHelper;
+import dev.sterner.lodestone.setup.LodestoneParticleRegistry;
+import dev.sterner.lodestone.systems.easing.Easing;
+import dev.sterner.lodestone.systems.particle.WorldParticleBuilder;
+import dev.sterner.lodestone.systems.particle.data.ColorParticleData;
+import dev.sterner.lodestone.systems.particle.data.GenericParticleData;
+import dev.sterner.lodestone.systems.particle.data.SpinParticleData;
+import dev.sterner.lodestone.systems.particle.world.LodestoneWorldParticleTextureSheet;
 import dev.sterner.malum.client.ParticleEffects;
+import dev.sterner.malum.common.registry.MalumDamageSourceRegistry;
 import dev.sterner.malum.common.registry.MalumEntityRegistry;
 import dev.sterner.malum.common.registry.MalumSoundRegistry;
 import net.minecraft.entity.Entity;
@@ -109,12 +110,12 @@ public class NightTerrorSeekerEntity extends ThrownEntity {
 			if (getWorld().isClient()) {
 				return;
 			}
-			DamageSource source = DamageSourceRegistry.causeVoodooDamage(scytheOwner);
+			DamageSource source = MalumDamageSourceRegistry.create(getWorld(), MalumDamageSourceRegistry.VOODOO, scytheOwner);
 			target.damage(source, magicDamage);
 			if (age < fadeoutStart) {
 				fadeoutStart += 4;
 			}
-			target.getWorld().playSound(null, target.getX(), target.getY(), target.getZ(), MalumSoundRegistry.SCYTHE_CUT, target.getSoundCategory(), 1.0F, 0.9f + target.level.random.nextFloat() * 0.2f);
+			target.getWorld().playSound(null, target.getX(), target.getY(), target.getZ(), MalumSoundRegistry.SCYTHE_CUT, target.getSoundCategory(), 1.0F, 0.9f + target.getWorld().random.nextFloat() * 0.2f);
 		}
 		super.onEntityHit(result);
 	}

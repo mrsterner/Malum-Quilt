@@ -1,13 +1,13 @@
 package dev.sterner.malum.common.block;
 
 
-import com.sammy.lodestone.helpers.BlockHelper;
-import com.sammy.lodestone.helpers.ItemHelper;
-import com.sammy.lodestone.setup.LodestoneParticleRegistry;
-import com.sammy.lodestone.systems.particle.WorldParticleBuilder;
-import com.sammy.lodestone.systems.particle.data.ColorParticleData;
-import com.sammy.lodestone.systems.particle.data.GenericParticleData;
-import com.sammy.lodestone.systems.particle.data.SpinParticleData;
+import dev.sterner.lodestone.helpers.BlockHelper;
+import dev.sterner.lodestone.helpers.ItemHelper;
+import dev.sterner.lodestone.setup.LodestoneParticleRegistry;
+import dev.sterner.lodestone.systems.particle.WorldParticleBuilder;
+import dev.sterner.lodestone.systems.particle.data.ColorParticleData;
+import dev.sterner.lodestone.systems.particle.data.GenericParticleData;
+import dev.sterner.lodestone.systems.particle.data.SpinParticleData;
 import net.minecraft.block.Block;
 import net.minecraft.block.PillarBlock;
 import net.minecraft.entity.player.PlayerEntity;

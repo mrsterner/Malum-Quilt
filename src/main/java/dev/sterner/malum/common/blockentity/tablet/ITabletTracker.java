@@ -1,6 +1,6 @@
 package dev.sterner.malum.common.blockentity.tablet;
 
-import com.sammy.lodestone.helpers.BlockHelper;
+import dev.sterner.lodestone.helpers.BlockHelper;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;

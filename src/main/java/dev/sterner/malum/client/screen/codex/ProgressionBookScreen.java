@@ -1,12 +1,12 @@
 package dev.sterner.malum.client.screen.codex;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.sammy.lodestone.handlers.screenparticle.ScreenParticleHandler;
-import com.sammy.lodestone.setup.LodestoneShaderRegistry;
-import com.sammy.lodestone.systems.easing.Easing;
-import com.sammy.lodestone.systems.recipe.IRecipeComponent;
-import com.sammy.lodestone.systems.rendering.VFXBuilders;
-import com.sammy.lodestone.systems.rendering.shader.ExtendedShader;
+import dev.sterner.lodestone.handlers.screenparticle.ScreenParticleHandler;
+import dev.sterner.lodestone.setup.LodestoneShaderRegistry;
+import dev.sterner.lodestone.systems.easing.Easing;
+import dev.sterner.lodestone.systems.recipe.IRecipeComponent;
+import dev.sterner.lodestone.systems.rendering.VFXBuilders;
+import dev.sterner.lodestone.systems.rendering.shader.ExtendedShader;
 import dev.sterner.malum.api.event.ProgressionBookEntriesSetEvent;
 import dev.sterner.malum.client.screen.codex.objects.*;
 import dev.sterner.malum.client.screen.codex.page.*;
@@ -74,17 +74,17 @@ public class ProgressionBookScreen extends AbstractProgressionCodexScreen {
 		int guiLeft = (width - bookWidth) / 2;
 		int guiTop = (height - bookHeight) / 2;
 
-		renderBackground(BACKGROUND_TEXTURE, poseStack, 0.1f, 0.4f);
+		renderBackground(BACKGROUND_TEXTURE, guiGraphics, 0.1f, 0.4f);
 		GL11.glEnable(GL_SCISSOR_TEST);
 		cut();
 
-		renderEntries(poseStack, mouseX, mouseY, partialTicks);
+		renderEntries(guiGraphics, mouseX, mouseY, partialTicks);
 		ScreenParticleHandler.renderEarlyParticles();
 		GL11.glDisable(GL_SCISSOR_TEST);
 
-		renderTransparentTexture(FADE_TEXTURE, poseStack, guiLeft, guiTop, 1, 1, bookWidth, bookHeight, 512, 512);
-		renderTexture(FRAME_TEXTURE, poseStack, guiLeft, guiTop, 1, 1, bookWidth, bookHeight, 512, 512);
-		lateEntryRender(poseStack, mouseX, mouseY, partialTicks);
+		renderTransparentTexture(FADE_TEXTURE, guiGraphics, guiLeft, guiTop, 1, 1, bookWidth, bookHeight, 512, 512);
+		renderTexture(FRAME_TEXTURE, guiGraphics, guiLeft, guiTop, 1, 1, bookWidth, bookHeight, 512, 512);
+		lateEntryRender(guiGraphics, mouseX, mouseY, partialTicks);
 	}
 
 	@Override

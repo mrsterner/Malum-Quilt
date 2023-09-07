@@ -1,6 +1,5 @@
 package dev.sterner.malum.mixin.common;
 
-import com.sammy.lodestone.forge.CustomUpdateTagHandlingBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.nbt.NbtCompound;
@@ -25,13 +24,5 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 public abstract class WorldChunkMixin extends Chunk {
 	public WorldChunkMixin(ChunkPos pos, UpgradeData upgradeData, HeightLimitView heightLimitView, Registry<Biome> biomeRegistry, long inhabitedTime, @Nullable ChunkSection[] sectionArrayInitializer, @Nullable BlendingData blendingData) {
 		super(pos, upgradeData, heightLimitView, biomeRegistry, inhabitedTime, sectionArrayInitializer, blendingData);
-	}
-
-	@Inject(method = "m_pptwysxt" , at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/BlockEntity;readNbt(Lnet/minecraft/nbt/NbtCompound;)V"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-	private void malum$handleBlockEntityUpdateTag(BlockPos pos, BlockEntityType<?> type, NbtCompound tag, CallbackInfo ci, BlockEntity blockEntity) {
-		if (blockEntity instanceof CustomUpdateTagHandlingBlockEntity handler) {
-			handler.handleUpdateTag(tag);
-			ci.cancel();
-		}
 	}
 }

@@ -1,8 +1,8 @@
 package dev.sterner.malum.common.statuseffect;
 
-import com.sammy.lodestone.helpers.ColorHelper;
-import com.sammy.lodestone.helpers.EntityHelper;
-import com.sammy.lodestone.setup.LodestoneAttributeRegistry;
+import dev.sterner.lodestone.helpers.ColorHelper;
+import dev.sterner.lodestone.helpers.EntityHelper;
+import dev.sterner.lodestone.setup.LodestoneAttributeRegistry;
 import dev.sterner.malum.common.registry.MalumSoundRegistry;
 import dev.sterner.malum.common.registry.MalumStatusEffectRegistry;
 import net.minecraft.entity.LivingEntity;

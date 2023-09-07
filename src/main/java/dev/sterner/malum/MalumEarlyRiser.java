@@ -17,7 +17,6 @@ public final class MalumEarlyRiser implements Runnable {
 	@SuppressWarnings("rawtypes")
 	@Override
 	public void run() {
-		MixinExtrasBootstrap.init();
 
 		final MappingResolver mappings = FabricLoader.getInstance().getMappingResolver();
 		final String enchantmentTarget = mappings.mapClassName("intermediary", "net.minecraft.class_1886");
@@ -33,7 +32,7 @@ public final class MalumEarlyRiser implements Runnable {
 				.build();
 
 
-
+/*
 		ClassTinkerers.enumBuilder(armorMaterialsTarget, String.class, int.class, int[].class, int.class, armorParam5, float.class, float.class, Supplier.class)
 				.addEnumSubclass(
 						"SOUL_CLOAK",
@@ -46,6 +45,8 @@ public final class MalumEarlyRiser implements Runnable {
 						() -> (new Object[]{"soul_stained_steel", 22, new int[]{2, 6, 7, 3}, 13, SoundEvents.ITEM_ARMOR_EQUIP_IRON, 2.0f, 0.0f, (Supplier) () -> Ingredient.ofItems(SOUL_STAINED_STEEL_INGOT)})
 				)
 				.build();
+
+ */
 
 		// toolMaterials
 		ClassTinkerers.enumBuilder(toolMaterialsTarget, int.class, int.class, float.class, float.class, int.class, Supplier.class)

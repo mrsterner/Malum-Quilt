@@ -1,6 +1,6 @@
 package dev.sterner.malum.common.util.handler;
 
-import com.sammy.lodestone.helpers.ItemHelper;
+import dev.sterner.lodestone.helpers.ItemHelper;
 import dev.emi.trinkets.api.TrinketsApi;
 import dev.sterner.malum.MalumConfig;
 import dev.sterner.malum.api.interfaces.item.SpiritCollectActivity;
@@ -36,7 +36,7 @@ public class SpiritHarvestHandler {
 		if (attacker == null) {
 			attacker = target.getAttacker();
 		}
-		if (source.getSource() != null && source.getSource().getName().equals(MalumDamageSourceRegistry.VOODOO_IDENTIFIER)) {
+		if (source.getSource() != null && source.isOf(MalumDamageSourceRegistry.VOODOO)) {
 			SpiritHelper.createSpiritEntities(SpiritHelper.getSpiritItemStacks(target), target, null);
 			return;
 		}
@@ -46,8 +46,8 @@ public class SpiritHarvestHandler {
 				stack = scytheBoomerang.scythe;
 			}
 			if (!(target instanceof PlayerEntity)) {
-				SpiritLivingEntityComponent component = MalumComponents.SPIRIT_COMPONENT.get(target);
-				if(component.exposedSoul > 0 && !component.isSoulless() && (!MalumConfig.SOULLESS_SPAWNERS || (MalumConfig.SOULLESS_SPAWNERS && !component.isSpawnerSpawned()))) {
+				var component = MalumComponents.SOUL_COMPONENT.get(target);
+				if(component.getExposedSoulDuration() > 0 && !component.isSoulless() && (!MalumConfig.SOULLESS_SPAWNERS || (MalumConfig.SOULLESS_SPAWNERS && !component.isSpawnerSpawned()))) {
 					SpiritHelper.createSpiritsFromWeapon(target, attacker, stack);
 					component.setSoulless(true);
 				}
@@ -80,7 +80,7 @@ public class SpiritHarvestHandler {
 
 						Inventories.writeNbt(nbt, inventory.stacks);
 
-						World world = playerEntity.world;
+						World world = playerEntity.getWorld();
 						world.playSound(null, playerEntity.getX(), playerEntity.getY() + 0.5, playerEntity.getZ(), SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((world.random.nextFloat() - world.random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 						return;
 					}

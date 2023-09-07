@@ -1,6 +1,6 @@
 package dev.sterner.malum.common.block.mirror;
 
-import com.sammy.lodestone.systems.block.WaterLoggedEntityBlock;
+import dev.sterner.lodestone.systems.block.WaterLoggedEntityBlock;
 import dev.sterner.malum.common.blockentity.mirror.EmitterMirrorBlockEntity;
 import dev.sterner.malum.common.blockentity.mirror.MirrorBlockEntity;
 import dev.sterner.malum.common.registry.MalumBlockEntityRegistry;

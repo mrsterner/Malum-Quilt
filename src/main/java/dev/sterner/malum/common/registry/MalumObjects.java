@@ -1,9 +1,9 @@
 package dev.sterner.malum.common.registry;
 
-import com.sammy.lodestone.systems.block.LodestoneLogBlock;
-import com.sammy.lodestone.systems.item.tools.magic.*;
-import com.sammy.lodestone.systems.multiblock.MultiBlockItem;
-import com.sammy.lodestone.systems.multiblock.MultiBlockStructure;
+import dev.sterner.lodestone.systems.block.LodestoneLogBlock;
+import dev.sterner.lodestone.systems.item.tools.magic.*;
+import dev.sterner.lodestone.systems.multiblock.MultiBlockItem;
+import dev.sterner.lodestone.systems.multiblock.MultiBlockStructure;
 import dev.sterner.malum.Malum;
 import dev.sterner.malum.common.block.*;
 import dev.sterner.malum.common.block.alteration_plinth.AlterationPlinthBlock;
@@ -53,6 +53,7 @@ import dev.sterner.malum.common.item.spirit.*;
 import dev.sterner.malum.common.item.tools.MalumScytheItem;
 import dev.sterner.malum.common.item.tools.magic.MagicScytheItem;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
+import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.block.*;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -200,21 +201,20 @@ public interface MalumObjects {
 	Item SOUL_STAINED_STEEL_SHOVEL = register("soul_stained_steel_shovel", new MagicShovelItem(SOUL_STAINED_STEEL, -2, 0, 2, settings()));
 	Item SOUL_STAINED_STEEL_HOE = register("soul_stained_steel_hoe", new MagicHoeItem(SOUL_STAINED_STEEL, 0, -1.5f, 1, settings()));
 
-	Item SOUL_STAINED_STEEL_HELMET = register("soul_stained_steel_helmet", new SoulStainedSteelArmorItem(EquipmentSlot.HEAD, settings()));
-	Item SOUL_STAINED_STEEL_CHESTPLATE = register("soul_stained_steel_chestplate", new SoulStainedSteelArmorItem(EquipmentSlot.CHEST, settings()));
-	Item SOUL_STAINED_STEEL_LEGGINGS = register("soul_stained_steel_leggings", new SoulStainedSteelArmorItem(EquipmentSlot.LEGS, settings()));
-	Item SOUL_STAINED_STEEL_BOOTS = register("soul_stained_steel_boots", new SoulStainedSteelArmorItem(EquipmentSlot.FEET, settings()));
+	Item SOUL_STAINED_STEEL_HELMET = register("soul_stained_steel_helmet", new SoulStainedSteelArmorItem(ArmorItem.Type.HELMET, settings()));
+	Item SOUL_STAINED_STEEL_CHESTPLATE = register("soul_stained_steel_chestplate", new SoulStainedSteelArmorItem(ArmorItem.Type.CHESTPLATE, settings()));
+	Item SOUL_STAINED_STEEL_LEGGINGS = register("soul_stained_steel_leggings", new SoulStainedSteelArmorItem(ArmorItem.Type.LEGGINGS, settings()));
+	Item SOUL_STAINED_STEEL_BOOTS = register("soul_stained_steel_boots", new SoulStainedSteelArmorItem(ArmorItem.Type.BOOTS, settings()));
 
-	Item SOUL_HUNTER_CLOAK = register("soul_hunter_cloak", new SoulHunterArmorItem(EquipmentSlot.HEAD, settings()));
-	Item SOUL_HUNTER_ROBE = register("soul_hunter_robe", new SoulHunterArmorItem(EquipmentSlot.CHEST, settings()));
-	Item SOUL_HUNTER_LEGGINGS = register("soul_hunter_leggings", new SoulHunterArmorItem(EquipmentSlot.LEGS, settings()));
-	Item SOUL_HUNTER_BOOTS = register("soul_hunter_boots", new SoulHunterArmorItem(EquipmentSlot.FEET, settings()));
+	Item SOUL_HUNTER_CLOAK = register("soul_hunter_cloak", new SoulHunterArmorItem(ArmorItem.Type.HELMET, settings()));
+	Item SOUL_HUNTER_ROBE = register("soul_hunter_robe", new SoulHunterArmorItem(ArmorItem.Type.CHESTPLATE, settings()));
+	Item SOUL_HUNTER_LEGGINGS = register("soul_hunter_leggings", new SoulHunterArmorItem(ArmorItem.Type.LEGGINGS, settings()));
+	Item SOUL_HUNTER_BOOTS = register("soul_hunter_boots", new SoulHunterArmorItem(ArmorItem.Type.BOOTS, settings()));
 
 	Item ETHERIC_NITRATE = register("etheric_nitrate", new EthericNitrateItem(settings()));
 	Item VIVID_NITRATE = register("vivid_nitrate", new VividNitrateItem(settings()));
 
 	Item TYRVING = register("tyrving", new TyrvingItem(ItemTiers.ItemTierEnum.TYRVING, 0, -0.3f, settings()));
-	Item NIGHT_TERROR = ITEMS.register("night_terror", () -> new NightTerrorScytheItem(VOID, -8f, -0.1f, 8, GEAR_PROPERTIES()));
 
 	Item GILDED_RING = register("gilded_ring", new CurioGildedRing(settings()));
 	Item GILDED_BELT = register("gilded_belt", new CurioGildedBelt(settings()));
@@ -383,8 +383,8 @@ public interface MalumObjects {
 	Block CRACKED_TWISTED_ROCK_TILES_STAIRS = register("cracked_twisted_rock_tiles_stairs", new StairsBlock(TWISTED_ROCK.getDefaultState(), TWISTED_ROCK_PROPERTIES()),true);
 	Block CRACKED_SMALL_TWISTED_ROCK_BRICKS_STAIRS = register("cracked_small_twisted_rock_bricks_stairs", new StairsBlock(TWISTED_ROCK.getDefaultState(), TWISTED_ROCK_PROPERTIES()),true);
 
-	Block TWISTED_ROCK_PRESSURE_PLATE = register("twisted_rock_pressure_plate", new PressurePlateBlock(PressurePlateBlock.ActivationRule.MOBS, TWISTED_ROCK_PROPERTIES(), SoundEvents.BLOCK_BAMBOO_WOOD_PRESSURE_PLATE_CLICK_OFF, SoundEvents.BLOCK_BAMBOO_WOOD_PRESSURE_PLATE_CLICK_ON),true);
-	Block TWISTED_ROCK_BUTTON = register("twisted_rock_button",  new AbstractButtonBlock(TWISTED_ROCK_PROPERTIES(), 1,false, SoundEvents.BLOCK_STONE_BUTTON_CLICK_OFF,SoundEvents.BLOCK_STONE_BUTTON_CLICK_ON),true);
+	Block TWISTED_ROCK_PRESSURE_PLATE = register("twisted_rock_pressure_plate", new PressurePlateBlock(PressurePlateBlock.ActivationRule.MOBS, TWISTED_ROCK_PROPERTIES(),BlockSetType.STONE),true);
+	Block TWISTED_ROCK_BUTTON = register("twisted_rock_button",  new ButtonBlock(TWISTED_ROCK_PROPERTIES(), BlockSetType.STONE,1,false),true);
 
 
 	Block TWISTED_ROCK_WALL = register("twisted_rock_wall", new WallBlock(TWISTED_ROCK_PROPERTIES()),true);
@@ -430,15 +430,15 @@ public interface MalumObjects {
 	Block CUT_RUNEWOOD_PLANKS = register("cut_runewood_planks", new Block(RUNEWOOD_PROPERTIES()),true);
 	Block RUNEWOOD_BEAM = register("runewood_beam", new PillarBlock(RUNEWOOD_PROPERTIES()),true);
 
-	Block RUNEWOOD_DOOR = register("runewood_door", new DoorBlock(RUNEWOOD_PROPERTIES().nonOpaque(), SoundEvents.BLOCK_BAMBOO_WOOD_PRESSURE_PLATE_CLICK_OFF, SoundEvents.BLOCK_BAMBOO_WOOD_PRESSURE_PLATE_CLICK_ON),true);
-	Block RUNEWOOD_TRAPDOOR = register("runewood_trapdoor", new TrapdoorBlock(RUNEWOOD_PROPERTIES().nonOpaque(), SoundEvents.BLOCK_BAMBOO_WOOD_PRESSURE_PLATE_CLICK_OFF, SoundEvents.BLOCK_BAMBOO_WOOD_PRESSURE_PLATE_CLICK_ON),true);
-	Block SOLID_RUNEWOOD_TRAPDOOR = register("solid_runewood_trapdoor", new TrapdoorBlock(RUNEWOOD_PROPERTIES().nonOpaque(),  SoundEvents.BLOCK_BAMBOO_WOOD_PRESSURE_PLATE_CLICK_OFF, SoundEvents.BLOCK_BAMBOO_WOOD_PRESSURE_PLATE_CLICK_ON),true);
+	Block RUNEWOOD_DOOR = register("runewood_door", new DoorBlock(RUNEWOOD_PROPERTIES().nonOpaque(), BlockSetType.OAK),true);
+	Block RUNEWOOD_TRAPDOOR = register("runewood_trapdoor", new TrapdoorBlock(RUNEWOOD_PROPERTIES().nonOpaque(), BlockSetType.OAK),true);
+	Block SOLID_RUNEWOOD_TRAPDOOR = register("solid_runewood_trapdoor", new TrapdoorBlock(RUNEWOOD_PROPERTIES().nonOpaque(), BlockSetType.OAK),true);
 
-	Block RUNEWOOD_PLANKS_BUTTON = register("runewood_planks_button", new AbstractButtonBlock(RUNEWOOD_PROPERTIES(),1 , false, SoundEvents.BLOCK_BAMBOO_WOOD_PRESSURE_PLATE_CLICK_OFF, SoundEvents.BLOCK_BAMBOO_WOOD_PRESSURE_PLATE_CLICK_ON),true);
-	Block RUNEWOOD_PLANKS_PRESSURE_PLATE = register("runewood_planks_pressure_plate", new PressurePlateBlock(PressurePlateBlock.ActivationRule.EVERYTHING, RUNEWOOD_PROPERTIES(),  SoundEvents.BLOCK_BAMBOO_WOOD_PRESSURE_PLATE_CLICK_OFF, SoundEvents.BLOCK_BAMBOO_WOOD_PRESSURE_PLATE_CLICK_ON),true);
+	Block RUNEWOOD_PLANKS_BUTTON = register("runewood_planks_button", new ButtonBlock(RUNEWOOD_PROPERTIES(),BlockSetType.OAK, 1 , false),true);
+	Block RUNEWOOD_PLANKS_PRESSURE_PLATE = register("runewood_planks_pressure_plate", new PressurePlateBlock(PressurePlateBlock.ActivationRule.EVERYTHING, RUNEWOOD_PROPERTIES(), BlockSetType.OAK),true);
 
 	Block RUNEWOOD_PLANKS_FENCE = register("runewood_planks_fence", new FenceBlock(RUNEWOOD_PROPERTIES()),true);
-	Block RUNEWOOD_PLANKS_FENCE_GATE = register("runewood_planks_fence_gate", new FenceGateBlock(RUNEWOOD_PROPERTIES(),  SoundEvents.BLOCK_BAMBOO_WOOD_PRESSURE_PLATE_CLICK_OFF, SoundEvents.BLOCK_BAMBOO_WOOD_PRESSURE_PLATE_CLICK_ON),true);
+	Block RUNEWOOD_PLANKS_FENCE_GATE = register("runewood_planks_fence_gate", new FenceGateBlock(RUNEWOOD_PROPERTIES(), WoodType.OAK),true);
 
 	Block RUNEWOOD_ITEM_STAND = register("runewood_item_stand", new ItemStandBlock<>(RUNEWOOD_PROPERTIES().nonOpaque()),true);
 	Block RUNEWOOD_ITEM_PEDESTAL = register("runewood_item_pedestal", new WoodItemPedestalBlock<>(RUNEWOOD_PROPERTIES().nonOpaque()),true);
@@ -478,15 +478,15 @@ public interface MalumObjects {
 	Block CUT_SOULWOOD_PLANKS = register("cut_soulwood_planks", new Block(SOULWOOD_PROPERTIES()),true);
 	Block SOULWOOD_BEAM = register("soulwood_beam", new PillarBlock(SOULWOOD_PROPERTIES()),true);
 
-	Block SOULWOOD_DOOR = register("soulwood_door", new DoorBlock(SOULWOOD_PROPERTIES().nonOpaque(), SoundEvents.BLOCK_BAMBOO_WOOD_TRAPDOOR_OPEN, SoundEvents.BLOCK_BAMBOO_WOOD_PRESSURE_PLATE_CLICK_OFF),true);
-	Block SOULWOOD_TRAPDOOR = register("soulwood_trapdoor", new TrapdoorBlock(SOULWOOD_PROPERTIES().nonOpaque(), SoundEvents.BLOCK_BAMBOO_WOOD_TRAPDOOR_CLOSE, SoundEvents.BLOCK_BAMBOO_WOOD_TRAPDOOR_OPEN),true);
-	Block SOLID_SOULWOOD_TRAPDOOR = register("solid_soulwood_trapdoor", new TrapdoorBlock(SOULWOOD_PROPERTIES().nonOpaque(), SoundEvents.BLOCK_BAMBOO_WOOD_TRAPDOOR_OPEN, SoundEvents.BLOCK_BAMBOO_WOOD_PRESSURE_PLATE_CLICK_OFF),true);
+	Block SOULWOOD_DOOR = register("soulwood_door", new DoorBlock(SOULWOOD_PROPERTIES().nonOpaque(), BlockSetType.OAK),true);
+	Block SOULWOOD_TRAPDOOR = register("soulwood_trapdoor", new TrapdoorBlock(SOULWOOD_PROPERTIES().nonOpaque(), BlockSetType.OAK),true);
+	Block SOLID_SOULWOOD_TRAPDOOR = register("solid_soulwood_trapdoor", new TrapdoorBlock(SOULWOOD_PROPERTIES().nonOpaque(), BlockSetType.OAK),true);
 
-	Block SOULWOOD_PLANKS_BUTTON = register("soulwood_planks_button", new AbstractButtonBlock(SOULWOOD_PROPERTIES(), 1, true, SoundEvents.BLOCK_BAMBOO_WOOD_PRESSURE_PLATE_CLICK_ON, SoundEvents.BLOCK_BAMBOO_WOOD_PRESSURE_PLATE_CLICK_OFF),true);
-	Block SOULWOOD_PLANKS_PRESSURE_PLATE = register("soulwood_planks_pressure_plate", new PressurePlateBlock(PressurePlateBlock.ActivationRule.EVERYTHING, SOULWOOD_PROPERTIES(), SoundEvents.BLOCK_BAMBOO_WOOD_PRESSURE_PLATE_CLICK_OFF, SoundEvents.BLOCK_BAMBOO_WOOD_PRESSURE_PLATE_CLICK_ON),true);
+	Block SOULWOOD_PLANKS_BUTTON = register("soulwood_planks_button", new ButtonBlock(SOULWOOD_PROPERTIES(), BlockSetType.OAK,1, true),true);
+	Block SOULWOOD_PLANKS_PRESSURE_PLATE = register("soulwood_planks_pressure_plate", new PressurePlateBlock(PressurePlateBlock.ActivationRule.EVERYTHING, SOULWOOD_PROPERTIES(), BlockSetType.OAK),true);
 
 	Block SOULWOOD_PLANKS_FENCE = register("soulwood_planks_fence", new FenceBlock(SOULWOOD_PROPERTIES()),true);
-	Block SOULWOOD_PLANKS_FENCE_GATE = register("soulwood_planks_fence_gate", new FenceGateBlock(SOULWOOD_PROPERTIES(), SoundEvents.BLOCK_BAMBOO_WOOD_TRAPDOOR_OPEN, SoundEvents.BLOCK_BAMBOO_WOOD_PRESSURE_PLATE_CLICK_OFF),true);
+	Block SOULWOOD_PLANKS_FENCE_GATE = register("soulwood_planks_fence_gate", new FenceGateBlock(SOULWOOD_PROPERTIES(), WoodType.OAK),true);
 
 	Block SOULWOOD_ITEM_STAND = register("soulwood_item_stand", new ItemStandBlock<>(SOULWOOD_PROPERTIES().nonOpaque()),true);
 	Block SOULWOOD_ITEM_PEDESTAL = register("soulwood_item_pedestal", new WoodItemPedestalBlock<>(SOULWOOD_PROPERTIES().nonOpaque()),true);
@@ -656,15 +656,15 @@ public interface MalumObjects {
 		BLOCKS.keySet().forEach(block -> Registry.register(Registries.BLOCK, BLOCKS.get(block), block));
 		ITEMS.keySet().forEach(item -> Registry.register(Registries.ITEM, ITEMS.get(item), item));
 
-		RegistryEntryAttachment<Item, Integer> fuelRegistry = ItemContentRegistries.FUEL_TIMES;
-		fuelRegistry.put(ARCANE_CHARCOAL, 3200);
-		fuelRegistry.put(BLOCK_OF_ARCANE_CHARCOAL.asItem(), 28800);
-		fuelRegistry.put(ARCANE_CHARCOAL_FRAGMENT, 400);
-		fuelRegistry.put(BLAZING_QUARTZ, 1600);
-		fuelRegistry.put(BLAZING_QUARTZ_FRAGMENT, 200);
-		fuelRegistry.put(BLOCK_OF_BLAZING_QUARTZ.asItem(), 14400);
-		fuelRegistry.put(CHARCOAL_FRAGMENT, 200);
-		fuelRegistry.put(COAL_FRAGMENT, 200);
+		FuelRegistry fuelRegistry = FuelRegistry.INSTANCE;
+		fuelRegistry.add(ARCANE_CHARCOAL, 3200);
+		fuelRegistry.add(BLOCK_OF_ARCANE_CHARCOAL.asItem(), 28800);
+		fuelRegistry.add(ARCANE_CHARCOAL_FRAGMENT, 400);
+		fuelRegistry.add(BLAZING_QUARTZ, 1600);
+		fuelRegistry.add(BLAZING_QUARTZ_FRAGMENT, 200);
+		fuelRegistry.add(BLOCK_OF_BLAZING_QUARTZ.asItem(), 14400);
+		fuelRegistry.add(CHARCOAL_FRAGMENT, 200);
+		fuelRegistry.add(COAL_FRAGMENT, 200);
 
 	}
 }

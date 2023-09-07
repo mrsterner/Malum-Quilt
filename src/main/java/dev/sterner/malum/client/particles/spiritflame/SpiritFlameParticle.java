@@ -1,7 +1,7 @@
 package dev.sterner.malum.client.particles.spiritflame;
 
-import com.sammy.lodestone.systems.particle.world.FrameSetParticle;
-import com.sammy.lodestone.systems.particle.world.WorldParticleEffect;
+import dev.sterner.lodestone.systems.particle.world.FrameSetParticle;
+import dev.sterner.lodestone.systems.particle.world.WorldParticleEffect;
 import net.fabricmc.fabric.impl.client.particle.FabricSpriteProviderImpl;
 import net.minecraft.client.world.ClientWorld;
 

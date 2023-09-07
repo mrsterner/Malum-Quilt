@@ -14,12 +14,12 @@ public class CurioRingOfProwess extends TrinketItem implements SpiritCollectActi
 
     @Override
     public void collect(ItemStack spirit, LivingEntity livingEntity, SlotReference slot, ItemStack trinket, double arcaneResonance) {
-        int i = 1 + livingEntity.world.random.nextInt(1) + livingEntity.world.random.nextInt(2);
+        int i = 1 + livingEntity.getWorld().random.nextInt(1) + livingEntity.getWorld().random.nextInt(2);
 
         while (i > 0) {
             int j = ExperienceOrbEntity.roundToOrbSize(i);
             i -= j;
-            livingEntity.world.spawnEntity(new ExperienceOrbEntity(livingEntity.world, livingEntity.getX(), livingEntity.getY(), livingEntity.getZ(), j));
+            livingEntity.getWorld().spawnEntity(new ExperienceOrbEntity(livingEntity.getWorld(), livingEntity.getX(), livingEntity.getY(), livingEntity.getZ(), j));
         }
     }
 }

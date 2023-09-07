@@ -7,9 +7,8 @@ import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.ToolMaterial;
 
-import static com.sammy.lodestone.setup.LodestoneAttributeRegistry.MAGIC_DAMAGE;
+import static dev.sterner.lodestone.setup.LodestoneAttributeRegistry.MAGIC_DAMAGE;
 import static dev.sterner.malum.common.registry.MalumAttributeRegistry.MAGIC_DAMAGE_MODIFIER_ID;
-import static net.minecraft.item.Item.ATTACK_DAMAGE_MODIFIER_ID;
 
 
 public class MagicScytheItem extends MalumScytheItem {

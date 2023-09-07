@@ -1,6 +1,6 @@
 package dev.sterner.malum.common.entity;
 
-import com.sammy.lodestone.helpers.EntityHelper;
+import dev.sterner.lodestone.helpers.EntityHelper;
 import dev.sterner.malum.common.registry.MalumSpiritTypeRegistry;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;

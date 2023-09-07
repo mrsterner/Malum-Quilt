@@ -1,6 +1,6 @@
 package dev.sterner.malum.common.spirit;
 
-import com.sammy.lodestone.helpers.ColorHelper;
+import dev.sterner.lodestone.helpers.ColorHelper;
 import dev.sterner.malum.Malum;
 import dev.sterner.malum.api.event.SpiritTypeAddEvent;
 import dev.sterner.malum.common.item.spirit.MalumSpiritItem;

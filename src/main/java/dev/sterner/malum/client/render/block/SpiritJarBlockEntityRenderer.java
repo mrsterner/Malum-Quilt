@@ -8,8 +8,9 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.Axis;
+import net.minecraft.util.math.RotationAxis;
 import net.minecraft.world.World;
 
 public class SpiritJarBlockEntityRenderer implements BlockEntityRenderer<SpiritJarBlockEntity> {
@@ -25,9 +26,9 @@ public class SpiritJarBlockEntityRenderer implements BlockEntityRenderer<SpiritJ
 			matrices.push();
 			double y = 0.5f + Math.sin((world.getTime() + tickDelta) / 20f) * 0.2f;
 			matrices.translate(0.5f, y, 0.5f);
-			matrices.multiply(Axis.Y_POSITIVE.rotationDegrees(((world.getTime() % 360) + tickDelta) * 3));
+			matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(((world.getTime() % 360) + tickDelta) * 3));
 			matrices.scale(0.6f, 0.6f, 0.6f);
-			itemRenderer.renderItem(entity.type.getSplinterItem().getDefaultStack(), ModelTransformation.Mode.FIXED, light, OverlayTexture.DEFAULT_UV, matrices, vertexConsumers, 0);
+			itemRenderer.renderItem(entity.type.getSplinterItem().getDefaultStack(), ModelTransformationMode.FIXED, light, OverlayTexture.DEFAULT_UV, matrices, vertexConsumers, world, 0);
 			matrices.pop();
 		}
 	}

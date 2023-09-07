@@ -18,6 +18,7 @@ import static dev.sterner.malum.Malum.MODID;
 
 public interface MalumEnchantmentRegistry {
 	Map<Identifier, Enchantment> ENCHANTMENTS = new LinkedHashMap<>();
+
 	EnchantmentTarget SCYTHE = ClassTinkerers.getEnum(EnchantmentTarget.class, "SCYTHE");
 	EnchantmentTarget REBOUND_SCYTHE = ClassTinkerers.getEnum(EnchantmentTarget.class, "REBOUND_SCYTHE");
 	EnchantmentTarget SOUL_HUNTER_WEAPON = ClassTinkerers.getEnum(EnchantmentTarget.class, "SOUL_HUNTER");

@@ -3,6 +3,7 @@ package dev.sterner.malum.client.screen.codex.objects;
 import dev.sterner.malum.client.screen.codex.AbstractProgressionCodexScreen;
 import dev.sterner.malum.client.screen.codex.ProgressionBookScreen;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
 import static dev.sterner.malum.client.screen.codex.ProgressionBookScreen.screen;
 
@@ -25,11 +26,11 @@ public class BookObject {
 		return 20;
 	}
 
-	public void render(MinecraftClient minecraft, MatrixStack poseStack, float xOffset, float yOffset, int mouseX, int mouseY, float partialTicks) {
+	public void render(MinecraftClient minecraft, DrawContext ctx, float xOffset, float yOffset, int mouseX, int mouseY, float partialTicks) {
 
 	}
 
-	public void lateRender(MinecraftClient minecraft, MatrixStack poseStack, float xOffset, float yOffset, int mouseX, int mouseY, float partialTicks) {
+	public void lateRender(MinecraftClient minecraft, DrawContext ctx, float xOffset, float yOffset, int mouseX, int mouseY, float partialTicks) {
 
 	}
 

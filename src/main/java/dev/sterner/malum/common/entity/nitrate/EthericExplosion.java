@@ -12,28 +12,34 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class EthericExplosion extends Explosion {
+	private World world;
+
     public EthericExplosion(World pWorld, @Nullable Entity pSource, double pToBlowX, double pToBlowY, double pToBlowZ, float pRadius, List<BlockPos> pPositions) {
         super(pWorld, pSource, pToBlowX, pToBlowY, pToBlowZ, pRadius, pPositions);
+		this.world = pWorld;
     }
 
     public EthericExplosion(World pWorld, @Nullable Entity pSource, double pToBlowX, double pToBlowY, double pToBlowZ, float pRadius, boolean pFire, DestructionType pBlockInteraction, List<BlockPos> pPositions) {
         super(pWorld, pSource, pToBlowX, pToBlowY, pToBlowZ, pRadius, pFire, pBlockInteraction, pPositions);
+		this.world = pWorld;
     }
 
     public EthericExplosion(World pWorld, @Nullable Entity pSource, double pToBlowX, double pToBlowY, double pToBlowZ, float pRadius, boolean pFire, DestructionType pBlockInteraction) {
         super(pWorld, pSource, pToBlowX, pToBlowY, pToBlowZ, pRadius, pFire, pBlockInteraction);
+		this.world = pWorld;
     }
 
     public EthericExplosion(World pWorld, @Nullable Entity pSource, @Nullable DamageSource pDamageSource, @Nullable ExplosionBehavior pDamageCalculator, double pToBlowX, double pToBlowY, double pToBlowZ, float pRadius, boolean pFire, DestructionType pBlockInteraction) {
         super(pWorld, pSource, pDamageSource, pDamageCalculator, pToBlowX, pToBlowY, pToBlowZ, pRadius, pFire, pBlockInteraction);
+		this.world = pWorld;
     }
 
     @Override
     public DamageSource getDamageSource() {
         if (getEntity() != null) {
-            return MalumDamageSourceRegistry.SOUL_STRIKE;
+            return MalumDamageSourceRegistry.create(world, MalumDamageSourceRegistry.VOODOO);
         }
-        return MalumDamageSourceRegistry.causeVoodooDamage(getDamageSource().getSource());
+        return MalumDamageSourceRegistry.create(world, MalumDamageSourceRegistry.VOODOO, getDamageSource().getSource());
     }
 
     public static EthericExplosion explode(World world, @Nullable Entity pEntity, double pX, double pY, double pZ, float pExplosionRadius, DestructionType pMode) {

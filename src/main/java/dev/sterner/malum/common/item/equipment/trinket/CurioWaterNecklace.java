@@ -40,12 +40,12 @@ public class CurioWaterNecklace extends TrinketItem implements SpiritCollectActi
     @Override
     public void tick(ItemStack stack, SlotReference slot, LivingEntity entity) {
         super.tick(stack, slot, entity);
-		if (entity.world.getTime() % 20L == 0) {
+		if (entity.getWorld().getTime() % 20L == 0) {
 			if (entity.hasStatusEffect(StatusEffects.CONDUIT_POWER)) {
 				entity.heal(2);
 			}
 		}
-		if (entity.world.getTime() % 40L == 0 && entity.isSwimming() && entity.hasStatusEffect(StatusEffects.CONDUIT_POWER)) {
+		if (entity.getWorld().getTime() % 40L == 0 && entity.isSwimming() && entity.hasStatusEffect(StatusEffects.CONDUIT_POWER)) {
 			EntityAttributeInstance attribute = entity.getAttributeInstance(MalumAttributeRegistry.SWIM_SPEED);
 			if (attribute != null) {
 				attribute.onUpdate();

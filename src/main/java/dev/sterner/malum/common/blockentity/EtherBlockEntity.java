@@ -1,18 +1,20 @@
 package dev.sterner.malum.common.blockentity;
 
-import com.sammy.lodestone.helpers.ColorHelper;
-import com.sammy.lodestone.helpers.NBTHelper;
-import com.sammy.lodestone.setup.LodestoneParticleRegistry;
-import com.sammy.lodestone.systems.blockentity.LodestoneBlockEntity;
-import com.sammy.lodestone.systems.easing.Easing;
-import com.sammy.lodestone.systems.particle.SimpleParticleEffect;
-import com.sammy.lodestone.systems.particle.WorldParticleBuilder;
-import com.sammy.lodestone.systems.particle.data.ColorParticleData;
-import com.sammy.lodestone.systems.particle.data.GenericParticleData;
-import com.sammy.lodestone.systems.particle.data.SpinParticleData;
+import dev.sterner.lodestone.helpers.ColorHelper;
+import dev.sterner.lodestone.helpers.NBTHelper;
+import dev.sterner.lodestone.setup.LodestoneParticleRegistry;
+import dev.sterner.lodestone.systems.blockentity.LodestoneBlockEntity;
+import dev.sterner.lodestone.systems.easing.Easing;
+import dev.sterner.lodestone.systems.particle.SimpleParticleEffect;
+import dev.sterner.lodestone.systems.particle.WorldParticleBuilder;
+import dev.sterner.lodestone.systems.particle.data.ColorParticleData;
+import dev.sterner.lodestone.systems.particle.data.GenericParticleData;
+import dev.sterner.lodestone.systems.particle.data.SpinParticleData;
 import dev.sterner.malum.common.block.ether.EtherBrazierBlock;
 import dev.sterner.malum.common.block.ether.EtherTorchBlock;
 import dev.sterner.malum.common.block.ether.EtherWallTorchBlock;
+import dev.sterner.malum.common.item.ether.AbstractEtherItem;
+import dev.sterner.malum.common.item.ether.EtherItem;
 import dev.sterner.malum.common.registry.MalumBlockEntityRegistry;
 import dev.sterner.malum.common.registry.MalumParticleRegistry;
 import net.minecraft.block.BlockState;
@@ -23,6 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,31 +33,45 @@ import java.awt.*;
 
 
 public class EtherBlockEntity extends LodestoneBlockEntity {
-    public int firstColorRGB;
     public Color firstColor;
-    public int secondColorRGB;
     public Color secondColor;
 
-    public EtherBlockEntity(BlockPos pos, BlockState state, int firstColor, int secondColor) {
-        this(MalumBlockEntityRegistry.ETHER, pos, state, firstColor, secondColor);
+    public EtherBlockEntity(BlockPos pos, BlockState state) {
+        this(MalumBlockEntityRegistry.ETHER, pos, state);
     }
 
-    public EtherBlockEntity(BlockPos pos, BlockState state) {
-        this(pos, state, 15712278, 4607909);
-    }
+	public EtherBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+		super(type, pos, state);
+	}
+
+	public void setFirstColor(int rgb) {
+		firstColor = new Color(rgb);
+	}
+
+	public void setSecondColor(int rgb) {
+		secondColor = new Color(rgb);
+	}
 
     @Override
     public void readNbt(NbtCompound nbt) {
-        this.firstColorRGB = nbt.getInt("FirstColor");
-        this.firstColor = new Color(firstColorRGB);
-        this.secondColorRGB = nbt.getInt("SecondColor");
-        this.secondColor = new Color(secondColorRGB);
+		setFirstColor(nbt.contains("firstColor") ? nbt.getInt("firstColor") : EtherItem.DEFAULT_FIRST_COLOR);
+		if (getCachedState().getBlock().asItem() instanceof AbstractEtherItem etherItem && etherItem.iridescent) {
+			setSecondColor(nbt.contains("secondColor") ? nbt.getInt("secondColor") : EtherItem.DEFAULT_SECOND_COLOR);
+		}
+		super.readNbt(nbt);
     }
 
     @Override
     public void writeNbt(NbtCompound nbt) {
-        nbt.putInt("FirstColor", firstColorRGB);
-        nbt.putInt("SecondColor", secondColorRGB);
+		if (firstColor != null) {
+			nbt.putInt("firstColor", firstColor.getRGB());
+		}
+		if (getCachedState().getBlock().asItem() instanceof AbstractEtherItem etherItem && etherItem.iridescent) {
+			if (secondColor != null && secondColor.getRGB() != EtherItem.DEFAULT_SECOND_COLOR) {
+				nbt.putInt("secondColor", secondColor.getRGB());
+			}
+		}
+		super.writeNbt(nbt);
     }
 
     @Override
@@ -66,19 +83,27 @@ public class EtherBlockEntity extends LodestoneBlockEntity {
 
 
 	public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
-        firstColorRGB = NBTHelper.getOrDefaultInt(nbt -> nbt.getCompound("display").getInt("FirstColor"), 15712278, itemStack.getNbt());
-        this.firstColor = new Color(firstColorRGB);
-        secondColorRGB = NBTHelper.getOrDefaultInt(nbt -> nbt.getCompound("display").getInt("SecondColor"), 4607909, itemStack.getNbt());
-        this.secondColor = new Color(secondColorRGB);
+		AbstractEtherItem item = (AbstractEtherItem) itemStack.getItem();
+		setFirstColor(item.getFirstColor(itemStack));
+		if (item.iridescent) {
+			setSecondColor(item.getSecondColor(itemStack));
+		}
     }
 
-    public EtherBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, int firstColor, int secondColor) {
-        super(type, pos, state);
-        this.firstColorRGB = firstColor;
-        this.secondColorRGB = secondColor;
-        this.firstColor = new Color(firstColorRGB);
-        this.secondColor = new Color(secondColorRGB);
-    }
+
+
+	@Override
+	public ItemStack onClone(BlockState state, BlockView blockView, BlockPos pos) {
+		ItemStack stack = state.getBlock().asItem().getDefaultStack();
+		AbstractEtherItem etherItem = (AbstractEtherItem) stack.getItem();
+		if (firstColor != null) {
+			etherItem.setFirstColor(stack, firstColor.getRGB());
+		}
+		if (secondColor != null) {
+			etherItem.setSecondColor(stack, secondColor.getRGB());
+		}
+		return super.onClone(state, blockView, pos);
+	}
 
 	@Override
 	public void tick() {

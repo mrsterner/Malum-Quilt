@@ -15,11 +15,16 @@ public class MalumComponents implements EntityComponentInitializer, WorldCompone
 	public static final ComponentKey<SpiritLivingEntityComponent> SPIRIT_COMPONENT = ComponentRegistry.getOrCreate(Malum.id("spirit"), SpiritLivingEntityComponent.class);
 	public static final ComponentKey<TouchOfDarknessComponent> TOUCH_OF_DARKNESS_COMPONENT = ComponentRegistry.getOrCreate(Malum.id("touch_of_darkness"), TouchOfDarknessComponent.class);
 
+	public static final ComponentKey<SoulDataComponent> SOUL_COMPONENT = ComponentRegistry.getOrCreate(Malum.id("soul"), SoulDataComponent.class);
+
+
 	@Override
 	public void registerEntityComponentFactories(EntityComponentFactoryRegistry registry) {
 		registry.beginRegistration(LivingEntity.class, SPIRIT_COMPONENT).respawnStrategy(RespawnCopyStrategy.ALWAYS_COPY).end(SpiritLivingEntityComponent::new);
 		registry.beginRegistration(LivingEntity.class, PLAYER_COMPONENT).respawnStrategy(RespawnCopyStrategy.ALWAYS_COPY).end(MalumPlayerComponent::new);
 		registry.beginRegistration(LivingEntity.class, TOUCH_OF_DARKNESS_COMPONENT).respawnStrategy(RespawnCopyStrategy.LOSSLESS_ONLY).end(TouchOfDarknessComponent::new);
+		registry.beginRegistration(LivingEntity.class, SOUL_COMPONENT).respawnStrategy(RespawnCopyStrategy.ALWAYS_COPY).end(SoulDataComponent::new);
+
 	}
 
 	@Override

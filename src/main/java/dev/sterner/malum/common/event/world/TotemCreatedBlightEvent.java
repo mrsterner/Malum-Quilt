@@ -1,6 +1,6 @@
 package dev.sterner.malum.common.event.world;
 
-import com.sammy.lodestone.helpers.BlockHelper;
+import dev.sterner.lodestone.helpers.BlockHelper;
 import dev.sterner.malum.common.blockentity.totem.TotemBaseBlockEntity;
 import dev.sterner.malum.common.blockentity.totem.TotemPoleBlockEntity;
 import dev.sterner.malum.common.registry.MalumSoundRegistry;

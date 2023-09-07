@@ -12,7 +12,7 @@ import static dev.sterner.malum.common.registry.MalumObjects.BRILLIANT_OBELISK;
 
 @Mixin(EnchantingTableBlock.class)
 public abstract class EnchantingTableBlockMixin {
-	@Inject(method = "isValidForBookshelf", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "canAccessPowerProvider", at = @At("HEAD"), cancellable = true)
 	private static void malum$isValidForBookshelf(World world, BlockPos blockPos, BlockPos blockPos2, CallbackInfoReturnable<Boolean> cir) {
 		if (world.getBlockState(blockPos.add(blockPos2)).isOf(BRILLIANT_OBELISK) && world.isAir(blockPos.add(blockPos2.getX() / 2, blockPos2.getY(), blockPos2.getZ() / 2))) {
             cir.setReturnValue(true);
